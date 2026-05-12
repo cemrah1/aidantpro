@@ -3,654 +3,501 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self' https: data: 'unsafe-inline' 'unsafe-eval'">
-<meta name="description" content="AidantPro — Plateforme sécurisée de coordination de soins">
 <title>AidantPro — Connexion sécurisée</title>
 <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
 <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
 <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-<script src="https://unpkg.com/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
-:root{
-  --bl:#1D55E8;--bl2:#EBF0FD;--bl3:#BFCFFA;
-  --gn:#137A3A;--gn2:#EAF5EE;--gn3:#C8E8D3;
-  --am:#B85C00;--am2:#FEF3E6;
-  --rd:#C0272B;--rd2:#FDEAEA;--rd3:#F8C5C5;
-  --txt:#1A1815;--mu:#6B6860;--bg:#F7F5F1;--sur:#FFF;--bd:#E2DDD5;
-}
+:root{--bl:#1D55E8;--bl2:#EBF0FD;--bl3:#BFCFFA;--gn:#137A3A;--gn2:#EAF5EE;--gn3:#C8E8D3;--am:#B85C00;--am2:#FEF3E6;--rd:#C0272B;--rd2:#FDEAEA;--rd3:#F8C5C5;--txt:#1A1815;--mu:#6B6860;--bg:#F7F5F1;--sur:#FFF;--bd:#E2DDD5}
 body{font-family:'Instrument Sans',sans-serif;color:var(--txt);background:var(--bg);min-height:100vh}
-#root{min-height:100vh;display:flex;flex-direction:column}
-input,button,select,textarea{font-family:inherit}
-
-/* ── AUTH SCREENS ── */
-.auth-wrap{min-height:100vh;display:grid;grid-template-columns:1fr 1fr}
-@media(max-width:768px){.auth-wrap{grid-template-columns:1fr}}
-.auth-left{background:linear-gradient(160deg,#0D1B4B 0%,#1D55E8 45%,#137A3A 100%);padding:48px;display:flex;flex-direction:column;justify-content:space-between;position:relative;overflow:hidden}
-.auth-left::before{content:'';position:absolute;inset:0;background:url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23ffffff' fill-opacity='0.03'%3E%3Ccircle cx='30' cy='30' r='2'/%3E%3C/g%3E%3C/svg%3E")}
-@media(max-width:768px){.auth-left{display:none}}
-.auth-left-logo{display:flex;align-items:center;gap:12px;position:relative}
-.auth-left-ic{width:44px;height:44px;background:rgba(255,255,255,0.15);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:22px;border:1px solid rgba(255,255,255,0.2)}
-.auth-left-nm{font-family:'Syne',sans-serif;font-size:24px;font-weight:800;color:#fff}
-.auth-left-body{position:relative}
-.auth-left-h{font-family:'Syne',sans-serif;font-size:38px;font-weight:800;color:#fff;line-height:1.15;margin-bottom:16px;letter-spacing:-1px}
-.auth-left-sub{font-size:15px;color:rgba(255,255,255,0.7);line-height:1.7;margin-bottom:32px}
-.auth-stat{display:flex;flex-direction:column;gap:12px}
-.auth-stat-item{display:flex;align-items:center;gap:12px;background:rgba(255,255,255,0.1);border-radius:12px;padding:12px 16px;border:1px solid rgba(255,255,255,0.15)}
-.auth-stat-ic{font-size:20px}
-.auth-stat-txt{font-size:13px;color:rgba(255,255,255,0.85);line-height:1.4}
-.auth-stat-txt strong{color:#fff;font-weight:600}
-.auth-left-ft{position:relative;font-size:11px;color:rgba(255,255,255,0.4)}
-.auth-right{padding:48px;display:flex;flex-direction:column;justify-content:center;background:var(--sur);overflow-y:auto}
-.auth-right-inner{max-width:420px;width:100%;margin:0 auto}
-.auth-logo-mobile{display:none;align-items:center;gap:10px;margin-bottom:32px}
-@media(max-width:768px){.auth-logo-mobile{display:flex}}
-.auth-logo-ic-m{width:38px;height:38px;background:linear-gradient(135deg,var(--bl),var(--gn));border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px}
-.auth-logo-nm-m{font-family:'Syne',sans-serif;font-size:20px;font-weight:800}
-.auth-h{font-family:'Syne',sans-serif;font-size:28px;font-weight:800;margin-bottom:6px;letter-spacing:-0.5px}
-.auth-sub{font-size:14px;color:var(--mu);margin-bottom:32px;line-height:1.6}
-.auth-tabs{display:flex;background:var(--bg);border-radius:10px;padding:4px;margin-bottom:28px}
-.auth-tab{flex:1;padding:8px;border-radius:8px;border:none;background:transparent;font-size:13px;font-weight:600;cursor:pointer;transition:all .15s;color:var(--mu)}
-.auth-tab.on{background:var(--sur);color:var(--txt);box-shadow:0 1px 4px rgba(0,0,0,0.1)}
-.fg{margin-bottom:16px}
+input,button,select{font-family:inherit}
+.wrap{min-height:100vh;display:grid;grid-template-columns:1fr 1fr}
+@media(max-width:768px){.wrap{grid-template-columns:1fr}}
+.left{background:linear-gradient(160deg,#0D1B4B 0%,#1D55E8 45%,#137A3A 100%);padding:48px;display:flex;flex-direction:column;justify-content:space-between;position:relative;overflow:hidden}
+@media(max-width:768px){.left{display:none}}
+.left::before{content:'';position:absolute;inset:0;background:url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23ffffff' fill-opacity='0.03'%3E%3Ccircle cx='30' cy='30' r='2'/%3E%3C/g%3E%3C/svg%3E")}
+.left-logo{display:flex;align-items:center;gap:12px;position:relative}
+.left-logo-ic{width:44px;height:44px;background:rgba(255,255,255,0.15);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:22px;border:1px solid rgba(255,255,255,0.2)}
+.left-logo-nm{font-family:'Syne',sans-serif;font-size:24px;font-weight:800;color:#fff}
+.left-body{position:relative}
+.left-h{font-family:'Syne',sans-serif;font-size:38px;font-weight:800;color:#fff;line-height:1.15;margin-bottom:16px;letter-spacing:-1px}
+.left-sub{font-size:15px;color:rgba(255,255,255,0.7);line-height:1.7;margin-bottom:32px}
+.left-stats{display:flex;flex-direction:column;gap:12px}
+.stat{display:flex;align-items:center;gap:12px;background:rgba(255,255,255,0.1);border-radius:12px;padding:12px 16px;border:1px solid rgba(255,255,255,0.15)}
+.stat-ic{font-size:20px;flex-shrink:0}
+.stat-txt{font-size:13px;color:rgba(255,255,255,0.85);line-height:1.4}
+.stat-txt strong{color:#fff}
+.left-ft{position:relative;font-size:11px;color:rgba(255,255,255,0.4)}
+.right{padding:48px;display:flex;flex-direction:column;justify-content:center;background:var(--sur);overflow-y:auto}
+.right-in{max-width:420px;width:100%;margin:0 auto}
+.mob-logo{display:none;align-items:center;gap:10px;margin-bottom:32px}
+@media(max-width:768px){.mob-logo{display:flex}}
+.mob-ic{width:38px;height:38px;background:linear-gradient(135deg,var(--bl),var(--gn));border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px}
+.mob-nm{font-family:'Syne',sans-serif;font-size:20px;font-weight:800}
+h1{font-family:'Syne',sans-serif;font-size:28px;font-weight:800;margin-bottom:6px;letter-spacing:-0.5px}
+.sub{font-size:14px;color:var(--mu);margin-bottom:28px;line-height:1.6}
+.tabs{display:flex;background:var(--bg);border-radius:10px;padding:4px;margin-bottom:24px}
+.tab{flex:1;padding:8px;border-radius:8px;border:none;background:transparent;font-size:13px;font-weight:600;cursor:pointer;transition:all .15s;color:var(--mu)}
+.tab.on{background:var(--sur);color:var(--txt);box-shadow:0 1px 4px rgba(0,0,0,0.1)}
+.fg{margin-bottom:14px}
 .fl{font-size:11px;font-weight:600;color:var(--mu);margin-bottom:5px;display:flex;justify-content:space-between;align-items:center;text-transform:uppercase;letter-spacing:0.5px}
-.fl-link{font-size:11px;font-weight:500;color:var(--bl);cursor:pointer;text-transform:none;letter-spacing:0}
-.fi-wrap{position:relative}
+.flink{font-size:11px;font-weight:500;color:var(--bl);cursor:pointer;text-transform:none;letter-spacing:0;border:none;background:none;padding:0}
+.fi-w{position:relative}
 .fi{width:100%;padding:11px 14px;border:1.5px solid var(--bd);border-radius:10px;font-size:14px;background:var(--bg);color:var(--txt);outline:none;transition:all .15s}
-.fi:focus{border-color:var(--bl);background:var(--sur);box-shadow:0 0 0 3px rgba(29,85,232,0.08)}
-.fi.error{border-color:var(--rd);background:var(--rd2)}
-.fi.success{border-color:var(--gn)}
-.fi-icon{position:absolute;right:12px;top:50%;transform:translateY(-50%);font-size:16px;cursor:pointer;color:var(--mu)}
-.fi-eye{position:absolute;right:12px;top:50%;transform:translateY(-50%);cursor:pointer;color:var(--mu);background:none;border:none;padding:4px;font-size:16px}
-.err-msg{font-size:12px;color:var(--rd);margin-top:5px;display:flex;align-items:center;gap:4px}
-.ok-msg{font-size:12px;color:var(--gn);margin-top:5px;display:flex;align-items:center;gap:4px}
-
-/* PASSWORD STRENGTH */
-.pwd-strength{margin-top:8px}
-.pwd-bars{display:flex;gap:4px;margin-bottom:6px}
+.fi:focus{border-color:var(--bl);background:var(--sur);box-shadow:0 0 0 3px rgba(29,85,232,.08)}
+.fi.err{border-color:var(--rd);background:var(--rd2)}
+.fi.ok{border-color:var(--gn)}
+.eye{position:absolute;right:12px;top:50%;transform:translateY(-50%);cursor:pointer;color:var(--mu);background:none;border:none;padding:4px;font-size:16px}
+.fi-ic{position:absolute;right:12px;top:50%;transform:translateY(-50%);font-size:14px}
+.errmsg{font-size:12px;color:var(--rd);margin-top:4px}
+.pwd-bars{display:flex;gap:3px;margin:6px 0 4px}
 .pwd-bar{flex:1;height:3px;border-radius:2px;background:var(--bd);transition:background .2s}
 .pwd-bar.s1{background:var(--rd)}
 .pwd-bar.s2{background:var(--am)}
 .pwd-bar.s3{background:#F59E0B}
 .pwd-bar.s4{background:var(--gn)}
-.pwd-reqs{display:grid;grid-template-columns:1fr 1fr;gap:3px}
-.pwd-req{font-size:11px;color:var(--mu);display:flex;align-items:center;gap:5px}
-.pwd-req.ok{color:var(--gn)}
-.pwd-req-dot{width:6px;height:6px;border-radius:50%;background:var(--bd);flex-shrink:0}
-.pwd-req.ok .pwd-req-dot{background:var(--gn)}
-
-/* ROLE SELECTOR */
-.role-sel{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:16px}
-.role-opt{border:1.5px solid var(--bd);border-radius:10px;padding:12px 8px;cursor:pointer;transition:all .15s;text-align:center;background:transparent}
-.role-opt:hover{border-color:var(--bl);background:var(--bl2)}
-.role-opt.sel{border-color:var(--bl);background:var(--bl2)}
-.role-opt-ic{font-size:22px;margin-bottom:4px}
-.role-opt-nm{font-size:12px;font-weight:600;color:var(--txt)}
-.role-opt-ds{font-size:10px;color:var(--mu);margin-top:2px;line-height:1.3}
-.role-opt.sel .role-opt-nm{color:var(--bl)}
-
-/* SUBMIT BUTTON */
-.auth-btn{width:100%;padding:13px;background:var(--bl);color:#fff;border:none;border-radius:10px;font-size:14px;font-weight:600;cursor:pointer;transition:all .15s;display:flex;align-items:center;justify-content:center;gap:8px;margin-top:8px}
-.auth-btn:hover{background:#1544C8}
-.auth-btn:disabled{opacity:0.6;cursor:not-allowed}
-.auth-btn.loading{background:#1544C8}
-.auth-divider{display:flex;align-items:center;gap:12px;margin:20px 0;color:var(--mu);font-size:12px}
-.auth-divider::before,.auth-divider::after{content:'';flex:1;height:1px;background:var(--bd)}
-
-/* SECURITY NOTICE */
-.sec-notice{background:var(--gn2);border:1px solid var(--gn3);border-radius:10px;padding:12px 14px;margin-top:20px;display:flex;gap:10px;align-items:flex-start}
-.sec-notice-ic{font-size:16px;flex-shrink:0;margin-top:1px}
-.sec-notice-txt{font-size:12px;color:var(--gn);line-height:1.5}
-.sec-notice-txt strong{font-weight:600}
-
-/* ALERT */
-.auth-alert{padding:11px 14px;border-radius:10px;font-size:13px;margin-bottom:16px;display:flex;align-items:flex-start;gap:9px;line-height:1.5}
-.auth-alert.err{background:var(--rd2);color:var(--rd);border:1px solid var(--rd3)}
-.auth-alert.ok{background:var(--gn2);color:var(--gn);border:1px solid var(--gn3)}
-.auth-alert.info{background:var(--bl2);color:var(--bl);border:1px solid var(--bl3)}
-
-/* VERIFY EMAIL */
+.pwd-reqs{display:grid;grid-template-columns:1fr 1fr;gap:2px}
+.req{font-size:11px;color:var(--mu);display:flex;align-items:center;gap:5px}
+.req.ok{color:var(--gn)}
+.req-dot{width:6px;height:6px;border-radius:50%;background:var(--bd);flex-shrink:0}
+.req.ok .req-dot{background:var(--gn)}
+.roles{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:14px}
+.role{border:1.5px solid var(--bd);border-radius:10px;padding:12px 8px;cursor:pointer;text-align:center;transition:all .15s;background:transparent}
+.role:hover,.role.sel{border-color:var(--bl);background:var(--bl2)}
+.role-ic{font-size:22px;margin-bottom:4px}
+.role-nm{font-size:12px;font-weight:600}
+.role.sel .role-nm{color:var(--bl)}
+.role-ds{font-size:10px;color:var(--mu);margin-top:2px}
+.cb-row{display:flex;align-items:flex-start;gap:10px;margin-bottom:14px;cursor:pointer}
+.cb{width:16px;height:16px;border:1.5px solid var(--bd);border-radius:4px;flex-shrink:0;margin-top:1px;display:flex;align-items:center;justify-content:center;transition:all .15s}
+.cb.on{background:var(--bl);border-color:var(--bl)}
+.cb-lbl{font-size:12px;color:var(--mu);line-height:1.5}
+.btn{width:100%;padding:13px;background:var(--bl);color:#fff;border:none;border-radius:10px;font-size:14px;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;margin-top:8px;transition:background .15s}
+.btn:hover{background:#1544C8}
+.btn:disabled{opacity:.6;cursor:not-allowed}
+.alert{padding:11px 14px;border-radius:10px;font-size:13px;margin-bottom:14px;display:flex;align-items:flex-start;gap:9px;line-height:1.5}
+.alert.err{background:var(--rd2);color:var(--rd);border:1px solid var(--rd3)}
+.alert.ok{background:var(--gn2);color:var(--gn);border:1px solid var(--gn3)}
+.alert.info{background:var(--bl2);color:var(--bl);border:1px solid var(--bl3)}
+.sec{background:var(--gn2);border:1px solid var(--gn3);border-radius:10px;padding:12px 14px;margin-top:20px;display:flex;gap:10px}
+.sec-ic{font-size:15px;flex-shrink:0}
+.sec-txt{font-size:12px;color:var(--gn);line-height:1.5}
+.spin{display:inline-block;width:15px;height:15px;border:2px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:sp .7s linear infinite}
+@keyframes sp{to{transform:rotate(360deg)}}
+.back-btn{display:flex;align-items:center;gap:6px;color:var(--bl);font-size:13px;font-weight:500;cursor:pointer;margin-bottom:20px;border:none;background:none;padding:0}
 .verify-wrap{text-align:center;padding:20px 0}
 .verify-ic{font-size:56px;margin-bottom:16px}
 .verify-h{font-family:'Syne',sans-serif;font-size:22px;font-weight:800;margin-bottom:8px}
-.verify-sub{font-size:14px;color:var(--mu);line-height:1.7;margin-bottom:24px}
-.verify-email{font-weight:600;color:var(--bl)}
-.verify-resend{font-size:13px;color:var(--mu);margin-top:16px}
-.verify-resend span{color:var(--bl);cursor:pointer;font-weight:500}
-
-/* RESET PASSWORD */
-.reset-back{display:flex;align-items:center;gap:6px;color:var(--bl);font-size:13px;font-weight:500;cursor:pointer;margin-bottom:20px;border:none;background:none;padding:0}
-
-/* SPINNER */
-.spin{display:inline-block;width:16px;height:16px;border:2px solid rgba(255,255,255,0.3);border-top-color:#fff;border-radius:50%;animation:sp .7s linear infinite}
-@keyframes sp{to{transform:rotate(360deg)}}
-
-/* CHECKBOX */
-.cb-row{display:flex;align-items:flex-start;gap:10px;margin-bottom:16px;cursor:pointer}
-.cb{width:16px;height:16px;border:1.5px solid var(--bd);border-radius:4px;flex-shrink:0;margin-top:1px;display:flex;align-items:center;justify-content:center;transition:all .15s;cursor:pointer}
-.cb.on{background:var(--bl);border-color:var(--bl)}
-.cb-label{font-size:12px;color:var(--mu);line-height:1.5;cursor:pointer}
-.cb-label a{color:var(--bl)}
-
-/* SUCCESS SCREEN */
-.success-wrap{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40px;text-align:center;background:linear-gradient(160deg,#EBF0FD 0%,#EAF5EE 100%)}
-.success-ic{font-size:64px;margin-bottom:20px}
-.success-h{font-family:'Syne',sans-serif;font-size:28px;font-weight:800;margin-bottom:10px}
-.success-sub{font-size:15px;color:var(--mu);max-width:400px;margin:0 auto 28px;line-height:1.7}
-.success-btn{background:var(--bl);color:#fff;border:none;padding:13px 28px;border-radius:10px;font-size:14px;font-weight:600;cursor:pointer}
-
-/* TERMS MODAL */
-.modal-bg{position:fixed;inset:0;background:rgba(0,0,0,0.5);display:flex;align-items:center;justify-content:center;z-index:1000;padding:20px}
-.modal{background:var(--sur);border-radius:16px;padding:28px;max-width:500px;width:100%;max-height:80vh;overflow-y:auto}
-.modal-h{font-family:'Syne',sans-serif;font-size:20px;font-weight:800;margin-bottom:14px}
-.modal-txt{font-size:13px;color:var(--mu);line-height:1.8}
-.modal-close{width:100%;margin-top:20px;padding:11px;background:var(--bl);color:#fff;border:none;border-radius:10px;font-size:13px;font-weight:600;cursor:pointer}
+.verify-sub{font-size:14px;color:var(--mu);line-height:1.7;margin-bottom:20px}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px}
+.modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.5);display:flex;align-items:center;justify-content:center;z-index:1000;padding:20px}
+.modal{background:#fff;border-radius:16px;padding:28px;max-width:500px;width:100%;max-height:80vh;overflow-y:auto}
+.modal h2{font-family:'Syne',sans-serif;font-size:20px;font-weight:800;margin-bottom:14px}
+.modal p{font-size:13px;color:var(--mu);line-height:1.8;margin-bottom:10px}
+.modal-close{width:100%;margin-top:16px;padding:11px;background:var(--bl);color:#fff;border:none;border-radius:10px;font-size:13px;font-weight:600;cursor:pointer}
+.app-hd{background:#fff;border-bottom:1px solid var(--bd);padding:12px 24px;display:flex;align-items:center;justify-content:space-between}
+.app-logo{display:flex;align-items:center;gap:10px}
+.app-logo-ic{width:32px;height:32px;background:linear-gradient(135deg,var(--bl),var(--gn));border-radius:9px;display:flex;align-items:center;justify-content:center;font-weight:800;color:#fff;font-size:14px}
+.app-logo-nm{font-family:'Syne',sans-serif;font-weight:800;font-size:16px}
+.app-user{display:flex;align-items:center;gap:12px}
+.app-av{width:34px;height:34px;background:var(--bl2);border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-weight:700;color:var(--bl);font-size:13px}
+.signout-btn{padding:7px 14px;background:var(--bg);border:1px solid var(--bd);border-radius:8px;font-size:12px;font-weight:600;cursor:pointer;color:var(--mu)}
+.app-body{min-height:calc(100vh - 57px);display:flex;align-items:center;justify-content:center;padding:40px;text-align:center;background:linear-gradient(160deg,var(--bl2) 0%,var(--gn2) 100%)}
+.welcome-card{background:#fff;border-radius:20px;padding:40px;max-width:500px;box-shadow:0 4px 40px rgba(0,0,0,.08)}
+.welcome-ic{font-size:56px;margin-bottom:16px}
+.welcome-h{font-family:'Syne',sans-serif;font-size:26px;font-weight:800;margin-bottom:10px}
+.welcome-sub{font-size:14px;color:var(--mu);line-height:1.7;margin-bottom:24px}
+.badge-row{display:flex;gap:8px;justify-content:center;flex-wrap:wrap}
+.badge{display:inline-flex;align-items:center;gap:5px;padding:5px 12px;border-radius:20px;font-size:12px;font-weight:600;background:var(--gn2);color:var(--gn);border:1px solid var(--gn3)}
 </style>
 </head>
 <body>
 <div id="root"></div>
 <script type="text/babel">
-const {useState, useEffect, useRef} = React;
+const {useState, useEffect} = React;
 
-// ═══════════════════════════════════════════════
-// CONFIGURATION SUPABASE
-// Remplace ces valeurs par tes clés Supabase
-// ═══════════════════════════════════════════════
-const SUPABASE_URL = 'https://yyfumysysdowpcnqeehs.supabase.co';
-const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inl5ZnVteXN5c2Rvd3BjbnFlZWhzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg1NjI0NTUsImV4cCI6MjA5NDEzODQ1NX0.jYlYaildOLYgeSZWi_khNO9UusUl6hW-CUBkYvsSyjM';
+// ═══════════════════════════════════════
+// CONFIGURATION
+// ═══════════════════════════════════════
+const SB_URL = 'https://yyfumysysdowpcnqeehs.supabase.co';
+const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inl5ZnVteXN5c2Rvd3BjbnFlZWhzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg1NjI0NTUsImV4cCI6MjA5NDEzODQ1NX0.jYlYaildOLYgeSZWi_khNO9UusUl6hW-CUBkYvsSyjM';
+const HEADERS = {'Content-Type':'application/json','apikey':SB_KEY,'Authorization':`Bearer ${SB_KEY}`};
 
-// Mode démo si pas de Supabase configuré
-const DEMO_MODE = SUPABASE_URL.includes('REMPLACE');
+// ═══════════════════════════════════════
+// API SUPABASE — FETCH DIRECT (pas de SDK)
+// ═══════════════════════════════════════
+async function apiSignUp(email, password, prenom, nom, role) {
+  const r = await fetch(`${SB_URL}/auth/v1/signup`, {
+    method:'POST', headers:HEADERS,
+    body:JSON.stringify({email, password, data:{prenom, nom, role}})
+  });
+  return r.json();
+}
 
-let supabase = null;
-if (!DEMO_MODE) {
-  supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
-    auth: {
-      autoRefreshToken: true,
-      persistSession: true,
-      detectSessionInUrl: true
-    }
+async function apiSignIn(email, password) {
+  const r = await fetch(`${SB_URL}/auth/v1/token?grant_type=password`, {
+    method:'POST', headers:HEADERS,
+    body:JSON.stringify({email, password})
+  });
+  return r.json();
+}
+
+async function apiSignOut(token) {
+  await fetch(`${SB_URL}/auth/v1/logout`, {
+    method:'POST',
+    headers:{...HEADERS,'Authorization':`Bearer ${token}`}
   });
 }
 
-// ═══════════════════════════════════════════════
-// UTILITAIRES SÉCURITÉ
-// ═══════════════════════════════════════════════
-function validateEmail(email) {
-  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.toLowerCase().trim());
+async function apiResetPassword(email) {
+  const r = await fetch(`${SB_URL}/auth/v1/recover`, {
+    method:'POST', headers:HEADERS,
+    body:JSON.stringify({email})
+  });
+  return r.json();
 }
 
-function getPasswordStrength(pwd) {
-  let score = 0;
-  const checks = {
-    length: pwd.length >= 8,
-    upper: /[A-Z]/.test(pwd),
-    number: /[0-9]/.test(pwd),
-    special: /[^A-Za-z0-9]/.test(pwd),
-    long: pwd.length >= 12,
-  };
-  score = Object.values(checks).filter(Boolean).length;
-  return { score: Math.min(score, 4), checks };
+async function apiGetUser(token) {
+  const r = await fetch(`${SB_URL}/auth/v1/user`, {
+    headers:{...HEADERS,'Authorization':`Bearer ${token}`}
+  });
+  return r.json();
 }
 
-function sanitize(str) {
-  return str.replace(/[<>'"]/g, '').trim();
-}
+// Session locale
+const SESSION_KEY = 'ap_session';
+function getSession() { try{ return JSON.parse(sessionStorage.getItem(SESSION_KEY)||'null'); }catch{return null;} }
+function saveSession(s) { s ? sessionStorage.setItem(SESSION_KEY,JSON.stringify(s)) : sessionStorage.removeItem(SESSION_KEY); }
 
-// Rate limiting simple côté client
-const attempts = {};
-function checkRateLimit(key) {
-  const now = Date.now();
-  if (!attempts[key]) attempts[key] = [];
-  attempts[key] = attempts[key].filter(t => now - t < 900000); // 15 min
-  if (attempts[key].length >= 5) return false;
-  attempts[key].push(now);
+// ═══════════════════════════════════════
+// SÉCURITÉ
+// ═══════════════════════════════════════
+function validateEmail(e){ return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e.trim()); }
+function sanitize(s){ return s.replace(/[<>'"]/g,'').trim(); }
+const attempts={};
+function rateLimit(k){
+  const now=Date.now();
+  if(!attempts[k]) attempts[k]=[];
+  attempts[k]=attempts[k].filter(t=>now-t<900000);
+  if(attempts[k].length>=5) return false;
+  attempts[k].push(now);
   return true;
 }
-
-// ═══════════════════════════════════════════════
-// COMPOSANT PRINCIPAL
-// ═══════════════════════════════════════════════
-function App() {
-  const [authState, setAuthState] = useState('loading'); // loading | unauthenticated | authenticated | verify
-  const [user, setUser] = useState(null);
-  const [showTerms, setShowTerms] = useState(false);
-
-  useEffect(() => {
-    if (DEMO_MODE) {
-      setAuthState('unauthenticated');
-      return;
-    }
-    const client = initSupabase();
-    if (!client) {
-      console.warn('Supabase unavailable, switching to demo mode');
-      setAuthState('unauthenticated');
-      return;
-    }
-    supabase = client;
-    // Vérifie la session existante
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      if (session) {
-        setUser(session.user);
-        setAuthState(session.user.email_confirmed_at ? 'authenticated' : 'verify');
-      } else {
-        setAuthState('unauthenticated');
-      }
-    });
-    // Écoute les changements d'auth
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
-      if (event === 'SIGNED_IN' && session) {
-        setUser(session.user);
-        setAuthState(session.user.email_confirmed_at ? 'authenticated' : 'verify');
-      } else if (event === 'SIGNED_OUT') {
-        setUser(null);
-        setAuthState('unauthenticated');
-      } else if (event === 'EMAIL_CONFIRMED') {
-        setAuthState('authenticated');
-      }
-    });
-    return () => subscription.unsubscribe();
-  }, []);
-
-  async function handleSignOut() {
-    if (!DEMO_MODE && supabase) await supabase.auth.signOut();
-    setUser(null);
-    setAuthState('unauthenticated');
-  }
-
-  if (authState === 'loading') return <LoadingScreen />;
-  if (authState === 'verify') return <VerifyEmail user={user} supabase={supabase} />;
-  if (authState === 'unauthenticated') return (
-    <AuthScreen
-      supabase={supabase}
-      demoMode={DEMO_MODE}
-      onSuccess={(u) => {
-        if (DEMO_MODE) { setUser({email:'demo@aidantpro.fr', user_metadata:{prenom:'Marie', role:'aidant'}}); setAuthState('authenticated'); return; }
-        setUser(u);
-        setAuthState(u.email_confirmed_at ? 'authenticated' : 'verify');
-      }}
-      showTerms={showTerms}
-      setShowTerms={setShowTerms}
-    />
-  );
-  if (authState === 'authenticated') return (
-    <MainApp user={user} onSignOut={handleSignOut} />
-  );
+function pwdStrength(p){
+  const c={len:p.length>=8,upper:/[A-Z]/.test(p),num:/[0-9]/.test(p),spec:/[^A-Za-z0-9]/.test(p)};
+  return {score:Object.values(c).filter(Boolean).length,checks:c};
 }
 
-// ═══════════════════════════════════════════════
-// ÉCRAN DE CHARGEMENT
-// ═══════════════════════════════════════════════
-function LoadingScreen() {
-  return (
+// ═══════════════════════════════════════
+// APP
+// ═══════════════════════════════════════
+function App(){
+  const [screen,setScreen]=useState('loading'); // loading|auth|verify|home
+  const [user,setUser]=useState(null);
+  const [session,setSession]=useState(null);
+  const [showTerms,setShowTerms]=useState(false);
+
+  useEffect(()=>{
+    const s=getSession();
+    if(s&&s.access_token){
+      setSession(s);
+      setUser(s.user||null);
+      setScreen(s.user?.email_confirmed_at||s.user?.confirmed_at ? 'home':'verify');
+    } else {
+      setScreen('auth');
+    }
+  },[]);
+
+  function onLogin(s){
+    saveSession(s);
+    setSession(s);
+    setUser(s.user);
+    const confirmed=s.user?.email_confirmed_at||s.user?.confirmed_at;
+    setScreen(confirmed ? 'home':'verify');
+  }
+
+  async function onSignOut(){
+    if(session?.access_token) await apiSignOut(session.access_token).catch(()=>{});
+    saveSession(null);
+    setSession(null);
+    setUser(null);
+    setScreen('auth');
+  }
+
+  if(screen==='loading') return <Loading/>;
+  if(screen==='verify') return <Verify email={user?.email} onBack={()=>{saveSession(null);setScreen('auth');}}/>;
+  if(screen==='home') return <Home user={user} onSignOut={onSignOut}/>;
+  return <Auth onLogin={onLogin} showTerms={showTerms} setShowTerms={setShowTerms}/>;
+}
+
+function Loading(){
+  return(
     <div style={{minHeight:'100vh',display:'flex',alignItems:'center',justifyContent:'center',background:'var(--bg)'}}>
       <div style={{textAlign:'center'}}>
         <div style={{width:48,height:48,background:'linear-gradient(135deg,#1D55E8,#137A3A)',borderRadius:14,display:'flex',alignItems:'center',justifyContent:'center',fontSize:24,margin:'0 auto 16px'}}>🤝</div>
-        <div style={{fontFamily:"'Syne',sans-serif",fontSize:20,fontWeight:800,marginBottom:8}}>AidantPro</div>
+        <div style={{fontFamily:"'Syne',sans-serif",fontSize:20,fontWeight:800,marginBottom:12}}>AidantPro</div>
         <div className="spin" style={{borderColor:'var(--bl2)',borderTopColor:'var(--bl)',margin:'0 auto'}}/>
       </div>
     </div>
   );
 }
 
-// ═══════════════════════════════════════════════
-// ÉCRAN D'AUTHENTIFICATION
-// ═══════════════════════════════════════════════
-function AuthScreen({ supabase, demoMode, onSuccess, showTerms, setShowTerms }) {
-  const [tab, setTab] = useState('login'); // login | register | reset
-  const [loading, setLoading] = useState(false);
-  const [alert, setAlert] = useState(null);
+// ═══════════════════════════════════════
+// AUTH
+// ═══════════════════════════════════════
+function Auth({onLogin,showTerms,setShowTerms}){
+  const [tab,setTab]=useState('login');
+  const [loading,setLoading]=useState(false);
+  const [alert,setAlert]=useState(null);
+  // Login
+  const [lEmail,setLE]=useState('');
+  const [lPwd,setLP]=useState('');
+  const [showLP,setShowLP]=useState(false);
+  // Register
+  const [rPrenom,setRP]=useState('');
+  const [rNom,setRN]=useState('');
+  const [rEmail,setRE]=useState('');
+  const [rPwd,setRPwd]=useState('');
+  const [rPwd2,setRP2]=useState('');
+  const [showRP,setShowRP]=useState(false);
+  const [role,setRole]=useState('aidant');
+  const [terms,setTerms]=useState(false);
+  // Reset
+  const [resetEmail,setResetE]=useState('');
+  const [resetSent,setResetSent]=useState(false);
 
-  // Login state
-  const [loginEmail, setLoginEmail] = useState('');
-  const [loginPwd, setLoginPwd] = useState('');
-  const [showLoginPwd, setShowLoginPwd] = useState(false);
-  const [remember, setRemember] = useState(false);
+  const ps=pwdStrength(rPwd);
 
-  // Register state
-  const [regPrenom, setRegPrenom] = useState('');
-  const [regNom, setRegNom] = useState('');
-  const [regEmail, setRegEmail] = useState('');
-  const [regPwd, setRegPwd] = useState('');
-  const [regPwd2, setRegPwd2] = useState('');
-  const [showRegPwd, setShowRegPwd] = useState(false);
-  const [regRole, setRegRole] = useState('aidant');
-  const [acceptTerms, setAcceptTerms] = useState(false);
-
-  // Reset state
-  const [resetEmail, setResetEmail] = useState('');
-  const [resetSent, setResetSent] = useState(false);
-
-  const pwdStrength = getPasswordStrength(regPwd);
-
-  async function handleLogin(e) {
-    e.preventDefault();
-    setAlert(null);
-    if (!validateEmail(loginEmail)) { setAlert({type:'err', msg:'Adresse email invalide'}); return; }
-    if (!loginPwd) { setAlert({type:'err', msg:'Mot de passe requis'}); return; }
-    if (!checkRateLimit(loginEmail)) { setAlert({type:'err', msg:'Trop de tentatives. Réessayez dans 15 minutes.'}); return; }
+  async function doLogin(e){
+    e.preventDefault(); setAlert(null);
+    if(!validateEmail(lEmail)){setAlert({t:'err',m:'Email invalide'});return;}
+    if(!lPwd){setAlert({t:'err',m:'Mot de passe requis'});return;}
+    if(!rateLimit(lEmail)){setAlert({t:'err',m:'Trop de tentatives. Attendez 15 minutes.'});return;}
     setLoading(true);
-    if (demoMode) { setTimeout(() => { setLoading(false); onSuccess(null); }, 1000); return; }
-    const { data, error } = await supabase.auth.signInWithPassword({ email: loginEmail.trim().toLowerCase(), password: loginPwd });
+    const data=await apiSignIn(lEmail.trim().toLowerCase(),lPwd).catch(()=>({error:{message:'Erreur réseau'}}));
     setLoading(false);
-    if (error) {
-      const msgs = { 'Invalid login credentials': 'Email ou mot de passe incorrect', 'Email not confirmed': 'Veuillez confirmer votre email avant de vous connecter' };
-      setAlert({ type: 'err', msg: msgs[error.message] || 'Erreur de connexion. Réessayez.' });
-    } else { onSuccess(data.user); }
+    if(data.error||!data.access_token){
+      const m={'Invalid login credentials':'Email ou mot de passe incorrect','Email not confirmed':'Confirmez votre email avant de vous connecter'};
+      setAlert({t:'err',m:m[data.error?.message]||data.error?.message||'Erreur de connexion'});
+    } else { onLogin(data); }
   }
 
-  async function handleRegister(e) {
-    e.preventDefault();
-    setAlert(null);
-    if (!regPrenom.trim()) { setAlert({type:'err', msg:'Prénom requis'}); return; }
-    if (!validateEmail(regEmail)) { setAlert({type:'err', msg:'Adresse email invalide'}); return; }
-    if (pwdStrength.score < 3) { setAlert({type:'err', msg:'Mot de passe trop faible. Respectez les critères.'}); return; }
-    if (regPwd !== regPwd2) { setAlert({type:'err', msg:'Les mots de passe ne correspondent pas'}); return; }
-    if (!acceptTerms) { setAlert({type:'err', msg:'Veuillez accepter les conditions d\'utilisation'}); return; }
+  async function doRegister(e){
+    e.preventDefault(); setAlert(null);
+    if(!rPrenom.trim()){setAlert({t:'err',m:'Prénom requis'});return;}
+    if(!validateEmail(rEmail)){setAlert({t:'err',m:'Email invalide'});return;}
+    if(ps.score<3){setAlert({t:'err',m:'Mot de passe trop faible'});return;}
+    if(rPwd!==rPwd2){setAlert({t:'err',m:'Les mots de passe ne correspondent pas'});return;}
+    if(!terms){setAlert({t:'err',m:"Acceptez les conditions d'utilisation"});return;}
     setLoading(true);
-    if (demoMode) { setTimeout(() => { setLoading(false); onSuccess(null); }, 1200); return; }
-    const { data, error } = await supabase.auth.signUp({
-      email: regEmail.trim().toLowerCase(),
-      password: regPwd,
-      options: {
-        data: {
-          prenom: sanitize(regPrenom),
-          nom: sanitize(regNom),
-          role: regRole,
-          created_at: new Date().toISOString(),
-        }
-      }
-    });
+    const data=await apiSignUp(rEmail.trim().toLowerCase(),rPwd,sanitize(rPrenom),sanitize(rNom),role).catch(()=>({error:{message:'Erreur réseau'}}));
     setLoading(false);
-    if (error) {
-      const msgs = { 'User already registered': 'Un compte existe déjà avec cet email' };
-      setAlert({ type: 'err', msg: msgs[error.message] || 'Erreur lors de la création du compte' });
-    } else { onSuccess(data.user); }
+    if(data.error||!data.id){
+      const m={'User already registered':'Un compte existe déjà avec cet email'};
+      setAlert({t:'err',m:m[data.error?.message]||data.error?.message||'Erreur lors de la création du compte'});
+    } else {
+      // Supabase renvoie l'user mais pas forcément de session si email confirmation requise
+      if(data.session) { onLogin(data.session); }
+      else { setAlert({t:'ok',m:`✓ Compte créé ! Vérifiez votre email ${rEmail} pour confirmer votre inscription.`}); }
+    }
   }
 
-  async function handleReset(e) {
+  async function doReset(e){
     e.preventDefault();
-    if (!validateEmail(resetEmail)) { setAlert({type:'err', msg:'Email invalide'}); return; }
+    if(!validateEmail(resetEmail)){setAlert({t:'err',m:'Email invalide'});return;}
     setLoading(true);
-    if (!demoMode) await supabase.auth.resetPasswordForEmail(resetEmail, { redirectTo: `${window.location.origin}/?reset=true` });
+    await apiResetPassword(resetEmail).catch(()=>{});
     setLoading(false);
     setResetSent(true);
   }
 
-  return (
-    <div className="auth-wrap">
-      {/* PANNEAU GAUCHE */}
-      <div className="auth-left">
-        <div className="auth-left-logo">
-          <div className="auth-left-ic">🤝</div>
-          <span className="auth-left-nm">AidantPro</span>
-        </div>
-        <div className="auth-left-body">
-          <h1 className="auth-left-h">Coordonnez les soins de votre proche en toute sécurité</h1>
-          <p className="auth-left-sub">La plateforme qui réunit famille, patient et soignants autour d'un dossier médical partagé et sécurisé.</p>
-          <div className="auth-stat">
-            <div className="auth-stat-item"><span className="auth-stat-ic">🔒</span><div className="auth-stat-txt"><strong>Données chiffrées AES-256</strong> · Hébergées en Europe · Conformité RGPD totale</div></div>
-            <div className="auth-stat-item"><span className="auth-stat-ic">👨‍👩‍👧</span><div className="auth-stat-txt"><strong>11 millions d'aidants</strong> jonglent chaque jour sans outil adapté</div></div>
-            <div className="auth-stat-item"><span className="auth-stat-ic">💰</span><div className="auth-stat-txt"><strong>12 000€/an</strong> d'aides non réclamées par famille aidante en moyenne</div></div>
+  return(
+    <div className="wrap">
+      {/* GAUCHE */}
+      <div className="left">
+        <div className="left-logo"><div className="left-logo-ic">🤝</div><span className="left-logo-nm">AidantPro</span></div>
+        <div className="left-body">
+          <h1 className="left-h">Coordonnez les soins de votre proche en toute sécurité</h1>
+          <p className="left-sub">La plateforme qui réunit famille, patient et soignants autour d'un dossier médical partagé.</p>
+          <div className="left-stats">
+            <div className="stat"><span className="stat-ic">🔒</span><div className="stat-txt"><strong>Données chiffrées AES-256</strong> · Hébergées en Europe · RGPD</div></div>
+            <div className="stat"><span className="stat-ic">👨‍👩‍👧</span><div className="stat-txt"><strong>11 millions d'aidants</strong> sans outil adapté en France</div></div>
+            <div className="stat"><span className="stat-ic">💰</span><div className="stat-txt"><strong>12 000€/an</strong> d'aides non réclamées par famille aidante</div></div>
           </div>
         </div>
-        <p className="auth-left-ft">© 2026 AidantPro · Données hébergées en Europe 🇪🇺</p>
+        <p className="left-ft">© 2026 AidantPro · Données hébergées en Europe 🇪🇺</p>
       </div>
 
-      {/* PANNEAU DROIT */}
-      <div className="auth-right">
-        <div className="auth-right-inner">
-          <div className="auth-logo-mobile">
-            <div className="auth-logo-ic-m">🤝</div>
-            <span className="auth-logo-nm-m">AidantPro</span>
-          </div>
+      {/* DROITE */}
+      <div className="right">
+        <div className="right-in">
+          <div className="mob-logo"><div className="mob-ic">🤝</div><span className="mob-nm">AidantPro</span></div>
 
-          {demoMode && (
-            <div className="auth-alert info">
-              <span>ℹ</span>
-              <div><strong>Mode démo actif</strong> — Configurez Supabase pour activer l'authentification réelle. En mode démo, n'importe quels identifiants fonctionnent.</div>
+          {tab!=='reset'&&<>
+            <h1>{tab==='login'?'Connexion':'Créer un compte'}</h1>
+            <p className="sub">{tab==='login'?'Accédez à votre espace sécurisé':'Rejoignez AidantPro — 14 jours gratuits'}</p>
+            <div className="tabs">
+              <button className={`tab ${tab==='login'?'on':''}`} onClick={()=>{setTab('login');setAlert(null);}}>Connexion</button>
+              <button className={`tab ${tab==='register'?'on':''}`} onClick={()=>{setTab('register');setAlert(null);}}>Inscription</button>
             </div>
-          )}
+          </>}
 
-          {tab !== 'reset' && (
-            <>
-              <h1 className="auth-h">{tab === 'login' ? 'Connexion' : 'Créer un compte'}</h1>
-              <p className="auth-sub">{tab === 'login' ? 'Accédez à votre espace sécurisé' : 'Rejoignez AidantPro gratuitement — 14 jours d\'essai'}</p>
-              <div className="auth-tabs">
-                <button className={`auth-tab ${tab === 'login' ? 'on' : ''}`} onClick={() => { setTab('login'); setAlert(null); }}>Connexion</button>
-                <button className={`auth-tab ${tab === 'register' ? 'on' : ''}`} onClick={() => { setTab('register'); setAlert(null); }}>Inscription</button>
-              </div>
-            </>
-          )}
+          {alert&&<div className={`alert ${alert.t}`}><span>{alert.t==='err'?'⊘':'✓'}</span><div>{alert.m}</div></div>}
 
-          {alert && <div className={`auth-alert ${alert.type}`}><span>{alert.type === 'err' ? '⊘' : '✓'}</span><div>{alert.msg}</div></div>}
+          {/* LOGIN */}
+          {tab==='login'&&<form onSubmit={doLogin}>
+            <div className="fg">
+              <label className="fl">Adresse email</label>
+              <div className="fi-w">
+                <input className={`fi ${lEmail&&!validateEmail(lEmail)?'err':lEmail&&validateEmail(lEmail)?'ok':''}`} type="email" placeholder="marie@email.fr" value={lEmail} onChange={e=>setLE(e.target.value)} autoComplete="email" required/>
+                {lEmail&&<span className="fi-ic">{validateEmail(lEmail)?'✓':'⊘'}</span>}
+              </div>
+            </div>
+            <div className="fg">
+              <label className="fl">Mot de passe <button type="button" className="flink" onClick={()=>{setTab('reset');setAlert(null);}}>Oublié ?</button></label>
+              <div className="fi-w">
+                <input className="fi" type={showLP?'text':'password'} placeholder="••••••••" value={lPwd} onChange={e=>setLP(e.target.value)} autoComplete="current-password" style={{paddingRight:42}} required/>
+                <button type="button" className="eye" onClick={()=>setShowLP(!showLP)}>{showLP?'🙈':'👁️'}</button>
+              </div>
+            </div>
+            <button className="btn" type="submit" disabled={loading}>{loading?<><span className="spin"/>Connexion…</>:'Se connecter →'}</button>
+          </form>}
 
-          {/* ── LOGIN ── */}
-          {tab === 'login' && (
-            <form onSubmit={handleLogin}>
-              <div className="fg">
-                <label className="fl">Adresse email</label>
-                <div className="fi-wrap">
-                  <input className={`fi ${loginEmail && !validateEmail(loginEmail) ? 'error' : loginEmail && validateEmail(loginEmail) ? 'success' : ''}`} type="email" placeholder="marie.dupont@email.fr" value={loginEmail} onChange={e => setLoginEmail(e.target.value)} autoComplete="email" required />
-                  {loginEmail && <span className="fi-icon">{validateEmail(loginEmail) ? '✓' : '⊘'}</span>}
-                </div>
+          {/* REGISTER */}
+          {tab==='register'&&<form onSubmit={doRegister}>
+            <div className="g2">
+              <div><label className="fl">Prénom *</label><input className="fi" placeholder="Marie" value={rPrenom} onChange={e=>setRP(e.target.value)} required/></div>
+              <div><label className="fl">Nom</label><input className="fi" placeholder="Dupont" value={rNom} onChange={e=>setRN(e.target.value)}/></div>
+            </div>
+            <div className="fg">
+              <label className="fl">Email *</label>
+              <div className="fi-w">
+                <input className={`fi ${rEmail&&!validateEmail(rEmail)?'err':rEmail&&validateEmail(rEmail)?'ok':''}`} type="email" placeholder="marie@email.fr" value={rEmail} onChange={e=>setRE(e.target.value)} required/>
+                {rEmail&&<span className="fi-ic">{validateEmail(rEmail)?'✓':'⊘'}</span>}
               </div>
-              <div className="fg">
-                <label className="fl">
-                  Mot de passe
-                  <span className="fl-link" onClick={() => { setTab('reset'); setAlert(null); }}>Mot de passe oublié ?</span>
-                </label>
-                <div className="fi-wrap">
-                  <input className="fi" type={showLoginPwd ? 'text' : 'password'} placeholder="••••••••" value={loginPwd} onChange={e => setLoginPwd(e.target.value)} autoComplete="current-password" style={{paddingRight:42}} required />
-                  <button type="button" className="fi-eye" onClick={() => setShowLoginPwd(!showLoginPwd)}>{showLoginPwd ? '🙈' : '👁️'}</button>
-                </div>
+            </div>
+            <div className="fg">
+              <label className="fl">Votre rôle *</label>
+              <div className="roles">
+                {[['aidant','👩‍👧','Aidant','Famille'],['patient','👴','Patient','Proche aidé'],['soignant','👨‍⚕️','Soignant','Pro santé']].map(([v,ic,nm,ds])=>(
+                  <div key={v} className={`role ${role===v?'sel':''}`} onClick={()=>setRole(v)}>
+                    <div className="role-ic">{ic}</div>
+                    <div className="role-nm">{nm}</div>
+                    <div className="role-ds">{ds}</div>
+                  </div>
+                ))}
               </div>
-              <div className="cb-row" onClick={() => setRemember(!remember)}>
-                <div className={`cb ${remember ? 'on' : ''}`}>{remember && <span style={{color:'#fff',fontSize:10,fontWeight:700}}>✓</span>}</div>
-                <span className="cb-label">Se souvenir de moi sur cet appareil</span>
+            </div>
+            <div className="fg">
+              <label className="fl">Mot de passe *</label>
+              <div className="fi-w">
+                <input className="fi" type={showRP?'text':'password'} placeholder="Minimum 8 caractères" value={rPwd} onChange={e=>setRPwd(e.target.value)} style={{paddingRight:42}} required/>
+                <button type="button" className="eye" onClick={()=>setShowRP(!showRP)}>{showRP?'🙈':'👁️'}</button>
               </div>
-              <button className={`auth-btn ${loading ? 'loading' : ''}`} type="submit" disabled={loading}>
-                {loading ? <><span className="spin" />Connexion en cours…</> : 'Se connecter →'}
-              </button>
-            </form>
-          )}
-
-          {/* ── REGISTER ── */}
-          {tab === 'register' && (
-            <form onSubmit={handleRegister}>
-              <div className="g2" style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:12,marginBottom:16}}>
-                <div><label className="fl">Prénom *</label><input className="fi" placeholder="Marie" value={regPrenom} onChange={e => setRegPrenom(e.target.value)} autoComplete="given-name" required /></div>
-                <div><label className="fl">Nom</label><input className="fi" placeholder="Dupont" value={regNom} onChange={e => setRegNom(e.target.value)} autoComplete="family-name" /></div>
-              </div>
-              <div className="fg">
-                <label className="fl">Email *</label>
-                <div className="fi-wrap">
-                  <input className={`fi ${regEmail && !validateEmail(regEmail) ? 'error' : regEmail && validateEmail(regEmail) ? 'success' : ''}`} type="email" placeholder="marie@email.fr" value={regEmail} onChange={e => setRegEmail(e.target.value)} autoComplete="email" required />
-                  {regEmail && <span className="fi-icon">{validateEmail(regEmail) ? '✓' : '⊘'}</span>}
-                </div>
-              </div>
-              <div className="fg">
-                <label className="fl">Votre rôle *</label>
-                <div className="role-sel">
-                  {[['aidant','👩‍👧','Aidant','Famille'], ['patient','👴','Patient','Proche aidé'], ['soignant','👨‍⚕️','Soignant','Pro de santé']].map(([v,ic,nm,ds]) => (
-                    <div key={v} className={`role-opt ${regRole === v ? 'sel' : ''}`} onClick={() => setRegRole(v)}>
-                      <div className="role-opt-ic">{ic}</div>
-                      <div className="role-opt-nm">{nm}</div>
-                      <div className="role-opt-ds">{ds}</div>
-                    </div>
+              {rPwd&&<>
+                <div className="pwd-bars">{[1,2,3,4].map(i=><div key={i} className={`pwd-bar ${i<=ps.score?`s${ps.score}`:''}`}/>)}</div>
+                <div className="pwd-reqs">
+                  {[['len','8 caractères min'],['upper','1 majuscule'],['num','1 chiffre'],['spec','1 caractère spécial']].map(([k,l])=>(
+                    <div key={k} className={`req ${ps.checks[k]?'ok':''}`}><div className="req-dot"/>{l}</div>
                   ))}
                 </div>
-              </div>
-              <div className="fg">
-                <label className="fl">Mot de passe *</label>
-                <div className="fi-wrap">
-                  <input className="fi" type={showRegPwd ? 'text' : 'password'} placeholder="Minimum 8 caractères" value={regPwd} onChange={e => setRegPwd(e.target.value)} autoComplete="new-password" style={{paddingRight:42}} required />
-                  <button type="button" className="fi-eye" onClick={() => setShowRegPwd(!showRegPwd)}>{showRegPwd ? '🙈' : '👁️'}</button>
-                </div>
-                {regPwd && (
-                  <div className="pwd-strength">
-                    <div className="pwd-bars">
-                      {[1,2,3,4].map(i => <div key={i} className={`pwd-bar ${i <= pwdStrength.score ? `s${pwdStrength.score}` : ''}`} />)}
-                    </div>
-                    <div className="pwd-reqs">
-                      {[['length','8 caractères minimum'],['upper','1 majuscule'],['number','1 chiffre'],['special','1 caractère spécial']].map(([k,l]) => (
-                        <div key={k} className={`pwd-req ${pwdStrength.checks[k] ? 'ok' : ''}`}>
-                          <div className="pwd-req-dot" />
-                          {l}
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                )}
-              </div>
-              <div className="fg">
-                <label className="fl">Confirmer le mot de passe *</label>
-                <div className="fi-wrap">
-                  <input className={`fi ${regPwd2 && regPwd !== regPwd2 ? 'error' : regPwd2 && regPwd === regPwd2 ? 'success' : ''}`} type="password" placeholder="Répétez le mot de passe" value={regPwd2} onChange={e => setRegPwd2(e.target.value)} autoComplete="new-password" style={{paddingRight:42}} required />
-                  {regPwd2 && <span className="fi-icon">{regPwd === regPwd2 ? '✓' : '⊘'}</span>}
-                </div>
-                {regPwd2 && regPwd !== regPwd2 && <div className="err-msg">⊘ Les mots de passe ne correspondent pas</div>}
-              </div>
-              <div className="cb-row" onClick={() => setAcceptTerms(!acceptTerms)}>
-                <div className={`cb ${acceptTerms ? 'on' : ''}`}>{acceptTerms && <span style={{color:'#fff',fontSize:10,fontWeight:700}}>✓</span>}</div>
-                <span className="cb-label">J'accepte les <span style={{color:'var(--bl)',cursor:'pointer'}} onClick={e => {e.stopPropagation(); setShowTerms(true);}}>conditions d'utilisation</span> et la <span style={{color:'var(--bl)'}}>politique de confidentialité</span> — Données traitées conformément au RGPD</span>
-              </div>
-              <button className={`auth-btn ${loading ? 'loading' : ''}`} type="submit" disabled={loading || !acceptTerms}>
-                {loading ? <><span className="spin" />Création du compte…</> : 'Créer mon compte gratuit →'}
-              </button>
-            </form>
-          )}
-
-          {/* ── RESET PASSWORD ── */}
-          {tab === 'reset' && (
-            <div>
-              <button className="reset-back" onClick={() => { setTab('login'); setAlert(null); setResetSent(false); }}>← Retour à la connexion</button>
-              <h1 className="auth-h">Mot de passe oublié</h1>
-              <p className="auth-sub">Entrez votre email — nous vous envoyons un lien pour réinitialiser votre mot de passe.</p>
-              {resetSent ? (
-                <div className="auth-alert ok">
-                  <span>✓</span>
-                  <div><strong>Email envoyé !</strong> Vérifiez votre boîte mail et cliquez sur le lien de réinitialisation. Le lien expire dans 1 heure.</div>
-                </div>
-              ) : (
-                <form onSubmit={handleReset}>
-                  <div className="fg">
-                    <label className="fl">Votre adresse email</label>
-                    <input className="fi" type="email" placeholder="marie@email.fr" value={resetEmail} onChange={e => setResetEmail(e.target.value)} required />
-                  </div>
-                  <button className={`auth-btn ${loading ? 'loading' : ''}`} type="submit" disabled={loading}>
-                    {loading ? <><span className="spin" />Envoi en cours…</> : 'Envoyer le lien de réinitialisation →'}
-                  </button>
-                </form>
-              )}
+              </>}
             </div>
-          )}
-
-          <div className="sec-notice">
-            <div className="sec-notice-ic">🔒</div>
-            <div className="sec-notice-txt">
-              <strong>Connexion 100% sécurisée.</strong> Vos données médicales sont chiffrées AES-256, hébergées en Europe et ne sont jamais partagées avec des tiers. Conformité RGPD totale.
+            <div className="fg">
+              <label className="fl">Confirmer le mot de passe *</label>
+              <div className="fi-w">
+                <input className={`fi ${rPwd2&&rPwd!==rPwd2?'err':rPwd2&&rPwd===rPwd2?'ok':''}`} type="password" placeholder="Répétez le mot de passe" value={rPwd2} onChange={e=>setRP2(e.target.value)} style={{paddingRight:42}} required/>
+                {rPwd2&&<span className="fi-ic">{rPwd===rPwd2?'✓':'⊘'}</span>}
+              </div>
+              {rPwd2&&rPwd!==rPwd2&&<div className="errmsg">⊘ Les mots de passe ne correspondent pas</div>}
             </div>
-          </div>
+            <div className="cb-row" onClick={()=>setTerms(!terms)}>
+              <div className={`cb ${terms?'on':''}`}>{terms&&<span style={{color:'#fff',fontSize:10,fontWeight:700}}>✓</span>}</div>
+              <span className="cb-lbl">J'accepte les <span style={{color:'var(--bl)',cursor:'pointer'}} onClick={e=>{e.stopPropagation();setShowTerms(true);}}>conditions d'utilisation</span> et la politique de confidentialité RGPD</span>
+            </div>
+            <button className="btn" type="submit" disabled={loading||!terms}>{loading?<><span className="spin"/>Création…</>:'Créer mon compte gratuit →'}</button>
+          </form>}
+
+          {/* RESET */}
+          {tab==='reset'&&<div>
+            <button className="back-btn" onClick={()=>{setTab('login');setAlert(null);setResetSent(false);}}>← Retour à la connexion</button>
+            <h1>Mot de passe oublié</h1>
+            <p className="sub">Entrez votre email — nous vous envoyons un lien de réinitialisation.</p>
+            {resetSent?<div className="alert ok"><span>✓</span><div><strong>Email envoyé !</strong> Vérifiez votre boîte mail. Le lien expire dans 1 heure.</div></div>:<form onSubmit={doReset}>
+              <div className="fg"><label className="fl">Votre email</label><input className="fi" type="email" placeholder="marie@email.fr" value={resetEmail} onChange={e=>setResetE(e.target.value)} required/></div>
+              <button className="btn" type="submit" disabled={loading}>{loading?<><span className="spin"/>Envoi…</>:'Envoyer le lien →'}</button>
+            </form>}
+          </div>}
+
+          <div className="sec"><div className="sec-ic">🔒</div><div className="sec-txt"><strong>Connexion 100% sécurisée.</strong> Vos données médicales sont chiffrées AES-256 et hébergées en Europe. Conformité RGPD totale.</div></div>
         </div>
       </div>
 
       {/* MODAL CGU */}
-      {showTerms && (
-        <div className="modal-bg" onClick={() => setShowTerms(false)}>
-          <div className="modal" onClick={e => e.stopPropagation()}>
-            <h2 className="modal-h">Conditions d'utilisation</h2>
-            <div className="modal-txt">
-              <p><strong>1. Objet</strong><br/>AidantPro est une plateforme de coordination de soins destinée aux aidants familiaux, patients et professionnels de santé.</p>
-              <br/><p><strong>2. Protection des données (RGPD)</strong><br/>Vos données de santé sont des données sensibles au sens du RGPD. Elles sont chiffrées AES-256 et hébergées sur des serveurs certifiés HDS situés dans l'Union Européenne. Vous disposez d'un droit d'accès, de rectification et de suppression.</p>
-              <br/><p><strong>3. Usage</strong><br/>AidantPro est un outil de coordination et d'information. Il ne remplace pas un avis médical professionnel. Toute décision médicale doit être prise avec un professionnel de santé qualifié.</p>
-              <br/><p><strong>4. Sécurité</strong><br/>Vous êtes responsable de la confidentialité de vos identifiants. Ne partagez jamais votre mot de passe. En cas de suspicion de compromission, changez immédiatement votre mot de passe.</p>
-              <br/><p><strong>5. Abonnement</strong><br/>L'essai gratuit de 14 jours ne nécessite pas de carte bancaire. L'abonnement est mensuel et annulable à tout moment sans frais.</p>
-            </div>
-            <button className="modal-close" onClick={() => { setShowTerms(false); setAcceptTerms(true); }}>J'ai lu et j'accepte</button>
-          </div>
+      {showTerms&&<div className="modal-bg" onClick={()=>setShowTerms(false)}>
+        <div className="modal" onClick={e=>e.stopPropagation()}>
+          <h2>Conditions d'utilisation</h2>
+          <p><strong>1. Objet</strong><br/>AidantPro est une plateforme de coordination de soins pour aidants familiaux, patients et professionnels de santé.</p>
+          <p><strong>2. Protection des données (RGPD)</strong><br/>Vos données de santé sont chiffrées AES-256 et hébergées sur des serveurs certifiés HDS dans l'Union Européenne. Droit d'accès, rectification et suppression garantis.</p>
+          <p><strong>3. Usage</strong><br/>AidantPro est un outil de coordination. Il ne remplace pas un avis médical professionnel.</p>
+          <p><strong>4. Sécurité</strong><br/>Vous êtes responsable de la confidentialité de vos identifiants. Ne partagez jamais votre mot de passe.</p>
+          <p><strong>5. Abonnement</strong><br/>Essai gratuit 14 jours sans carte bancaire. Abonnement mensuel annulable à tout moment.</p>
+          <button className="modal-close" onClick={()=>setShowTerms(false)}>Fermer</button>
         </div>
-      )}
+      </div>}
     </div>
   );
 }
 
-// ═══════════════════════════════════════════════
+// ═══════════════════════════════════════
 // VÉRIFICATION EMAIL
-// ═══════════════════════════════════════════════
-function VerifyEmail({ user, supabase }) {
-  const [resent, setResent] = useState(false);
-  async function resend() {
-    if (supabase) await supabase.auth.resend({ type: 'signup', email: user.email });
-    setResent(true);
-    setTimeout(() => setResent(false), 30000);
-  }
-  return (
+// ═══════════════════════════════════════
+function Verify({email,onBack}){
+  return(
     <div style={{minHeight:'100vh',display:'flex',alignItems:'center',justifyContent:'center',background:'var(--bg)',padding:40}}>
-      <div style={{background:'var(--sur)',borderRadius:20,padding:40,maxWidth:480,width:'100%',textAlign:'center',boxShadow:'0 4px 40px rgba(0,0,0,0.08)'}}>
+      <div style={{background:'#fff',borderRadius:20,padding:40,maxWidth:460,width:'100%',textAlign:'center',boxShadow:'0 4px 40px rgba(0,0,0,.08)'}}>
         <div className="verify-ic">📧</div>
         <h2 className="verify-h">Vérifiez votre email</h2>
-        <p className="verify-sub">
-          Un email de confirmation a été envoyé à<br/>
-          <span className="verify-email">{user?.email}</span><br/><br/>
-          Cliquez sur le lien dans l'email pour activer votre compte. Vérifiez vos spams si vous ne le trouvez pas.
-        </p>
-        <div style={{background:'var(--bl2)',borderRadius:12,padding:16,marginBottom:20,fontSize:13,color:'var(--bl)',lineHeight:1.6}}>
-          🔒 Cette étape est obligatoire pour protéger votre compte et garantir la sécurité de vos données médicales.
+        <p className="verify-sub">Un email de confirmation a été envoyé à <strong style={{color:'var(--bl)'}}>{email}</strong>.<br/>Cliquez sur le lien pour activer votre compte.</p>
+        <div style={{background:'var(--bl2)',borderRadius:12,padding:14,marginBottom:20,fontSize:13,color:'var(--bl)',lineHeight:1.6}}>
+          🔒 Cette étape protège votre compte et sécurise vos données médicales.
         </div>
-        <p className="verify-resend">
-          Vous n'avez pas reçu l'email ?{' '}
-          {resent ? <span style={{color:'var(--gn)'}}>✓ Renvoyé !</span> : <span onClick={resend}>Renvoyer</span>}
-        </p>
+        <button onClick={onBack} style={{background:'none',border:'1px solid var(--bd)',borderRadius:8,padding:'8px 16px',fontSize:13,cursor:'pointer',color:'var(--mu)'}}>← Retour à la connexion</button>
       </div>
     </div>
   );
 }
 
-// ═══════════════════════════════════════════════
-// APPLICATION PRINCIPALE (après auth)
-// ═══════════════════════════════════════════════
-function MainApp({ user, onSignOut }) {
-  const role = user?.user_metadata?.role || 'aidant';
-  const prenom = user?.user_metadata?.prenom || 'Utilisateur';
-
-  return (
-    <div style={{minHeight:'100vh',background:'var(--bg)',display:'flex',flexDirection:'column'}}>
-      {/* Header avec info utilisateur et déconnexion */}
-      <div style={{background:'var(--sur)',borderBottom:'1px solid var(--bd)',padding:'12px 24px',display:'flex',alignItems:'center',justifyContent:'space-between'}}>
-        <div style={{display:'flex',alignItems:'center',gap:10}}>
-          <div style={{width:32,height:32,background:'linear-gradient(135deg,var(--bl),var(--gn))',borderRadius:9,display:'flex',alignItems:'center',justifyContent:'center',fontWeight:800,color:'#fff',fontSize:14}}>A</div>
-          <div style={{fontFamily:"'Syne',sans-serif",fontWeight:800,fontSize:16}}>AidantPro</div>
-        </div>
-        <div style={{display:'flex',alignItems:'center',gap:14}}>
-          <div style={{textAlign:'right'}}>
-            <div style={{fontSize:13,fontWeight:600}}>{prenom}</div>
-            <div style={{fontSize:11,color:'var(--mu)',textTransform:'capitalize'}}>{role}</div>
-          </div>
-          <div style={{width:34,height:34,background:'var(--bl2)',borderRadius:'50%',display:'flex',alignItems:'center',justifyContent:'center',fontFamily:"'Syne',sans-serif",fontWeight:700,color:'var(--bl)',fontSize:13}}>
-            {prenom.charAt(0).toUpperCase()}
-          </div>
-          <button onClick={onSignOut} style={{padding:'7px 14px',background:'var(--bg)',border:'1px solid var(--bd)',borderRadius:8,fontSize:12,fontWeight:600,cursor:'pointer',color:'var(--mu)'}}>
-            Déconnexion
-          </button>
+// ═══════════════════════════════════════
+// ESPACE CONNECTÉ
+// ═══════════════════════════════════════
+function Home({user,onSignOut}){
+  const meta=user?.user_metadata||{};
+  const prenom=meta.prenom||user?.email?.split('@')[0]||'Utilisateur';
+  const role=meta.role||'aidant';
+  const roleLabel={aidant:'Aidant familial',patient:'Patient',soignant:'Professionnel de santé'};
+  const roleIc={aidant:'👩‍👧',patient:'👴',soignant:'👨‍⚕️'};
+  return(
+    <div style={{minHeight:'100vh',display:'flex',flexDirection:'column'}}>
+      <div className="app-hd">
+        <div className="app-logo"><div className="app-logo-ic">A</div><span className="app-logo-nm">AidantPro</span></div>
+        <div className="app-user">
+          <div style={{textAlign:'right'}}><div style={{fontSize:13,fontWeight:600}}>{prenom}</div><div style={{fontSize:11,color:'var(--mu)'}}>{roleLabel[role]||role}</div></div>
+          <div className="app-av">{prenom.charAt(0).toUpperCase()}</div>
+          <button className="signout-btn" onClick={onSignOut}>Déconnexion</button>
         </div>
       </div>
-
-      {/* Contenu selon le rôle */}
-      <div style={{flex:1,display:'flex',alignItems:'center',justifyContent:'center',padding:40,textAlign:'center'}}>
-        <div>
-          <div style={{fontSize:56,marginBottom:16}}>
-            {role==='patient'?'👴':role==='soignant'?'👨‍⚕️':'👩‍👧'}
-          </div>
-          <h2 style={{fontFamily:"'Syne',sans-serif",fontSize:28,fontWeight:800,marginBottom:10}}>
-            Bienvenue, {prenom} ! ✓
-          </h2>
-          <p style={{fontSize:15,color:'var(--mu)',maxWidth:460,margin:'0 auto 28px',lineHeight:1.7}}>
-            Votre compte est sécurisé et actif. L'interface complète est en cours de déploiement. Vous serez notifié dès qu'elle est disponible.
-          </p>
-          <div style={{background:'var(--gn2)',border:'1px solid var(--gn3)',borderRadius:12,padding:16,display:'inline-flex',alignItems:'center',gap:10,fontSize:13,color:'var(--gn)',fontWeight:500}}>
-            🔒 Session sécurisée · Données chiffrées · RGPD compliant
+      <div className="app-body">
+        <div className="welcome-card">
+          <div className="welcome-ic">{roleIc[role]||'🤝'}</div>
+          <h2 className="welcome-h">Bienvenue, {prenom} ! 🎉</h2>
+          <p className="welcome-sub">Votre compte AidantPro est actif et sécurisé. L'interface complète avec toutes vos fonctionnalités arrive très bientôt.</p>
+          <div className="badge-row">
+            <span className="badge">🔒 Session sécurisée</span>
+            <span className="badge">🇪🇺 Données en Europe</span>
+            <span className="badge">✓ RGPD compliant</span>
           </div>
         </div>
       </div>
@@ -658,11 +505,7 @@ function MainApp({ user, onSignOut }) {
   );
 }
 
-// ═══════════════════════════════════════════════
-// RENDU
-// ═══════════════════════════════════════════════
-const root = ReactDOM.createRoot(document.getElementById('root'));
-root.render(<App/>);
+ReactDOM.createRoot(document.getElementById('root')).render(<App/>);
 </script>
 </body>
 </html>
