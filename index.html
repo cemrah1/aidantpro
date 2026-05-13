@@ -109,7 +109,13 @@ a{color:var(--bl)}
 .pwd-reqs{display:grid;grid-template-columns:1fr 1fr;gap:2px;margin-bottom:4px}
 .req{font-size:10px;color:var(--mu);display:flex;align-items:center;gap:4px}
 .req.ok{color:var(--gn)}.req-dot{width:5px;height:5px;border-radius:50%;background:var(--bd);flex-shrink:0}.req.ok .req-dot{background:var(--gn)}
-.roles-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:7px;margin-bottom:11px}
+.roles-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:9px;margin-bottom:13px}
+.role-card{border:2px solid var(--bd);border-radius:11px;padding:12px 8px;cursor:pointer;text-align:center;transition:all .15s;background:var(--sur);user-select:none}
+.role-card:hover{border-color:var(--bl);background:var(--bl2)}
+.role-card.on{border-color:var(--bl);background:var(--bl2);box-shadow:0 0 0 3px rgba(29,85,232,.12)}
+.role-card.on .role-nm{color:var(--bl)}
+.role-card.on .role-check{display:flex}
+.role-check{display:none;width:16px;height:16px;background:var(--bl);border-radius:50%;align-items:center;justify-content:center;font-size:9px;color:#fff;margin:0 auto 4px}
 .role-card{border:1.5px solid var(--bd);border-radius:9px;padding:10px 6px;cursor:pointer;text-align:center}
 .role-card.on{border-color:var(--bl);background:var(--bl2)}
 .role-ic{font-size:20px;margin-bottom:3px}
@@ -343,6 +349,31 @@ a{color:var(--bl)}
 @keyframes pulse-rec{0%,100%{box-shadow:0 0 0 0 rgba(192,39,43,.4)}50%{box-shadow:0 0 0 8px rgba(192,39,43,0)}}
 .unread-badge{width:16px;height:16px;background:var(--rd);border-radius:50%;font-size:9px;font-weight:700;color:#fff;display:inline-flex;align-items:center;justify-content:center;margin-left:4px}
 
+
+/* ── NOTIFICATIONS ── */
+.notif-bell-wrap{position:relative;display:inline-flex}
+.notif-bell-badge{position:absolute;top:-4px;right:-4px;min-width:16px;height:16px;background:var(--rd);border-radius:8px;font-size:9px;font-weight:700;color:#fff;display:flex;align-items:center;justify-content:center;padding:0 3px}
+.notif-item{display:flex;gap:11px;padding:11px 14px;border-bottom:1px solid var(--bd);cursor:pointer;transition:background .1s}
+.notif-item:hover{background:var(--bg)}
+.notif-item.unread{background:var(--bl2)}
+.notif-item:last-child{border-bottom:none}
+.notif-ic{width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0}
+.notif-ic.med{background:var(--bl2)}.notif-ic.care{background:var(--gn2)}.notif-ic.rdv{background:var(--am2)}.notif-ic.msg{background:#EDE9FE}.notif-ic.alert{background:var(--rd2)}
+.notif-title{font-size:13px;font-weight:600;margin-bottom:2px}
+.notif-body{font-size:11px;color:var(--mu);line-height:1.5}
+.notif-time{font-size:10px;color:var(--mu);margin-top:3px}
+.task-card{background:var(--sur);border:1px solid var(--bd);border-radius:11px;padding:13px 15px;margin-bottom:9px;display:flex;justify-content:space-between;align-items:flex-start;gap:11px}
+.task-card.urgent{border-color:var(--rd3);background:var(--rd2)}
+.task-card.soon{border-color:var(--am3);background:var(--am2)}
+.task-card.ok{border-color:var(--gn3)}
+.task-nm{font-size:13px;font-weight:600;margin-bottom:2px}
+.task-info{font-size:11px;color:var(--mu)}
+.task-due{font-size:11px;font-weight:700}
+.task-due.urgent{color:var(--rd)}.task-due.soon{color:var(--am)}.task-due.ok{color:var(--gn)}
+.remind-row{display:flex;justify-content:space-between;align-items:center;padding:9px 0;border-bottom:1px solid var(--bd)}
+.remind-row:last-child{border-bottom:none}
+.notif-perm-banner{background:linear-gradient(135deg,var(--bl2),#EEF5FF);border:1px solid var(--bl3);border-radius:10px;padding:12px 14px;margin-bottom:13px;display:flex;gap:11px;align-items:center}
+
 </style>
 </head>
 <body>
@@ -436,10 +467,26 @@ a{color:var(--bl)}
         <div class="fg">
           <div class="fl"><span>Votre rôle *</span></div>
           <div class="roles-grid">
-            <div class="role-card on" data-role="aidant" onclick="selectRole(this)"><div class="role-ic">👩‍👧</div><div class="role-nm">Aidant</div><div class="role-ds">Famille</div></div>
-            <div class="role-card" data-role="patient" onclick="selectRole(this)"><div class="role-ic">👴</div><div class="role-nm">Patient</div><div class="role-ds">Proche aidé</div></div>
-            <div class="role-card" data-role="soignant" onclick="selectRole(this)"><div class="role-ic">👨‍⚕️</div><div class="role-nm">Soignant</div><div class="role-ds">Médecin, IDE</div></div>
-            <div class="role-card" data-role="pharmacien" onclick="selectRole(this)"><div class="role-ic">💊</div><div class="role-nm">Pharmacien</div><div class="role-ds">Officine</div></div>
+            <div class="role-card on" data-role="aidant" onclick="selectRole(this)">
+              <div class="role-check">✓</div>
+              <div class="role-ic">👩‍👧</div><div class="role-nm">Aidant</div>
+              <div class="role-ds">Famille · proche aidant</div>
+            </div>
+            <div class="role-card" data-role="patient" onclick="selectRole(this)">
+              <div class="role-check">✓</div>
+              <div class="role-ic">👴</div><div class="role-nm">Patient</div>
+              <div class="role-ds">Personne soignée</div>
+            </div>
+            <div class="role-card" data-role="soignant" onclick="selectRole(this)">
+              <div class="role-check">✓</div>
+              <div class="role-ic">👨‍⚕️</div><div class="role-nm">Soignant</div>
+              <div class="role-ds">Médecin · IDE · kiné</div>
+            </div>
+            <div class="role-card" data-role="pharmacien" onclick="selectRole(this)">
+              <div class="role-check">✓</div>
+              <div class="role-ic">💊</div><div class="role-nm">Pharmacien</div>
+              <div class="role-ds">Officine · pharmacie</div>
+            </div>
           </div>
         </div>
         <div class="fg">
@@ -532,6 +579,7 @@ a{color:var(--bl)}
       <button class="ni" data-page="journal" onclick="navTo('journal')"><span class="ni-ic">◐</span><span class="ni-lb">Journal de bord</span></button>
       <button class="ni" data-page="aides" onclick="navTo('aides')"><span class="ni-ic">◊</span><span class="ni-lb">Aides financières</span></button>
       <button class="ni" data-page="bienetre" onclick="navTo('bienetre')"><span class="ni-ic">♡</span><span class="ni-lb">Bien-être aidant</span></button>
+      <button class="ni" data-page="notifications" onclick="navTo('notifications')"><span class="ni-ic">🔔</span><span class="ni-lb">Rappels &amp; Alertes <span class="unread-badge" id="notif-badge" style="display:none">0</span></span></button>
       <button class="ni" data-page="messages" onclick="navTo('messages')"><span class="ni-ic">&#x2709;</span><span class="ni-lb">Messages <span class="unread-badge" id="msg-badge">2</span></span></button>
       <button class="ni" data-page="parametres" onclick="navTo('parametres')"><span class="ni-ic">⊙</span><span class="ni-lb">Paramètres</span></button>
     </nav>
@@ -652,7 +700,22 @@ const S={
   recording:false,
   recordingTranscript:'',
   composeType:'message',
-  composeFilter:'all'
+  composeFilter:'all',
+  notifPermission:'default',
+  notifications:[
+    {id:1,type:'med',title:'Donepezil 10mg',body:'Heure de prise : 20h00 - Pierre Dubois',time:'2026-05-14T20:00:00',read:false},
+    {id:2,type:'care',title:'Changement pansement',body:'Pansement tibial gauche - Pierre Dubois - prévu hier',time:'2026-05-13T10:00:00',read:false},
+    {id:3,type:'rdv',title:'RDV Neurologue',body:'Dr. Benali - 28 mai à 14h30 - dans 14 jours',time:'2026-05-14T09:00:00',read:true},
+    {id:4,type:'med',title:'Amlodipine 5mg',body:'Heure de prise : 08h00 - Pierre Dubois',time:'2026-05-14T08:00:00',read:true}
+  ],
+  careTasks:[
+    {id:1,name:'Changement pansement tibial gauche',patient:'Pierre Dubois',frequency:'24h',frequencyHours:24,category:'pansement',lastDone:'2026-05-12T10:00:00',notes:'Pansement hydrocolloide. Surveiller signes infection.',done:false},
+    {id:2,name:'Repositionnement anti-escarres',patient:'Pierre Dubois',frequency:'2h',frequencyHours:2,category:'confort',lastDone:'2026-05-14T14:00:00',notes:'Alterner position 1/2 droite, dos, 1/2 gauche.',done:false},
+    {id:3,name:'Administration insuline',patient:'Pierre Dubois',frequency:'12h',frequencyHours:12,category:'medicament',lastDone:'2026-05-14T08:00:00',notes:'Unites selon glycemie. Protocole joint au dossier.',done:false},
+    {id:4,name:'Verification sonde urinaire',patient:'Pierre Dubois',frequency:'8h',frequencyHours:8,category:'soin',lastDone:'2026-05-14T06:00:00',notes:'Verifier ecoulement, couleur, absence douleur.',done:false},
+    {id:5,name:'Prise de constantes',patient:'Pierre Dubois',frequency:'6h',frequencyHours:6,category:'surveillance',lastDone:'2026-05-14T12:00:00',notes:'TA, pouls, SpO2, temperature. Reporter dans dossier.',done:false}
+  ],
+  reminderTimers:[]
 };
 
 const AIDES=[
@@ -866,7 +929,7 @@ function navTo(page){
     btn.classList.toggle('on',btn.dataset.page===page);
   });
   const mc=document.getElementById('main-content');
-  const pages={dashboard:renderDashboard,dossier:renderDossier,agenda:renderAgenda,medicaments:renderMedicaments,journal:renderJournal,aides:renderAides,bienetre:renderBienetre,parametres:renderParametres,messages:renderMessages};
+  const pages={dashboard:renderDashboard,dossier:renderDossier,agenda:renderAgenda,medicaments:renderMedicaments,journal:renderJournal,aides:renderAides,bienetre:renderBienetre,parametres:renderParametres,messages:renderMessages,notifications:renderNotifications};
   if(pages[page]){
     mc.classList.add('fading');
     setTimeout(()=>{
@@ -1375,6 +1438,180 @@ function patSendMsg(){const ta=document.getElementById('pat-msg-ta');if(ta&&ta.v
 // ════════════════════════════════════════════════════
 // MESSAGES & COMMUNICATION HUB
 // ════════════════════════════════════════════════════
+
+// ════════════════════════════════════════════════════════════
+// NOTIFICATIONS & RAPPELS SOIGNANTS
+// ════════════════════════════════════════════════════════════
+
+function initNotifications(){
+  updateNotifBadge();
+  scheduleAllReminders();
+  setInterval(function(){checkDueReminders();},60000);
+}
+
+function updateNotifBadge(){
+  var unread=S.notifications.filter(function(n){return !n.read;}).length;
+  var badge=document.getElementById('notif-badge');
+  if(badge){badge.style.display=unread>0?'inline-flex':'none';badge.textContent=unread;}
+}
+
+async function requestNotifPermission(){
+  if(!('Notification' in window)){S.notifPermission='denied';navTo('notifications');return;}
+  var perm=await Notification.requestPermission();
+  S.notifPermission=perm;
+  if(perm==='granted'){
+    try{new Notification('AidantPro',{body:'Notifications activees ! Vous recevrez les rappels medicaments et soins.'});}catch(e){}
+  }
+  navTo('notifications');
+}
+
+function triggerNotification(type,title,body){
+  var n={id:Date.now(),type:type,title:title,body:body,time:new Date().toISOString(),read:false};
+  S.notifications.unshift(n);
+  updateNotifBadge();
+  if(S.notifPermission==='granted'){
+    try{new Notification(title,{body:body,tag:'aidantpro-'+type,renotify:true});}catch(e){}
+  }
+}
+
+function scheduleAllReminders(){
+  S.meds.forEach(function(m){
+    m.horaires.forEach(function(h){scheduleOneMed(m.nom,h);});
+  });
+  S.careTasks.forEach(function(t){scheduleCareTask(t);});
+}
+
+function scheduleOneMed(nom,heureStr){
+  var parts=heureStr.replace('h',':').split(':');
+  var h=parseInt(parts[0]),mn=parseInt(parts[1]||'0');
+  var now=new Date(),target=new Date(now);
+  target.setHours(h,mn,0,0);
+  if(target<=now)target.setDate(target.getDate()+1);
+  var delay=target-now;
+  setTimeout(function(){
+    triggerNotification('med','Medicament - '+heureStr,nom+' - Pierre Dubois');
+    scheduleOneMed(nom,heureStr);
+  },delay);
+}
+
+function scheduleCareTask(task){
+  if(!task.lastDone)return;
+  var last=new Date(task.lastDone);
+  var nextDue=new Date(last.getTime()+task.frequencyHours*3600000);
+  var now=new Date();var delay=nextDue-now;
+  if(delay<0)delay=100;
+  setTimeout(function(){
+    triggerNotification('care',task.name,task.patient+' - '+task.notes.slice(0,60));
+  },delay);
+}
+
+function checkDueReminders(){
+  var now=new Date();
+  S.careTasks.forEach(function(task){
+    if(!task.lastDone||task.done)return;
+    var last=new Date(task.lastDone);
+    var nextDue=new Date(last.getTime()+task.frequencyHours*3600000);
+    if(now>=nextDue){
+      var alreadyNotified=S.notifications.some(function(n){
+        return n.title===task.name&&new Date(n.time)>last;
+      });
+      if(!alreadyNotified)triggerNotification('care',task.name,task.patient+' - En retard !');
+    }
+  });
+}
+
+function markCareTaskDone(id){
+  var t=S.careTasks.find(function(x){return x.id===id;});
+  if(!t)return;
+  t.lastDone=new Date().toISOString();t.done=false;
+  scheduleCareTask(t);
+  triggerNotification('care','Soin effectue',t.name+' - '+t.patient);
+  navTo('notifications');
+}
+
+function addCareTask(){
+  var nm=document.getElementById('ct-nm');
+  var freq=document.getElementById('ct-freq');
+  var notes=document.getElementById('ct-notes');
+  if(!nm||!nm.value.trim())return;
+  var freqMap={'1h':1,'2h':2,'4h':4,'6h':6,'8h':8,'12h':12,'24h':24,'48h':48};
+  var fv=freq?freq.value:'24h';
+  var task={id:Date.now(),name:nm.value.trim(),patient:S.proche.prenom+' '+S.proche.nom,
+    frequency:fv,frequencyHours:freqMap[fv]||24,category:'soin',
+    lastDone:new Date().toISOString(),notes:notes?notes.value:'',done:false};
+  S.careTasks.unshift(task);scheduleCareTask(task);navTo('notifications');
+}
+
+function getTaskStatus(task){
+  if(!task.lastDone)return 'urgent';
+  var last=new Date(task.lastDone);
+  var nextDue=new Date(last.getTime()+task.frequencyHours*3600000);
+  var diff=(nextDue-new Date())/3600000;
+  if(diff<0)return 'urgent';
+  if(diff<task.frequencyHours*0.25)return 'soon';
+  return 'ok';
+}
+
+function getNextDueLabel(task){
+  if(!task.lastDone)return 'Non commence';
+  var last=new Date(task.lastDone);
+  var nextDue=new Date(last.getTime()+task.frequencyHours*3600000);
+  var diff=(nextDue-new Date())/60000;
+  if(diff<0)return 'En retard de '+Math.round(-diff/60)+'h'+Math.abs(Math.round(-diff%60))+'min';
+  if(diff<60)return 'Dans '+Math.round(diff)+' min';
+  if(diff<1440)return 'Dans '+Math.floor(diff/60)+'h'+Math.round(diff%60)+'min';
+  return 'Dans '+Math.round(diff/1440)+' jours';
+}
+
+function markNotifRead(id){
+  var n=S.notifications.find(function(x){return x.id===id;});
+  if(n)n.read=true;updateNotifBadge();navTo('notifications');
+}
+
+function renderNotifications(){
+  updateNotifBadge();
+  var catIcons={med:'💊',care:'🩺',rdv:'📅',msg:'💬',alert:'⚠️',surveillance:'📊',pansement:'🩹',confort:'🛏️',medicament:'💉',soin:'🩺'};
+  var permBanner='';
+  if(S.notifPermission!=='granted'){
+    permBanner='<div class="notif-perm-banner"><span style="font-size:24px;flex-shrink:0">🔔</span><div style="flex:1"><div style="font-size:13px;font-weight:600;margin-bottom:3px">Activez les notifications</div><div style="font-size:11px;color:var(--mu)">Recevez les rappels meme quand l'app est en arriere-plan (Chrome/Edge)</div></div><button class="btn btn-p" style="font-size:11px;flex-shrink:0" onclick="requestNotifPermission()">Activer</button></div>';
+  }
+  var notifsHtml=S.notifications.map(function(n){
+    var ic=catIcons[n.type]||'🔔';
+    var t=new Date(n.time).toLocaleString('fr-FR',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'});
+    return '<div class="notif-item'+(n.read?'':' unread')+'" onclick="markNotifRead('+n.id+')">'
+      +'<div class="notif-ic '+(n.type||'med')+'">'+ic+'</div>'
+      +'<div style="flex:1"><div class="notif-title">'+n.title+'</div><div class="notif-body">'+n.body+'</div><div class="notif-time">'+t+'</div></div>'
+      +(n.read?'':'<div style="width:8px;height:8px;background:var(--bl);border-radius:50%;flex-shrink:0;margin-top:5px"></div>')
+      +'</div>';
+  }).join('');
+
+  var tasksHtml=S.careTasks.map(function(t){
+    var status=getTaskStatus(t);var dueLabel=getNextDueLabel(t);
+    var catIc=catIcons[t.category]||'🩺';
+    return '<div class="task-card '+status+'">'
+      +'<div style="flex:1"><div style="display:flex;align-items:center;gap:7px;margin-bottom:3px"><span style="font-size:16px">'+catIc+'</span><div class="task-nm">'+t.name+'</div></div>'
+      +'<div class="task-info">'+t.patient+' &middot; Toutes les '+t.frequency+'</div>'
+      +(t.notes?'<div style="font-size:10px;color:var(--mu);margin-top:3px;font-style:italic">'+t.notes.slice(0,70)+'...</div>':'')
+      +'</div><div style="text-align:right;flex-shrink:0"><div class="task-due '+status+'">'+dueLabel+'</div>'
+      +'<button class="btn btn-g" style="padding:3px 9px;font-size:10px;margin-top:6px" onclick="markCareTaskDone('+t.id+')">Effectue</button></div></div>';
+  }).join('');
+
+  return '<div class="ph"><div><div class="pt">Rappels &amp; Alertes</div><div class="ps">Medicaments, soins infirmiers, rendez-vous</div></div><button class="btn btn-s" onclick="S.notifications.forEach(function(n){n.read=true;});updateNotifBadge();navTo('notifications')">Tout lu</button></div>'
+    +permBanner
+    +'<div class="card" style="margin-bottom:13px"><div class="ct">Notifications ('+S.notifications.filter(function(n){return !n.read;}).length+' non lues)</div>'
+    +(notifsHtml||'<div class="empty-state">Aucune notification</div>')+'</div>'
+    +'<div class="ph mt8"><div><div class="pt" style="font-size:17px">Taches de soins</div><div class="ps">Planning infirmier - Pierre Dubois</div></div><button class="btn btn-p" onclick="toggleForm('ct-form')">+ Ajouter soin</button></div>'
+    +'<div id="ct-form" class="card hidden small-form" style="margin-bottom:12px"><div class="ct">Nouvelle tache de soin</div>'
+    +'<div class="grid2"><div class="fg"><label class="fl">Nom du soin *</label><input id="ct-nm" class="fi" placeholder="Changement pansement, kiné..."></div>'
+    +'<div class="fg"><label class="fl">Frequence</label><select id="ct-freq" class="fi">'
+    +'<option value="1h">Toutes les heures</option><option value="2h">Toutes les 2h</option><option value="4h">Toutes les 4h</option>'
+    +'<option value="6h">Toutes les 6h</option><option value="8h">Toutes les 8h</option><option value="12h">Toutes les 12h</option>'
+    +'<option value="24h" selected>Quotidien (24h)</option><option value="48h">Tous les 2 jours</option></select></div></div>'
+    +'<div class="fg"><label class="fl">Notes / protocole</label><textarea id="ct-notes" class="fi fta" placeholder="Instructions, protocole, points de vigilance..."></textarea></div>'
+    +'<div style="display:flex;gap:8px"><button class="btn btn-p" onclick="addCareTask()">Enregistrer</button><button class="btn btn-s" onclick="toggleForm('ct-form')">Annuler</button></div></div>'
+    +tasksHtml;
+}
+
 function renderMessages(){
   var unread=S.messages.filter(function(m){return !m.read;}).length;
   var badge=document.getElementById('msg-badge');
