@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>AidantPro</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg viewBox=%220 0 44 44%22 fill=%22none%22 xmlns=%22http://www.w3.org/2000/svg%22%3E%3Cpath d=%22M8 30 Q7 18 22 13%22 stroke=%22%231D55E8%22 stroke-width=%223%22 stroke-linecap=%22round%22/%3E%3Cpath d=%22M36 30 Q37 18 22 13%22 stroke=%22%23137A3A%22 stroke-width=%223%22 stroke-linecap=%22round%22/%3E%3Cpath d=%22M22 27 C16 23 14 18 17.5 15.5 C19.2 14.4 21 15.5 22 17.5 C23 15.5 24.8 14.4 26.5 15.5 C30 18 28 23 22 27Z%22 fill=%22%23137A3A%22/%3E%3Ccircle cx=%228%22 cy=%2231%22 r=%222.5%22 fill=%22%231D55E8%22/%3E%3Ccircle cx=%2236%22 cy=%2231%22 r=%222.5%22 fill=%22%23137A3A%22/%3E%3C/svg%3E">
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
@@ -108,7 +109,7 @@ a{color:var(--bl)}
 .pwd-reqs{display:grid;grid-template-columns:1fr 1fr;gap:2px;margin-bottom:4px}
 .req{font-size:10px;color:var(--mu);display:flex;align-items:center;gap:4px}
 .req.ok{color:var(--gn)}.req-dot{width:5px;height:5px;border-radius:50%;background:var(--bd);flex-shrink:0}.req.ok .req-dot{background:var(--gn)}
-.roles-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin-bottom:11px}
+.roles-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:7px;margin-bottom:11px}
 .role-card{border:1.5px solid var(--bd);border-radius:9px;padding:10px 6px;cursor:pointer;text-align:center}
 .role-card.on{border-color:var(--bl);background:var(--bl2)}
 .role-ic{font-size:20px;margin-bottom:3px}
@@ -225,7 +226,7 @@ a{color:var(--bl)}
 .confirm-btn{padding:10px 16px;border-radius:11px;border:2px solid var(--bd);background:transparent;font-size:14px;font-weight:700;cursor:pointer}
 .confirm-btn.done{background:var(--gn2);border-color:var(--gn);color:var(--gn)}
 .rdv-card{background:var(--sur);border-radius:14px;border:2px solid var(--gn3);padding:20px}
-.lang-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+.lang-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px;max-height:65vh;overflow-y:auto}
 .lang-card{background:var(--sur);border:2px solid var(--bd);border-radius:11px;padding:13px;cursor:pointer;display:flex;align-items:center;gap:9px}
 .lang-card.on{border-color:var(--bl);background:var(--bl2)}
 .msg-area{background:var(--sur);border-radius:14px;border:2px solid var(--bd);padding:16px;flex:1}
@@ -243,6 +244,105 @@ a{color:var(--bl)}
   .kpi-grid,.grid2,.grid4{grid-template-columns:1fr 1fr}
   .kpi-grid{grid-template-columns:1fr 1fr}
 }
+
+/* ── LOGO ── */
+.logo-svg{width:32px;height:32px;flex-shrink:0}
+.logo-svg-lg{width:44px;height:44px;flex-shrink:0}
+.logo-svg-sm{width:28px;height:28px;flex-shrink:0}
+
+/* ── TRANSITIONS ── */
+.main{transition:opacity .18s ease}
+.main.fading{opacity:0}
+#pat-content{transition:opacity .15s ease}
+.fade-in{animation:fadeIn .2s ease}
+@keyframes fadeIn{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:translateY(0)}}
+
+/* ── VIDAL ── */
+.vidal-btn{display:inline-flex;align-items:center;gap:5px;padding:3px 9px;border-radius:18px;font-size:10px;font-weight:600;cursor:pointer;border:1.5px solid #2563EB;background:#EFF6FF;color:#2563EB;text-decoration:none;margin-top:4px}
+.vidal-btn:hover{background:#2563EB;color:#fff}
+.vidal-badge{background:linear-gradient(135deg,#1e40af,#1e3a5f);color:#fff;font-size:9px;font-weight:700;padding:1px 5px;border-radius:4px;letter-spacing:.5px;margin-right:2px}
+.vidal-panel{background:#EFF6FF;border:1px solid #BFDBFE;border-radius:10px;padding:12px 14px;margin-top:8px;font-size:12px;line-height:1.7;color:#1e3a8a}
+.vidal-panel-title{font-size:10px;font-weight:700;color:#1e40af;text-transform:uppercase;letter-spacing:.7px;margin-bottom:6px;display:flex;align-items:center;gap:6px}
+.vidal-link{color:#2563EB;font-weight:600;text-decoration:underline}
+
+/* ── PAGE ACTIVE ── */
+.page-section{animation:fadeIn .22s ease}
+
+/* ── AMÉLIORATION CARTES ── */
+.card{transition:box-shadow .15s}
+.card:hover{box-shadow:0 2px 12px rgba(0,0,0,.06)}
+
+
+/* ── PHARMACIEN ── */
+.ph-med-item{display:flex;align-items:flex-start;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--bd)}
+.ph-med-item:last-child{border-bottom:none}
+.ph-generique{font-size:10px;background:#EDE9FE;color:#5B21B6;border:1px solid #C4B5FD;border-radius:5px;padding:1px 6px;font-weight:600;cursor:pointer}
+.ph-generique:hover{background:#5B21B6;color:#fff}
+.ph-dispense-item{display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:1px solid var(--bd);font-size:12px}
+.ph-dispense-item:last-child{border-bottom:none}
+.ph-stat-ok{color:var(--gn);font-weight:600}
+.ph-stat-warn{color:var(--am);font-weight:600}
+
+
+/* ── INS / IDENTITOVIGILANCE ── */
+.ins-card{border-radius:12px;padding:14px 16px;margin-bottom:12px;border:1.5px solid}
+.ins-provisoire{background:#FEF3E6;border-color:#FDDDB8}
+.ins-qualifie{background:#EBF0FD;border-color:#BFCFFA}
+.ins-certifie{background:#EAF5EE;border-color:#C8E8D3}
+.ins-badge{display:inline-flex;align-items:center;gap:5px;padding:3px 9px;border-radius:20px;font-size:10px;font-weight:700;margin-bottom:8px}
+.ins-badge.p{background:#FDDDB8;color:#B85C00}
+.ins-badge.q{background:#BFCFFA;color:#1D55E8}
+.ins-badge.c{background:#C8E8D3;color:#137A3A}
+.ins-nir{font-family:monospace;font-size:16px;font-weight:700;letter-spacing:3px;margin:6px 0;padding:8px 12px;background:rgba(255,255,255,.7);border-radius:8px;display:inline-block}
+.ins-traits{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:8px}
+.ins-trait{font-size:11px;color:var(--mu)}
+.ins-trait strong{color:var(--txt);display:block;font-size:12px;margin-top:1px}
+.nir-input{width:100%;padding:9px 12px;border:1.5px solid var(--bd);border-radius:9px;font-size:14px;font-family:monospace;letter-spacing:2px;background:var(--bg);color:var(--txt);outline:none;text-align:center}
+.nir-input:focus{border-color:var(--bl);background:var(--sur)}
+.nir-input.valid{border-color:var(--gn);background:#f0fdf4}
+.nir-input.invalid{border-color:var(--rd);background:var(--rd2)}
+.vitale-hint{background:linear-gradient(135deg,#1a4f9c,#2563EB);border-radius:10px;padding:10px 13px;color:#fff;font-size:11px;margin-top:8px;display:flex;gap:10px;align-items:center}
+
+
+.msg-hub{display:flex;flex-direction:column;gap:0;height:calc(100vh - 120px)}
+.msg-list{flex:1;overflow-y:auto;padding-bottom:12px}
+.msg-bubble{border-radius:13px;padding:13px 15px;margin-bottom:10px}
+.msg-bubble.from-soignant{background:#EBF0FD;border:1px solid #BFCFFA}
+.msg-bubble.from-pharmacien{background:#EDE9FE;border:1px solid #C4B5FD}
+.msg-bubble.from-labo{background:#EAF5EE;border:1px solid #C8E8D3}
+.msg-bubble.from-aidant{background:var(--bg);border:1px solid var(--bd)}
+.msg-from{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.7px;margin-bottom:5px}
+.msg-fr-soignant{color:var(--bl)}.msg-fr-pharmacien{color:#5B21B6}.msg-fr-labo{color:var(--gn)}.msg-fr-aidant{color:var(--mu)}
+.msg-content{font-size:13px;line-height:1.75;margin-bottom:7px}
+.msg-translation{font-size:12px;line-height:1.7;padding:8px 11px;border-radius:8px;margin-top:7px;border-left:3px solid}
+.msg-translation.tr{background:#FFF7ED;border-color:#F59E0B;color:#92400E}
+.msg-translation.ar{background:#FFF7ED;border-color:#F59E0B;color:#92400E;direction:rtl;text-align:right}
+.msg-translation.pt{background:#F0FDF4;border-color:var(--gn);color:#14532D}
+.msg-translation.ro{background:#F0FDF4;border-color:var(--gn);color:#14532D}
+.msg-translation.pl{background:#EFF6FF;border-color:var(--bl);color:#1E3A8A}
+.msg-translation.en{background:#EFF6FF;border-color:var(--bl);color:#1E3A8A}
+.msg-translation.ht{background:#FDF4FF;border-color:#A855F7;color:#581C87}
+.msg-translation-lbl{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.7px;margin-bottom:3px;opacity:.7}
+.msg-time{font-size:10px;color:var(--mu);margin-top:5px}
+.msg-doc{display:flex;align-items:center;gap:9px;padding:9px 11px;background:var(--sur);border:1px solid var(--bd);border-radius:9px;margin-top:7px;cursor:pointer}
+.msg-doc-ic{width:32px;height:32px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0}
+.msg-audio{display:flex;align-items:center;gap:9px;padding:9px 11px;background:linear-gradient(135deg,#EEE9FE,#E8F5EE);border:1px solid #C4B5FD;border-radius:9px;margin-top:7px}
+.msg-audio-btn{width:32px;height:32px;border-radius:50%;background:var(--bl);border:none;cursor:pointer;font-size:13px;color:#fff;flex-shrink:0}
+.compose-box{background:var(--sur);border-top:1.5px solid var(--bd);padding:13px;flex-shrink:0}
+.compose-tabs{display:flex;gap:6px;margin-bottom:10px}
+.compose-tab{padding:5px 11px;border-radius:18px;font-size:11px;font-weight:600;cursor:pointer;border:1.5px solid var(--bd);background:transparent;color:var(--mu)}
+.compose-tab.on{background:var(--bl);border-color:var(--bl);color:#fff}
+.compose-textarea{width:100%;border:1px solid var(--bd);border-radius:9px;padding:9px 12px;font-size:13px;resize:none;min-height:68px;background:var(--bg);outline:none;line-height:1.6}
+.compose-textarea:focus{border-color:var(--bl);background:var(--sur)}
+.comm-filter{display:flex;gap:5px;margin-bottom:11px;flex-wrap:wrap}
+.comm-filter-btn{padding:4px 11px;border-radius:18px;font-size:11px;font-weight:600;cursor:pointer;border:1.5px solid var(--bd);background:transparent;color:var(--mu)}
+.comm-filter-btn.on{border-color:var(--bl);background:var(--bl2);color:var(--bl)}
+.record-btn{width:44px;height:44px;border-radius:50%;border:none;cursor:pointer;font-size:20px;transition:all .2s}
+.record-btn.idle{background:var(--bg);border:1.5px solid var(--bd)}
+.record-btn.recording{background:var(--rd);color:#fff;animation:pulse-rec 1s ease infinite}
+@keyframes pulse-rec{0%,100%{box-shadow:0 0 0 0 rgba(192,39,43,.4)}50%{box-shadow:0 0 0 8px rgba(192,39,43,0)}}
+.unread-badge{width:16px;height:16px;background:var(--rd);border-radius:50%;font-size:9px;font-weight:700;color:#fff;display:inline-flex;align-items:center;justify-content:center;margin-left:4px}
+
 </style>
 </head>
 <body>
@@ -250,7 +350,13 @@ a{color:var(--bl)}
 <!-- ═══ LOADING ═══ -->
 <div id="screen-loading">
   <div class="load-box">
-    <div class="load-ic">🤝</div>
+    <div class="load-ic" style="background:linear-gradient(135deg,var(--bl),var(--gn));border-radius:15px;padding:8px"><svg viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <path d="M8 30 Q7 18 22 13" stroke="rgba(255,255,255,0.9)" stroke-width="3" stroke-linecap="round"/>
+  <path d="M36 30 Q37 18 22 13" stroke="rgba(255,255,255,0.9)" stroke-width="3" stroke-linecap="round"/>
+  <path d="M22 27 C16 23 14 18 17.5 15.5 C19.2 14.4 21 15.5 22 17.5 C23 15.5 24.8 14.4 26.5 15.5 C30 18 28 23 22 27Z" fill="white"/>
+  <circle cx="8" cy="31" r="2.5" fill="rgba(255,255,255,0.7)"/>
+  <circle cx="36" cy="31" r="2.5" fill="rgba(255,255,255,0.7)"/>
+</svg></div>
     <div class="load-nm">AidantPro</div>
     <div class="spin spin-bl" style="margin:0 auto;width:22px;height:22px;border-width:3px"></div>
   </div>
@@ -259,7 +365,13 @@ a{color:var(--bl)}
 <!-- ═══ AUTH ═══ -->
 <div id="screen-auth" class="hidden">
   <div class="auth-left">
-    <div class="al-logo"><div class="al-ic">🤝</div><span class="al-nm">AidantPro</span></div>
+    <div class="al-logo"><div class="al-logo-ic" style="background:rgba(255,255,255,.15);border-radius:11px;padding:6px;border:1px solid rgba(255,255,255,.2)"><svg viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <path d="M8 30 Q7 18 22 13" stroke="rgba(255,255,255,0.9)" stroke-width="3" stroke-linecap="round"/>
+  <path d="M36 30 Q37 18 22 13" stroke="rgba(255,255,255,0.9)" stroke-width="3" stroke-linecap="round"/>
+  <path d="M22 27 C16 23 14 18 17.5 15.5 C19.2 14.4 21 15.5 22 17.5 C23 15.5 24.8 14.4 26.5 15.5 C30 18 28 23 22 27Z" fill="white"/>
+  <circle cx="8" cy="31" r="2.5" fill="rgba(255,255,255,0.7)"/>
+  <circle cx="36" cy="31" r="2.5" fill="rgba(255,255,255,0.7)"/>
+</svg></div><span class="al-nm">AidantPro</span></div>
     <div>
       <h1 class="al-h">Coordonnez les soins de votre proche en toute sécurité</h1>
       <p class="al-sub">La plateforme qui réunit famille, patient et soignants autour d'un dossier médical partagé et sécurisé.</p>
@@ -273,7 +385,13 @@ a{color:var(--bl)}
   </div>
   <div class="auth-right">
     <div class="auth-inner">
-      <div class="mob-logo"><div class="mob-ic">🤝</div><span class="mob-nm">AidantPro</span></div>
+      <div class="mob-logo"><div style="width:34px;height:34px"><svg viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <path d="M8 30 Q7 18 22 13" stroke="#1D55E8" stroke-width="3" stroke-linecap="round"/>
+  <path d="M36 30 Q37 18 22 13" stroke="#137A3A" stroke-width="3" stroke-linecap="round"/>
+  <path d="M22 27 C16 23 14 18 17.5 15.5 C19.2 14.4 21 15.5 22 17.5 C23 15.5 24.8 14.4 26.5 15.5 C30 18 28 23 22 27Z" fill="#137A3A"/>
+  <circle cx="8" cy="31" r="2.5" fill="#1D55E8"/>
+  <circle cx="36" cy="31" r="2.5" fill="#137A3A"/>
+</svg></div><span class="mob-nm">AidantPro</span></div>
       <div id="auth-alert"></div>
 
       <!-- LOGIN -->
@@ -320,7 +438,8 @@ a{color:var(--bl)}
           <div class="roles-grid">
             <div class="role-card on" data-role="aidant" onclick="selectRole(this)"><div class="role-ic">👩‍👧</div><div class="role-nm">Aidant</div><div class="role-ds">Famille</div></div>
             <div class="role-card" data-role="patient" onclick="selectRole(this)"><div class="role-ic">👴</div><div class="role-nm">Patient</div><div class="role-ds">Proche aidé</div></div>
-            <div class="role-card" data-role="soignant" onclick="selectRole(this)"><div class="role-ic">👨‍⚕️</div><div class="role-nm">Soignant</div><div class="role-ds">Pro santé</div></div>
+            <div class="role-card" data-role="soignant" onclick="selectRole(this)"><div class="role-ic">👨‍⚕️</div><div class="role-nm">Soignant</div><div class="role-ds">Médecin, IDE</div></div>
+            <div class="role-card" data-role="pharmacien" onclick="selectRole(this)"><div class="role-ic">💊</div><div class="role-nm">Pharmacien</div><div class="role-ds">Officine</div></div>
           </div>
         </div>
         <div class="fg">
@@ -343,6 +462,16 @@ a{color:var(--bl)}
         <div class="fg">
           <div class="fl"><span>Confirmer *</span></div>
           <input id="r-pwd2" class="fi" type="password" placeholder="Répétez">
+        </div>
+        <div id="nir-section" class="hidden">
+          <div class="fg">
+            <div class="fl"><span>Numéro de sécurité sociale (optionnel)</span></div>
+            <input id="r-nir" class="nir-input" type="text" maxlength="15" placeholder="0 00 00 00 000 000 00" oninput="validateNIR(this)">
+            <div class="vitale-hint">
+              <span style="font-size:22px;flex-shrink:0">💳</span>
+              <span>Votre numéro de 15 chiffres est imprimé sur votre <strong>carte Vitale</strong>. Commence par 1 (homme) ou 2 (femme).</span>
+            </div>
+          </div>
         </div>
         <div class="cb-row" onclick="toggleTerms()">
           <div class="cb" id="terms-cb"></div>
@@ -383,7 +512,13 @@ a{color:var(--bl)}
 <!-- ═══ AIDANT APP ═══ -->
 <div id="screen-app" class="hidden">
   <aside class="sidebar">
-    <div class="sb-hd"><div class="sb-logo"><div class="sb-logo-ic">A</div><span class="sb-logo-nm">AidantPro</span></div></div>
+    <div class="sb-hd"><div class="sb-logo"><div style="width:30px;height:30px"><svg viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <path d="M8 30 Q7 18 22 13" stroke="#1D55E8" stroke-width="3" stroke-linecap="round"/>
+  <path d="M36 30 Q37 18 22 13" stroke="#137A3A" stroke-width="3" stroke-linecap="round"/>
+  <path d="M22 27 C16 23 14 18 17.5 15.5 C19.2 14.4 21 15.5 22 17.5 C23 15.5 24.8 14.4 26.5 15.5 C30 18 28 23 22 27Z" fill="#137A3A"/>
+  <circle cx="8" cy="31" r="2.5" fill="#1D55E8"/>
+  <circle cx="36" cy="31" r="2.5" fill="#137A3A"/>
+</svg></div><span class="sb-logo-nm">AidantPro</span></div></div>
     <div class="pat-chip" onclick="navTo('dossier')">
       <div class="pat-chip-nm">Pierre Dubois</div>
       <div class="pat-chip-info">78 ans · Alzheimer modéré</div>
@@ -397,6 +532,7 @@ a{color:var(--bl)}
       <button class="ni" data-page="journal" onclick="navTo('journal')"><span class="ni-ic">◐</span><span class="ni-lb">Journal de bord</span></button>
       <button class="ni" data-page="aides" onclick="navTo('aides')"><span class="ni-ic">◊</span><span class="ni-lb">Aides financières</span></button>
       <button class="ni" data-page="bienetre" onclick="navTo('bienetre')"><span class="ni-ic">♡</span><span class="ni-lb">Bien-être aidant</span></button>
+      <button class="ni" data-page="messages" onclick="navTo('messages')"><span class="ni-ic">&#x2709;</span><span class="ni-lb">Messages <span class="unread-badge" id="msg-badge">2</span></span></button>
       <button class="ni" data-page="parametres" onclick="navTo('parametres')"><span class="ni-ic">⊙</span><span class="ni-lb">Paramètres</span></button>
     </nav>
     <button class="sb-logout" onclick="doSignOut()">⇄ Déconnexion</button>
@@ -410,7 +546,13 @@ a{color:var(--bl)}
 <!-- ═══ PATIENT ═══ -->
 <div id="screen-patient" class="hidden">
   <div class="pat-hd">
-    <div class="pat-hd-logo"><div class="pat-hd-ic">🤝</div><div class="pat-hd-nm">AidantPro</div></div>
+    <div class="pat-hd-logo"><div class="pat-hd-ic" style="width:32px;height:32px;background:rgba(255,255,255,.2);border-radius:9px;padding:4px"><svg viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <path d="M8 30 Q7 18 22 13" stroke="rgba(255,255,255,0.9)" stroke-width="3" stroke-linecap="round"/>
+  <path d="M36 30 Q37 18 22 13" stroke="rgba(255,255,255,0.9)" stroke-width="3" stroke-linecap="round"/>
+  <path d="M22 27 C16 23 14 18 17.5 15.5 C19.2 14.4 21 15.5 22 17.5 C23 15.5 24.8 14.4 26.5 15.5 C30 18 28 23 22 27Z" fill="white"/>
+  <circle cx="8" cy="31" r="2.5" fill="rgba(255,255,255,0.7)"/>
+  <circle cx="36" cy="31" r="2.5" fill="rgba(255,255,255,0.7)"/>
+</svg></div><div class="pat-hd-nm">AidantPro</div></div>
     <div style="display:flex;gap:8px">
       <button class="pat-hd-btn" onclick="patNav('lang')">🌍</button>
       <button class="pat-hd-btn" onclick="doSignOut()">←</button>
@@ -482,7 +624,9 @@ const S={
   page:'dashboard',
   today:new Date().toISOString().split('T')[0],
   selectedRole:'aidant',termsChecked:false,
-  proche:{prenom:'Pierre',nom:'Dubois',age:78,gs:'A+',pathologies:['Alzheimer modéré','Hypertension','Diabète type 2'],allergies:['Pénicilline','Aspirine'],mutuelle:'MGEN',medecins:[{id:1,nom:'Dr. Martin Sophie',spec:'Médecin traitant',tel:'04 76 00 12 34'},{id:2,nom:'Dr. Benali Karim',spec:'Neurologue',tel:'04 76 45 67 89'}]},
+  proche:{prenom:'Pierre',nom:'Dubois',age:78,gs:'A+',pathologies:['Alzheimer modéré','Hypertension','Diabète type 2'],allergies:['Pénicilline','Aspirine'],mutuelle:'MGEN',
+  ins:{nir:'1850675056082',nomNaissance:'DUBOIS',prenoms:'Pierre Jean',dateNaissance:'1948-03-15',sexe:'M',lieuNaissance:'Paris 6e (75056)',status:'qualifie',verifiedBy:'Dr. Martin Sophie',verifiedAt:'2026-01-12'},
+  medecins:[{id:1,nom:'Dr. Martin Sophie',spec:'Médecin traitant',tel:'04 76 00 12 34'},{id:2,nom:'Dr. Benali Karim',spec:'Neurologue',tel:'04 76 45 67 89'}]},
   meds:[
     {id:1,nom:'Donépézil',dose:'10mg',horaires:['20h00'],renouv:5,indication:'Alzheimer',prises:{}},
     {id:2,nom:'Amlodipine',dose:'5mg',horaires:['08h00'],renouv:18,indication:'Hypertension',prises:{}},
@@ -499,7 +643,16 @@ const S={
   zarit:{},
   aiTxt:'',aiLoad:false,
   notifs:{meds:true,rdv:true,renouv:true,urgent:true},
-  pat:{screen:'home',lang:'fr',feel:null,msg:'',msgSent:false}
+  pat:{screen:'home',lang:'fr',feel:null,msg:'',msgSent:false},
+  messages:[
+    {id:1,from:'Dr. Martin Sophie',fromRole:'soignant',type:'message',content:'Bonjour Pierre. Votre ordonnance est renouvelee pour 3 mois. Le Donepezil doit etre pris le soir apres le diner, jamais a jeun. Appelez-moi si vous observez des nausees.',docName:null,audioTranscript:null,timestamp:'2026-05-14T14:30:00',read:false,translations:{},translating:false},
+    {id:2,from:'Pharmacie Centrale',fromRole:'pharmacien',type:'document',content:'Voici votre bilan medicamenteux. Nous avons remplace la Metformine par son generique Biogaran - meme efficacite, moins chere. Tenez-moi informe de votre ressenti.',docName:'Bilan_medicamenteux.pdf',docType:'pdf',audioTranscript:null,timestamp:'2026-05-13T11:15:00',read:false,translations:{},translating:false},
+    {id:3,from:'Laboratoire CHU Grenoble',fromRole:'labo',type:'document',content:'Resultats prise de sang 10 mai. HbA1c : 7.2% (objectif atteint). Creatinine : 98 umol/L (normal). Glycemie a jeun : 6.8 mmol/L. Bilan satisfaisant, a renouveler dans 3 mois.',docName:'Resultats_bilan_sanguin.pdf',docType:'pdf',audioTranscript:null,timestamp:'2026-05-12T09:00:00',read:true,translations:{},translating:false}
+  ],
+  recording:false,
+  recordingTranscript:'',
+  composeType:'message',
+  composeFilter:'all'
 };
 
 const AIDES=[
@@ -510,10 +663,14 @@ const AIDES=[
 ];
 const ZARIT_QS=['Vous sentez-vous débordé(e) par les soins ?','Manquez-vous de temps pour vous ?','Êtes-vous stressé(e) par votre rôle ?','Votre santé se dégrade-t-elle ?','Avez-vous renoncé à des activités sociales ?','Y a-t-il des conflits familiaux ?','Avez-vous perdu le contrôle de votre vie ?','Souhaiteriez-vous confier votre proche ?'];
 const LANGS={
-  fr:{flag:'🇫🇷',name:'Français',hello:'Bonjour',wel:'Comment vous sentez-vous ?',m:'💊 Mes médicaments',r:'📅 Mon rendez-vous',msg:'💬 Message famille',back:'← Retour',confirm:'Confirmer',confirmed:'✓ Confirmé !',nordv:'Aucun RDV',send:'Envoyer',mph:'Écrivez votre message…',msent:'✓ Envoyé !',choose:'Choisir la langue',good:'Je vais bien 😊',ok:'Ça va 😐',bad:'Je ne vais pas bien 😔',how:'Comment vous sentez-vous ?'},
-  ar:{flag:'🇲🇦',name:'العربية',hello:'مرحباً',wel:'كيف حالك؟',m:'💊 دوائي',r:'📅 موعدي',msg:'💬 رسالة',back:'→ رجوع',confirm:'تأكيد',confirmed:'✓ تم!',nordv:'لا موعد',send:'إرسال',mph:'اكتب رسالتك…',msent:'✓ تم!',choose:'اختر لغتك',good:'أشعر بتحسن 😊',ok:'لا بأس 😐',bad:'لا أشعر بالتحسن 😔',how:'كيف تشعر؟'},
-  pt:{flag:'🇵🇹',name:'Português',hello:'Olá',wel:'Como se sente?',m:'💊 Medicamentos',r:'📅 Consulta',msg:'💬 Mensagem',back:'← Voltar',confirm:'Confirmar',confirmed:'✓ Confirmado!',nordv:'Sem consulta',send:'Enviar',mph:'Escreva…',msent:'✓ Enviado!',choose:'Escolha idioma',good:'Sinto-me bem 😊',ok:'Estou bem 😐',bad:'Não me sinto bem 😔',how:'Como se sente?'},
-  en:{flag:'🇬🇧',name:'English',hello:'Hello',wel:'How do you feel?',m:'💊 Medications',r:'📅 Appointment',msg:'💬 Message',back:'← Back',confirm:'Confirm',confirmed:'✓ Confirmed!',nordv:'No appointment',send:'Send',mph:'Write your message…',msent:'✓ Sent!',choose:'Choose language',good:'I feel good 😊',ok:"I'm okay 😐",bad:"I don't feel well 😔",how:'How do you feel?'}
+  fr:{flag:'🇫🇷',name:'Français',hello:'Bonjour',wel:'Comment vous sentez-vous aujourd'hui ?',m:'💊 Mes médicaments',r:'📅 Mon rendez-vous',msg:'💬 Message famille',back:'← Retour',confirm:'Confirmer',confirmed:'✓ Confirmé !',nordv:'Aucun RDV',send:'Envoyer',mph:'Écrivez votre message…',msent:'✓ Envoyé !',choose:'Choisir la langue',good:'Je vais bien 😊',ok:'Ça va 😐',bad:'Je ne vais pas bien 😔',how:'Comment vous sentez-vous ?'},
+  tr:{flag:'🇹🇷',name:'Türkçe',hello:'Merhaba',wel:'Bugün nasılsınız?',m:'💊 İlaçlarım',r:'📅 Randevum',msg:'💬 Aile mesajı',back:'← Geri',confirm:'Onayla',confirmed:'✓ Onaylandı!',nordv:'Randevu yok',send:'Gönder',mph:'Mesajınızı yazın…',msent:'✓ Gönderildi!',choose:'Dil seçin',good:'İyi hissediyorum 😊',ok:'Fena değilim 😐',bad:'İyi hissetmiyorum 😔',how:'Nasıl hissediyorsunuz?'},
+  ar:{flag:'🇸🇦',name:'العربية',hello:'مرحباً',wel:'كيف حالك اليوم؟',m:'💊 دوائي',r:'📅 موعدي',msg:'💬 رسالة للعائلة',back:'→ رجوع',confirm:'تأكيد',confirmed:'✓ تم التأكيد!',nordv:'لا يوجد موعد',send:'إرسال',mph:'اكتب رسالتك هنا…',msent:'✓ تم الإرسال!',choose:'اختر لغتك',good:'أشعر بتحسن 😊',ok:'لا بأس 😐',bad:'لا أشعر بالتحسن 😔',how:'كيف تشعر اليوم؟'},
+  pt:{flag:'🇵🇹',name:'Português',hello:'Olá',wel:'Como se sente hoje?',m:'💊 Medicamentos',r:'📅 Consulta',msg:'💬 Mensagem família',back:'← Voltar',confirm:'Confirmar',confirmed:'✓ Confirmado!',nordv:'Sem consulta',send:'Enviar',mph:'Escreva a sua mensagem…',msent:'✓ Enviado!',choose:'Escolha o idioma',good:'Sinto-me bem 😊',ok:'Estou bem 😐',bad:'Não me sinto bem 😔',how:'Como se sente?'},
+  ro:{flag:'🇷🇴',name:'Română',hello:'Bună ziua',wel:'Cum vă simțiți astăzi?',m:'💊 Medicamentele mele',r:'📅 Programarea mea',msg:'💬 Mesaj familie',back:'← Înapoi',confirm:'Confirmă',confirmed:'✓ Confirmat!',nordv:'Nicio programare',send:'Trimite',mph:'Scrieți mesajul dumneavoastră…',msent:'✓ Trimis!',choose:'Alegeți limba',good:'Mă simt bine 😊',ok:'Sunt ok 😐',bad:'Nu mă simt bine 😔',how:'Cum vă simțiți?'},
+  pl:{flag:'🇵🇱',name:'Polski',hello:'Dzień dobry',wel:'Jak się dziś czujecie?',m:'💊 Moje leki',r:'📅 Moja wizyta',msg:'💬 Wiadomość do rodziny',back:'← Wróć',confirm:'Potwierdź',confirmed:'✓ Potwierdzono!',nordv:'Brak wizyty',send:'Wyślij',mph:'Napisz wiadomość…',msent:'✓ Wysłano!',choose:'Wybierz język',good:'Czuję się dobrze 😊',ok:'Dobrze 😐',bad:'Nie czuję się dobrze 😔',how:'Jak się czujecie?'},
+  en:{flag:'🇬🇧',name:'English',hello:'Hello',wel:'How do you feel today?',m:'💊 Medications',r:'📅 Appointment',msg:'💬 Message family',back:'← Back',confirm:'Confirm',confirmed:'✓ Confirmed!',nordv:'No appointment',send:'Send',mph:'Write your message…',msent:'✓ Sent!',choose:'Choose language',good:'I feel good 😊',ok:"I'm okay 😐",bad:"I don't feel well 😔",how:'How do you feel?'},
+  ht:{flag:'🇭🇹',name:'Kreyòl',hello:'Bonjou',wel:'Kijan ou santi ou jodi a?',m:'💊 Medikaman mwen',r:'📅 Randevou mwen',msg:'💬 Mesaj fanmi',back:'← Tounen',confirm:'Konfime',confirmed:'✓ Konfime!',nordv:'Pa gen randevou',send:'Voye',mph:'Ekri mesaj ou…',msent:'✓ Voye!',choose:'Chwazi lang',good:'Mwen santi mwen byen 😊',ok:'Mwen ok 😐',bad:'Mwen pa santi mwen byen 😔',how:'Kijan ou santi ou?'}
 };
 
 // ═══════════════════════════════════════════════
@@ -543,6 +700,7 @@ function goToApp(){
   S.role=role;
   if(role==='patient'){showScreen('patient');renderPatient();}
   else if(role==='soignant'){showScreen('soignant');}
+  else if(role==='pharmacien'){showPharmacien();}
   else{showScreen('app');const p=S.user&&S.user.user_metadata&&S.user.user_metadata.prenom||'Marie';document.getElementById('sb-prenom').textContent=p;navTo('dashboard');}
 }
 
@@ -582,6 +740,15 @@ function selectRole(el){
   document.querySelectorAll('.role-card').forEach(c=>c.classList.remove('on'));
   el.classList.add('on');
   S.selectedRole=el.dataset.role;
+  const nirSec=document.getElementById('nir-section');
+  if(nirSec)nirSec.classList.toggle('hidden',el.dataset.role!=='patient');
+}
+
+function validateNIR(inp){
+  const v=inp.value.replace(/\s/g,'');
+  if(v.length===0){inp.className='nir-input';return;}
+  const valid=/^[12][0-9]{2}(0[1-9]|1[0-2]|20)[0-9]{2}[0-9]{3}[0-9]{3}[0-9]{2}$/.test(v);
+  inp.className='nir-input '+(valid?'valid':'invalid');
 }
 
 function toggleTerms(){
@@ -699,8 +866,15 @@ function navTo(page){
     btn.classList.toggle('on',btn.dataset.page===page);
   });
   const mc=document.getElementById('main-content');
-  const pages={dashboard:renderDashboard,dossier:renderDossier,agenda:renderAgenda,medicaments:renderMedicaments,journal:renderJournal,aides:renderAides,bienetre:renderBienetre,parametres:renderParametres};
-  if(pages[page]){mc.innerHTML=pages[page]();bindEvents(page);}
+  const pages={dashboard:renderDashboard,dossier:renderDossier,agenda:renderAgenda,medicaments:renderMedicaments,journal:renderJournal,aides:renderAides,bienetre:renderBienetre,parametres:renderParametres,messages:renderMessages};
+  if(pages[page]){
+    mc.classList.add('fading');
+    setTimeout(()=>{
+      mc.innerHTML=pages[page]();
+      mc.classList.remove('fading');
+      bindEvents(page);
+    },130);
+  }
 }
 
 // ═══════════════════════════════════════════════
@@ -786,7 +960,24 @@ function renderDossier(){
   ${S.aiTxt?`<div class="ai-box"><div class="ai-lbl">Résumé IA — pour le médecin</div><div class="ai-txt">${S.aiTxt}</div></div>`:''}
   <div class="grid2">
     <div style="display:flex;flex-direction:column;gap:12px">
-      <div class="card">
+      <div class="ins-card ins-${p.ins&&p.ins.status||'provisoire'}">
+        <div class="ins-badge ${(p.ins&&p.ins.status||'provisoire')[0]}">${
+          (p.ins&&p.ins.status)==='certifie'?'✓ INS Certifié (INS-NI)':
+          (p.ins&&p.ins.status)==='qualifie'?'◎ INS Qualifié':'○ INS Provisoire (INS-C)'
+        }</div>
+        <div style="font-size:10px;font-weight:600;color:var(--mu);text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px">Identifiant National de Santé</div>
+        <div class="ins-nir">${p.ins&&p.ins.nir?p.ins.nir.replace(/(\d{1})(\d{2})(\d{2})(\d{2})(\d{3})(\d{3})(\d{2})/,'$1 $2 $3 $4 $5 $6 $7'):'Non renseigné'}</div>
+        <div class="ins-traits">
+          <div class="ins-trait">Nom de naissance<strong>${p.ins&&p.ins.nomNaissance||'—'}</strong></div>
+          <div class="ins-trait">Prénom(s)<strong>${p.ins&&p.ins.prenoms||'—'}</strong></div>
+          <div class="ins-trait">Date de naissance<strong>${p.ins&&p.ins.dateNaissance||'—'}</strong></div>
+          <div class="ins-trait">Lieu de naissance<strong>${p.ins&&p.ins.lieuNaissance||'—'}</strong></div>
+          <div class="ins-trait">Sexe<strong>${p.ins&&p.ins.sexe==='M'?'Masculin':p.ins&&p.ins.sexe==='F'?'Féminin':'—'}</strong></div>
+          <div class="ins-trait">Vérifié par<strong>${p.ins&&p.ins.verifiedBy||'Non vérifié'}</strong></div>
+        </div>
+        ${(p.ins&&p.ins.status)==='provisoire'?`<div style="font-size:10px;color:var(--am);margin-top:8px">⚠ L'identité doit être vérifiée par un soignant pour être qualifiée. <a href="https://esante.gouv.fr/ins" target="_blank" style="color:var(--bl)">En savoir plus ↗</a></div>`:''}
+      </div>
+            <div class="card">
         <div class="ct">Informations</div>
         <div class="info-row"><span class="ik">Nom complet</span><span class="iv">${p.prenom} ${p.nom}</span></div>
         <div class="info-row"><span class="ik">Âge</span><span class="iv">${p.age} ans</span></div>
@@ -901,6 +1092,20 @@ function renderMedicaments(){
             <div class="med-nm">${m.nom}</div><span class="badge b-bl">${m.dose}</span>${m.renouv<=10?`<span class="badge b-am">J-${m.renouv}</span>`:''}
           </div>
           <div class="med-info">${m.indication}</div>
+          <div style="margin-top:5px;display:flex;align-items:center;gap:7px;flex-wrap:wrap">
+            <a class="vidal-btn" href="https://www.vidal.fr/medicaments/recherche/?q=${encodeURIComponent(m.nom)}" target="_blank" rel="noopener">
+              <span class="vidal-badge">VIDAL</span> Fiche médicament ↗
+            </a>
+            <button class="vidal-btn" style="cursor:pointer" onclick="toggleVidalPanel(${m.id})">
+              📋 Interactions & posologie
+            </button>
+          </div>
+          <div id="vidal-${m.id}" class="vidal-panel" style="display:none">
+            <div class="vidal-panel-title"><span class="vidal-badge">VIDAL</span> Informations professionnelles</div>
+            <div><strong>Classe :</strong> ${vidalClass(m.indication)} · <strong>Dosage adulte :</strong> ${m.dose}</div>
+            <div style="margin-top:6px"><strong>⚠ Précautions :</strong> Vérifier les interactions médicamenteuses avant association. Adapter la posologie selon la fonction rénale et hépatique.</div>
+            <div style="margin-top:6px"><a class="vidal-link" href="https://www.vidal.fr/medicaments/recherche/?q=${encodeURIComponent(m.nom)}" target="_blank">Consulter la fiche complète sur Vidal.fr ↗</a></div>
+          </div>
         </div>
         <div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px">
           <div class="dose-btns">${m.horaires.map(h=>`<button class="dose-btn${m.prises[S.today+'_'+h]?' done':''}" onclick="togglePrise(${m.id},'${h}')">${h} ${m.prises[S.today+'_'+h]?'✓':'○'}</button>`).join('')}</div>
@@ -1107,6 +1312,19 @@ function renderPatient(){
   const hd=document.getElementById('pat-content');
   if(!hd)return;
 
+  if(p.screen==='msgs'){
+    var pLang2=p.lang||'fr';var t3=LANGS[pLang2]||LANGS.fr;var dir3=pLang2==='ar'?'rtl':'ltr';
+    var msgsHtml=S.messages.map(function(m){
+      var fl={soignant:'&#x1F468;&#x200D;&#x2695;&#xFE0F;',pharmacien:'&#x1F48A;',labo:'&#x1F52C;'}[m.fromRole]||'&#x2709;';
+      var txt=m.translations[pLang2]||m.content;
+      var docHtml=m.docName?'<div class="msg-doc"><div class="msg-doc-ic" style="background:var(--rd2)">&#x1F4C4;</div><div><div class="msg-doc-nm">'+m.docName+'</div></div></div>':'';
+      return '<div class="msg-bubble from-'+(m.fromRole||'aidant')+'"><div class="msg-from msg-fr-'+(m.fromRole||'aidant')+'">'+fl+' '+m.from+'</div><div class="msg-content" dir="'+dir3+'">'+txt+'</div>'+docHtml+'</div>';
+    }).join('');
+    hd.innerHTML='<div class="sub-hd"><button class="back-btn" onclick="patNav('home')">'+t3.back+'</button><span class="sub-title">&#x1F4EC;</span></div><div class="sub-body" dir="'+dir3+'">'+msgsHtml+'</div>';
+    S.messages.forEach(function(m){m.read=true;});
+    var badge=document.getElementById('msg-badge');if(badge)badge.style.display='none';
+    return;
+  }
   if(p.screen==='lang'){
     hd.innerHTML=`<div class="sub-hd"><button class="back-btn" onclick="patNav('home')">${t.back}</button><span class="sub-title">${t.choose}</span></div>
     <div class="sub-body"><div class="lang-grid">${Object.entries(LANGS).map(([k,v])=>`<div class="lang-card${p.lang===k?' on':''}" onclick="patLang('${k}')"><span style="font-size:26px">${v.flag}</span><span style="font-size:14px;font-weight:700">${v.name}</span></div>`).join('')}</div></div>`;
@@ -1134,6 +1352,7 @@ function renderPatient(){
     <div class="pat-hello">${t.hello}, ${prenom} 👋</div>
     <div class="pat-wel">${t.wel}</div>
     <div class="pat-btns">
+      <button class="pb" style="background:linear-gradient(135deg,#F5F0FF,#EDE9FE);border:2px solid #C4B5FD" onclick="patNav('msgs')"><div class="pb-ic">&#x1F4EC;</div><div><div class="pb-t" style="color:#5B21B6">Messages</div><div class="pb-s" style="color:#5B21B6">Soignants &amp; pharmacien</div></div></button>
       <button class="pb pb-m" onclick="patNav('meds')"><div class="pb-ic">💊</div><div><div class="pb-t">${t.m}</div><div class="pb-s">${pris}/${tot} confirmés</div></div></button>
       <button class="pb pb-r" onclick="patNav('rdv')"><div class="pb-ic">📅</div><div><div class="pb-t">${t.r}</div><div class="pb-s">${pr?dateDay(pr.date)+' — '+pr.heure:t.nordv}</div></div></button>
       <button class="pb pb-msg" onclick="patNav('msg')"><div class="pb-ic">💬</div><div><div class="pb-t">${t.msg}</div><div class="pb-s">Famille…</div></div></button>
@@ -1151,6 +1370,400 @@ function patLang(lang){S.pat.lang=lang;S.pat.screen='home';renderPatient();}
 function patFeel(f){S.pat.feel=f;renderPatient();}
 function patConfirm(id,h){const k=S.today+'_'+h;const m=S.meds.find(x=>x.id===id);if(m)m.prises[k]=!m.prises[k];renderPatient();}
 function patSendMsg(){const ta=document.getElementById('pat-msg-ta');if(ta&&ta.value.trim()){S.pat.msg=ta.value;S.pat.msgSent=true;renderPatient();}}
+
+
+// ════════════════════════════════════════════════════
+// MESSAGES & COMMUNICATION HUB
+// ════════════════════════════════════════════════════
+function renderMessages(){
+  var unread=S.messages.filter(function(m){return !m.read;}).length;
+  var badge=document.getElementById('msg-badge');
+  if(badge)badge.style.display=unread>0?'inline-flex':'none';
+  if(badge)badge.textContent=unread;
+  var filterBtns=[['all','Tous'],['soignant','Soignants'],['pharmacien','Pharmacie'],['labo','Laboratoire']].map(function(f){
+    return '<button class="comm-filter-btn'+(S.composeFilter===f[0]?' on':'"')+'" onclick="setCommFilter(''+f[0]+'')">'+f[1]+'</button>';
+  }).join('');
+  var filtered=S.composeFilter==='all'?S.messages:S.messages.filter(function(m){return m.fromRole===S.composeFilter;});
+  var msgsHtml=filtered.map(function(m){return buildMsgBubble(m);}).join('');
+  var composeHtml=S.composeType==='voice'?buildVoiceCompose():buildTextCompose();
+  return '<div class="ph"><div><div class="pt">Messages &amp; Documents</div><div class="ps">'+unread+' non lu(s) &middot; '+S.messages.length+' messages</div></div><button class="btn btn-p" onclick="markAllRead()">Tout lu</button></div>'
+    +'<div class="msg-hub"><div class="comm-filter">'+filterBtns+'</div><div class="msg-list" id="msg-list-inner">'+msgsHtml+'</div>'
+    +'<div class="compose-box"><div style="font-size:10px;font-weight:700;color:var(--mu);text-transform:uppercase;letter-spacing:.7px;margin-bottom:8px">Nouveau message a Pierre Dubois</div>'
+    +'<div class="compose-tabs"><button class="compose-tab'+(S.composeType==='message'?' on':'"')+" onclick="setComposeType('message')">Message</button>"
+    +'<button class="compose-tab'+(S.composeType==='document'?' on':'"')+" onclick="setComposeType('document')">Document</button>"
+    +'<button class="compose-tab'+(S.composeType==='voice'?' on':'"')+" onclick="setComposeType('voice')">Memo vocal</button></div>"
+    +composeHtml+'</div></div>';
+}
+
+function buildMsgBubble(m){
+  var t=m.timestamp?new Date(m.timestamp).toLocaleString('fr-FR',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'}):'';
+  var roleIc={soignant:'S',pharmacien:'Ph',labo:'L',aidant:'A'}[m.fromRole]||'?';
+  var bgClass='from-'+(m.fromRole||'aidant');
+  var langs={tr:'Turc',ar:'Arabe',pt:'Portugais',ro:'Roumain',pl:'Polonais',en:'English',ht:'Kreool'};
+  var transBtns=Object.entries(langs).map(function(e){return '<button class="btn btn-s" style="padding:2px 8px;font-size:10px" onclick="translateMsg('+m.id+',''+e[0]+'')">'+e[1]+'</button>';}).join('');
+  var docHtml=m.docName?'<div class="msg-doc"><div class="msg-doc-ic" style="background:var(--rd2)">PDF</div><div><div class="msg-doc-nm">'+m.docName+'</div><div class="msg-doc-sz">Cliquer pour ouvrir</div></div></div>':'';
+  var audioHtml=m.audioTranscript?'<div class="msg-audio"><button class="msg-audio-btn" onclick="playAudio('+m.id+')">Play</button><div style="flex:1"><div style="font-size:11px;font-weight:600">Memo vocal - transcription:</div><div style="font-size:11px;color:var(--mu);margin-top:2px;font-style:italic">'+m.audioTranscript.slice(0,100)+'</div></div></div>':'';
+  var transHtml='';
+  if(m.translating){transHtml='<div style="font-size:11px;color:var(--bl)">Traduction en cours...</div>';}
+  else{
+    Object.keys(m.translations).forEach(function(lang){
+      var flagMap={tr:'TR',ar:'AR',pt:'PT',ro:'RO',pl:'PL',en:'EN',ht:'HT'};
+      var dir=lang==='ar'?'rtl':'ltr';
+      transHtml+='<div class="msg-translation '+lang+'"><div class="msg-translation-lbl">'+flagMap[lang]+' Traduction</div><div dir="'+dir+'">'+m.translations[lang]+'</div></div>';
+    });
+  }
+  return '<div class="msg-bubble '+bgClass+'" id="msg-'+m.id+'"><div class="msg-from msg-fr-'+(m.fromRole||'aidant')+'">['+roleIc+'] '+m.from+(m.read?'':' <span class="badge b-rd" style="font-size:9px">Nouveau</span>')+'</div>'
+    +'<div class="msg-content">'+m.content+'</div>'+docHtml+audioHtml+transHtml
+    +'<div style="display:flex;gap:5px;flex-wrap:wrap;margin-top:8px">'+transBtns+'</div>'
+    +'<div class="msg-time">'+t+'</div></div>';
+}
+
+function buildTextCompose(){
+  var docPart=S.composeType==='document'?'<button class="btn btn-s" onclick="document.getElementById(\'fileinput\').click()">Fichier</button><input type="file" id="fileinput" style="display:none" onchange="attachFile(this)">':'';
+  return '<textarea class="compose-textarea" id="compose-text" placeholder="Votre message (sera traduit automatiquement en turc pour Pierre)"></textarea>'
+    +'<div style="display:flex;justify-content:space-between;align-items:center;margin-top:9px"><div style="font-size:11px;color:var(--mu)">Traduction auto : Turc (langue du patient)</div>'
+    +'<div style="display:flex;gap:6px">'+docPart+'<button class="btn btn-p" onclick="sendMsg()">Envoyer</button></div></div>';
+}
+
+function buildVoiceCompose(){
+  var recLabel=S.recording?'Enregistrement... (cliquer pour arreter)':'Cliquer pour enregistrer';
+  var transcriptHtml=S.recordingTranscript?'<div style="font-size:11px;color:var(--bl);background:var(--bl2);border-radius:7px;padding:6px 9px;margin-top:8px;font-style:italic">Transcription : '+S.recordingTranscript+'</div>':'';
+  var sendBtn=S.recordingTranscript?'<button class="btn btn-p" style="margin-top:9px" onclick="sendVoiceMemo()">Envoyer le memo</button>':'';
+  return '<div style="text-align:center;padding:14px 0"><button class="record-btn '+(S.recording?'recording':'idle')+'" id="rec-btn" onclick="toggleRecording()">'+(S.recording?'STOP':'REC')+'</button>'
+    +'<div style="font-size:12px;color:var(--mu);margin-top:8px">'+(S.recording?'Parlez clairement':recLabel)+'</div>'+transcriptHtml+sendBtn+'</div>';
+}
+
+function setComposeType(t){S.composeType=t;navTo('messages');}
+function setCommFilter(f){S.composeFilter=f;navTo('messages');}
+function markAllRead(){S.messages.forEach(function(m){m.read=true;});navTo('messages');}
+
+async function translateMsg(id,lang){
+  var m=S.messages.find(function(x){return x.id===id;});if(!m)return;
+  if(m.translations[lang])return;
+  m.translating=true;navTo('messages');
+  var langNames={tr:'turc',ar:'arabe (arabe standard)',pt:'portugais',ro:'roumain',pl:'polonais',en:'anglais',ht:'creole haitien'};
+  try{
+    var r=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:600,
+        messages:[{role:'user',content:'Traduis ce message medical en '+langNames[lang]+'. Langage simple et rassurant pour un patient. Ne traduis pas les noms propres ni les noms de medicaments. Reponds uniquement avec la traduction:\n\n'+m.content}]})});
+    var d=await r.json();
+    m.translations[lang]=d.content&&d.content[0]&&d.content[0].text||'Traduction indisponible.';
+  }catch(e){m.translations[lang]='Erreur de traduction.';}
+  m.translating=false;navTo('messages');
+}
+
+async function sendMsg(){
+  var ta=document.getElementById('compose-text');
+  if(!ta||!ta.value.trim())return;
+  var msg={id:Date.now(),from:'Marie (aidant)',fromRole:'aidant',type:'message',content:ta.value.trim(),docName:null,audioTranscript:null,timestamp:new Date().toISOString(),read:true,translations:{},translating:false};
+  S.messages.unshift(msg);
+  translateMsg(msg.id,'tr');
+  navTo('messages');
+}
+
+function attachFile(input){
+  var f=input.files[0];if(!f)return;
+  var msg={id:Date.now(),from:'Marie (aidant)',fromRole:'aidant',type:'document',content:'Document partage : '+f.name,docName:f.name,docType:f.name.endsWith('.pdf')?'pdf':'image',audioTranscript:null,timestamp:new Date().toISOString(),read:true,translations:{},translating:false};
+  S.messages.unshift(msg);translateMsg(msg.id,'tr');navTo('messages');
+}
+
+function playAudio(id){
+  var m=S.messages.find(function(x){return x.id===id;});
+  if(m&&m.audioUrl){var a=new Audio(m.audioUrl);a.play();}
+  else{alert('Audio non disponible en mode demo.');}
+}
+
+// ── MEMO VOCAL ──
+var mediaRecorderObj=null;var audioChunksArr=[];var speechRecObj=null;
+
+function toggleRecording(){
+  if(!S.recording){startRecording();}else{stopRecording();}
+}
+
+function startRecording(){
+  S.recording=true;S.recordingTranscript='';
+  if(typeof SpeechRecognition!=='undefined'||typeof webkitSpeechRecognition!=='undefined'){
+    var SR=typeof SpeechRecognition!=='undefined'?SpeechRecognition:webkitSpeechRecognition;
+    speechRecObj=new SR();speechRecObj.lang='fr-FR';speechRecObj.continuous=true;speechRecObj.interimResults=true;
+    speechRecObj.onresult=function(e){
+      var t='';for(var i=0;i<e.results.length;i++){t+=e.results[i][0].transcript;}
+      S.recordingTranscript=t;
+      var btn=document.getElementById('rec-btn');
+      if(btn){var prev=btn.closest('.compose-box')||btn.parentNode;var tr=prev.querySelector('[style*="font-style:italic"]');if(tr)tr.textContent='Transcription : '+t;}
+    };
+    try{speechRecObj.start();}catch(e){}
+  }
+  navigator.mediaDevices.getUserMedia({audio:true}).then(function(stream){
+    mediaRecorderObj=new MediaRecorder(stream);audioChunksArr=[];
+    mediaRecorderObj.ondataavailable=function(e){audioChunksArr.push(e.data);};
+    mediaRecorderObj.start();
+  }).catch(function(){
+    S.recording=false;S.recordingTranscript='';
+    alert('Microphone inaccessible. Verifiez les permissions du navigateur.');
+    navTo('messages');
+  });
+  navTo('messages');
+}
+
+function stopRecording(){
+  S.recording=false;
+  if(speechRecObj){try{speechRecObj.stop();}catch(e){}}
+  if(mediaRecorderObj&&mediaRecorderObj.state!=='inactive'){
+    mediaRecorderObj.onstop=function(){
+      var blob=new Blob(audioChunksArr,{type:'audio/webm'});
+      S.lastAudioUrl=URL.createObjectURL(blob);
+    };
+    mediaRecorderObj.stop();
+    if(mediaRecorderObj.stream)mediaRecorderObj.stream.getTracks().forEach(function(t){t.stop();});
+  }
+  navTo('messages');
+}
+
+async function sendVoiceMemo(){
+  if(!S.recordingTranscript)return;
+  var transcript=S.recordingTranscript;
+  var msg={id:Date.now(),from:'Marie (aidant)',fromRole:'aidant',type:'voiceMemo',content:transcript,docName:null,audioUrl:S.lastAudioUrl||null,audioTranscript:transcript,timestamp:new Date().toISOString(),read:true,translations:{},translating:false};
+  S.messages.unshift(msg);
+  S.recordingTranscript='';S.recording=false;S.composeType='message';
+  await translateMsg(msg.id,'tr');
+  navTo('messages');
+}
+
+// ═══════ VIDAL HELPERS ═══════
+function toggleVidalPanel(id){
+  const el=document.getElementById('vidal-'+id);
+  if(el){el.style.display=el.style.display==='none'?'block':'none';}
+}
+function vidalClass(indication){
+  const classes={
+    'Alzheimer':'Inhibiteur de la cholinestérase','Hypertension':'Inhibiteur calcique','Diabète':'Biguanide antidiabétique',
+    'Diabète type 2':'Biguanide antidiabétique','Cardio':'Cardiovasculaire','Thyroïde':'Hormones thyroïdiennes',
+    'Douleur':'Analgésique','Anxiété':'Anxiolytique','Dépression':'Antidépresseur'
+  };
+  for(const k in classes){if(indication&&indication.includes(k))return classes[k];}
+  return 'Médicament — voir fiche Vidal';
+}
+
 </script>
+
+<!-- ═══ PHARMACIEN APP ═══ -->
+<div id="screen-pharmacien" class="hidden">
+  <div style="background:linear-gradient(135deg,#1D55E8,#5B21B6);padding:16px 20px;display:flex;align-items:center;justify-content:space-between">
+    <div style="display:flex;align-items:center;gap:10px">
+      <div style="width:32px;height:32px;background:rgba(255,255,255,.2);border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:16px">💊</div>
+      <div><div style="font-family:'Syne',sans-serif;font-size:15px;font-weight:800;color:#fff">AidantPro Pharmacie</div><div id="ph-officine" style="font-size:10px;color:rgba(255,255,255,.7)">Espace professionnel</div></div>
+    </div>
+    <button onclick="doSignOut()" style="background:rgba(255,255,255,.15);border:none;color:#fff;padding:5px 11px;border-radius:7px;font-size:11px;font-weight:600;cursor:pointer">Déconnexion</button>
+  </div>
+
+  <div style="max-width:900px;margin:0 auto;padding:22px 20px">
+
+    <!-- RECHERCHE PATIENT -->
+    <div class="card" style="margin-bottom:16px">
+      <div class="ct">🔍 Recherche patient</div>
+      <div style="display:flex;gap:9px;margin-bottom:12px">
+        <input id="ph-search" class="fi" style="flex:1" placeholder="Nom, prénom, ou code AidantPro…" oninput="phSearch(this.value)">
+        <button class="btn btn-p" onclick="phSearch(document.getElementById('ph-search').value)">Rechercher</button>
+        <button class="btn btn-s" onclick="phScanQR()" style="font-size:18px;padding:6px 10px">📱</button>
+      </div>
+      <div id="ph-results"></div>
+    </div>
+
+    <!-- PATIENT SÉLECTIONNÉ -->
+    <div id="ph-patient-panel" class="hidden">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
+        <div>
+          <div style="font-family:'Syne',sans-serif;font-size:18px;font-weight:800" id="ph-pat-name">Pierre Dubois</div>
+          <div style="font-size:12px;color:var(--mu)" id="ph-pat-info">78 ans · A+ · MGEN</div>
+        </div>
+        <div style="display:flex;gap:8px">
+          <span class="badge b-gn" style="font-size:11px">✓ Consentement patient</span>
+          <span class="badge b-bl" style="font-size:11px">DP connecté</span>
+        </div>
+      </div>
+
+      <!-- ALERTES INTERACTIONS -->
+      <div id="ph-alerts">
+        <div class="alert alert-warn" style="margin-bottom:8px">⚠ <strong>Interaction potentielle :</strong> Donépézil + Metformine — surveiller la glycémie. Fiche Vidal recommandée.</div>
+        <div class="alert alert-info" style="margin-bottom:14px">💡 <strong>Générique disponible :</strong> Metformine 500mg → Metformine Biogaran® — économie estimée : <strong>4,20€/mois</strong></div>
+      </div>
+
+      <!-- LISTE MÉDICAMENTS -->
+      <div class="grid2">
+        <div>
+          <div class="card">
+            <div class="ct">Traitements en cours</div>
+            <div id="ph-med-list"></div>
+          </div>
+          <div class="card">
+            <div class="ct">📊 Économies potentielles</div>
+            <div class="info-row"><span class="ik">Génériques disponibles</span><span class="iv badge b-gn">2 médicaments</span></div>
+            <div class="info-row"><span class="ik">Économie mensuelle</span><span class="iv" style="color:var(--gn);font-weight:700">~8,40€/mois</span></div>
+            <div class="info-row"><span class="ik">Économie annuelle</span><span class="iv" style="color:var(--gn);font-weight:700">~100€/an</span></div>
+            <div class="info-row"><span class="ik">Part Assurance Maladie</span><span class="iv" style="color:var(--bl);font-weight:600">~70€/an</span></div>
+            <button class="btn btn-g mt8" style="width:100%;justify-content:center;font-size:11px" onclick="phProposeGeneriques()">Proposer les génériques au patient</button>
+          </div>
+        </div>
+        <div>
+          <div class="card">
+            <div class="ct">📋 Dispensation du jour</div>
+            <div id="ph-dispense-list"></div>
+            <div style="border-top:1px solid var(--bd);padding-top:12px;margin-top:4px">
+              <div class="fg"><div class="fl"><span>Ajouter une dispensation</span></div>
+                <div style="display:flex;gap:7px">
+                  <input id="ph-new-med" class="fi" style="flex:1;font-size:11px" placeholder="Nom du médicament dispensé">
+                  <button class="btn btn-p" style="padding:5px 10px" onclick="phAddDispense()">+</button>
+                </div>
+              </div>
+              <button class="btn btn-g btn-full mt8" onclick="phValidate()">✓ Valider la dispensation</button>
+            </div>
+          </div>
+          <div class="card">
+            <div class="ct">📅 Historique recent</div>
+            <div class="info-row"><span class="ik">Dernière venue</span><span class="iv">il y a 28 jours</span></div>
+            <div class="info-row"><span class="ik">Renouvellements en attente</span><span class="iv"><span class="badge b-am">Donépézil J-5</span></span></div>
+            <div class="info-row"><span class="ik">Ordonnances actives</span><span class="iv">2</span></div>
+            <div class="info-row"><span class="ik">Bilan médicamenteux</span><span class="iv"><span class="badge b-rd">Non fait</span></span></div>
+            <button class="btn btn-s mt8" style="width:100%;justify-content:center;font-size:11px" onclick="phBilan()">Proposer un bilan médicamenteux</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- STATS OFFICINE -->
+    <div id="ph-stats-panel">
+      <div style="font-family:'Syne',sans-serif;font-size:16px;font-weight:800;margin-bottom:12px">Tableau de bord officine</div>
+      <div class="grid4">
+        <div class="kpi"><div class="kv" style="color:var(--bl)">12</div><div class="kl">Patients AidantPro</div></div>
+        <div class="kpi"><div class="kv" style="color:var(--gn)">38%</div><div class="kl">Taux générique</div></div>
+        <div class="kpi"><div class="kv" style="color:var(--am)">3</div><div class="kl">Alertes interactions</div></div>
+        <div class="kpi"><div class="kv" style="color:var(--pu,#5B21B6)">1 240€</div><div class="kl">Éco. AM ce mois</div></div>
+      </div>
+      <div class="alert alert-info mt12">💡 <strong>Opportunité :</strong> 4 patients n'ont pas encore fait leur bilan médicamenteux annuel (rémunération acte : 60€/bilan).</div>
+    </div>
+  </div>
+</div>
+
 </body>
 </html>
+// ═══════════════════════════════════════════════════
+// INTERFACE PHARMACIEN
+// ═══════════════════════════════════════════════════
+const PH={
+  patient:null,
+  dispenses:[],
+  patients:[
+    {id:1,nom:'Pierre Dubois',age:78,gs:'A+',mutuelle:'MGEN',code:'AP-7821',nir:'1850675056082',medecin:'Dr. Martin Sophie',meds:[
+      {nom:'Donépézil',dose:'10mg',last:'28j',renouv:5,generique:false,prix:42.50,prixGen:null},
+      {nom:'Amlodipine',dose:'5mg',last:'28j',renouv:18,generique:true,prixGen:3.20,prix:7.80},
+      {nom:'Metformine',dose:'500mg',last:'28j',renouv:22,generique:true,prixGen:3.20,prix:7.40}
+    ]},
+    {id:2,nom:'Jeanne Martin',age:82,gs:'O+',mutuelle:'Harmonie',code:'AP-4432',nir:'2820375056041',medecin:'Dr. Faure Paul',meds:[
+      {nom:'Lévodopa',dose:'250mg',last:'14j',renouv:12,generique:false,prix:38.00,prixGen:null},
+      {nom:'Bisoprolol',dose:'5mg',last:'28j',renouv:8,generique:true,prixGen:2.80,prix:6.50}
+    ]}
+  ]
+};
+
+function showPharmacien(){
+  showScreen('pharmacien');
+  const prenom=S.user&&S.user.user_metadata&&S.user.user_metadata.prenom||'';
+  const officine=document.getElementById('ph-officine');
+  if(officine)officine.textContent='Pharmacie '+(prenom||'Principale');
+  renderPhStats();
+}
+
+function phSearch(q){
+  const res=document.getElementById('ph-results');
+  if(!q||q.length<2){res.innerHTML='';return;}
+  const matches=PH.patients.filter(p=>p.nom.toLowerCase().includes(q.toLowerCase())||p.code.includes(q)||(p.nir&&p.nir.includes(q.replace(/\s/g,''))));
+  if(matches.length===0){res.innerHTML='<div style="font-size:12px;color:var(--mu);padding:8px 0">Aucun patient trouvé.</div>';return;}
+  res.innerHTML=matches.map(p=>'<div style="display:flex;align-items:center;justify-content:space-between;padding:10px 12px;background:var(--bg);border-radius:9px;margin-bottom:7px;cursor:pointer;border:1.5px solid var(--bd)" onclick="phSelectPatient('+p.id+')">'
+    +'<div><div style="font-size:13px;font-weight:600">'+p.nom+'</div><div style="font-size:11px;color:var(--mu)">'+p.age+' ans &middot; '+p.gs+' &middot; '+p.code+'</div></div>'
+    +'<div style="display:flex;gap:6px"><span class="badge b-bl">'+p.meds.length+' traitements</span>'+(p.meds.some(m=>m.renouv<=10)?'<span class="badge b-am">Renouvellement</span>':'')+'<span style="color:var(--bl);font-size:20px">&rsaquo;</span></div></div>').join('');
+}
+
+function phSelectPatient(id){
+  const p=PH.patients.find(x=>x.id===id);if(!p)return;
+  PH.patient=p;PH.dispenses=[];
+  document.getElementById('ph-pat-name').textContent=p.nom;
+  document.getElementById('ph-pat-info').textContent=p.age+' ans - '+p.gs+' - '+p.mutuelle+' - NIR: '+(p.nir?p.nir.replace(/(\d{1})(\d{2})(\d{2})(\d{2})(\d{3})(\d{3})(\d{2})/,'$1 $2 $3 $4 $5 $6 $7'):'Non renseigné');
+  document.getElementById('ph-stats-panel').classList.add('hidden');
+  document.getElementById('ph-patient-panel').classList.remove('hidden');
+  document.getElementById('ph-results').innerHTML='';
+  document.getElementById('ph-search').value=p.nom;
+  renderPhMeds();renderPhDispenses();
+}
+
+function renderPhMeds(){
+  if(!PH.patient)return;
+  const el=document.getElementById('ph-med-list');
+  el.innerHTML=PH.patient.meds.map(function(m,i){
+    return '<div class="ph-med-item"><div style="flex:1">'
+      +'<div style="font-size:13px;font-weight:600">'+m.nom+' <span style="font-weight:400;color:var(--mu);font-size:11px">'+m.dose+'</span></div>'
+      +'<div style="font-size:10px;color:var(--mu);margin-top:2px">Derniere dispensation : '+m.last+' | Renouvellement J-'+m.renouv+'</div>'
+      +(m.generique?'<span class="ph-generique" onclick="phUseGenerique('+i+')">Generique disponible : economie '+(m.prix-m.prixGen).toFixed(2)+'EUR</span>':'')
+      +'</div><div style="text-align:right">'
+      +'<div style="font-size:12px;font-weight:700;color:'+(m.renouv<=10?'var(--rd)':'var(--txt)')+'">J-'+m.renouv+'</div>'
+      +'<div style="font-size:10px;color:var(--mu)">'+m.prix.toFixed(2)+'EUR</div>'
+      +'<button class="btn btn-p" style="padding:2px 8px;font-size:10px;margin-top:4px" onclick="phDispense('+i+')">Delivrer</button>'
+      +'</div></div>';
+  }).join('');
+}
+
+function renderPhDispenses(){
+  const el=document.getElementById('ph-dispense-list');
+  if(PH.dispenses.length===0){el.innerHTML='<div style="font-size:12px;color:var(--mu);padding:8px 0">Aucune dispensation ce jour.</div>';return;}
+  el.innerHTML=PH.dispenses.map(function(d,i){
+    return '<div class="ph-dispense-item"><div><div style="font-weight:600">'+d.nom+'</div><div style="font-size:10px;color:var(--mu)">'+d.dose+'</div></div>'
+      +'<div style="display:flex;align-items:center;gap:7px">'+(d.generique?'<span class="badge" style="background:#EDE9FE;color:#5B21B6">Generique</span>':'')
+      +'<span class="badge b-gn">OK</span>'
+      +'<button onclick="PH.dispenses.splice('+i+',1);renderPhDispenses()" style="background:none;border:none;color:var(--mu);cursor:pointer;font-size:14px">x</button>'
+      +'</div></div>';
+  }).join('');
+}
+
+function phDispense(idx){
+  const m=PH.patient.meds[idx];
+  PH.dispenses.push({nom:m.nom,dose:m.dose,generique:false,prix:m.prix});
+  renderPhDispenses();
+}
+
+function phUseGenerique(idx){
+  const m=PH.patient.meds[idx];
+  PH.dispenses.push({nom:m.nom+' Biogaran',dose:m.dose,generique:true,prix:m.prixGen});
+  renderPhDispenses();
+}
+
+function phAddDispense(){
+  const inp=document.getElementById('ph-new-med');
+  if(!inp.value.trim())return;
+  PH.dispenses.push({nom:inp.value.trim(),dose:'',generique:false,prix:0});
+  inp.value='';renderPhDispenses();
+}
+
+function phValidate(){
+  if(PH.dispenses.length===0){alert('Aucune dispensation a valider.');return;}
+  const total=PH.dispenses.reduce(function(a,d){return a+(d.prix||0);},0);
+  alert('Dispensation validee pour '+PH.patient.nom+'. '+PH.dispenses.length+' medicament(s). Le carnet AidantPro du patient a ete mis a jour.');
+  PH.dispenses=[];renderPhDispenses();
+}
+
+function phProposeGeneriques(){
+  alert('Notification envoyee a l aidant de '+PH.patient.nom+'. Il pourra valider le passage aux generiques depuis son application.');
+}
+
+function phBilan(){
+  alert('Demande de bilan medicamenteux cree. Acte remunere 60EUR par l Assurance Maladie.');
+}
+
+function phScanQR(){
+  alert('Fonctionnalite scan QR code - disponible dans la version mobile.');
+}
+
+function renderPhStats(){
+  document.getElementById('ph-stats-panel').classList.remove('hidden');
+  document.getElementById('ph-patient-panel').classList.add('hidden');
+}
+
+
