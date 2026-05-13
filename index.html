@@ -3,782 +3,1049 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>AidantPro — Coordination famille & soins</title>
-<script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
-<script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
-<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+<title>AidantPro</title>
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 :root{--bl:#1D55E8;--bl2:#EBF0FD;--bl3:#BFCFFA;--gn:#137A3A;--gn2:#EAF5EE;--gn3:#C8E8D3;--am:#B85C00;--am2:#FEF3E6;--am3:#FDDDB8;--rd:#C0272B;--rd2:#FDEAEA;--rd3:#F8C5C5;--pu:#5B21B6;--pu2:#EDE9FE;--txt:#1A1815;--mu:#6B6860;--bg:#F7F5F1;--sur:#FFF;--bd:#E2DDD5;--sw:230px}
-body{font-family:'Instrument Sans',sans-serif;color:var(--txt);background:var(--bg)}
+body{font-family:'Instrument Sans',sans-serif;color:var(--txt);background:var(--bg);min-height:100vh}
 input,button,select,textarea{font-family:inherit}
-
-/* ── AUTH ── */
-.auth-wrap{min-height:100vh;display:grid;grid-template-columns:1fr 1fr}
-@media(max-width:768px){.auth-wrap{grid-template-columns:1fr}}
-.auth-left{background:linear-gradient(160deg,#0D1B4B 0%,#1D55E8 45%,#137A3A 100%);padding:48px;display:flex;flex-direction:column;justify-content:space-between;position:relative;overflow:hidden}
-.auth-left::before{content:'';position:absolute;inset:0;background:url("data:image/svg+xml,%3Csvg width='60' height='60' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='30' cy='30' r='2' fill='%23fff' fill-opacity='.03'/%3E%3C/svg%3E")}
-@media(max-width:768px){.auth-left{display:none}}
+/* LOADING */
+.loader{min-height:100vh;display:flex;align-items:center;justify-content:center;background:var(--bg)}
+.loader-inner{text-align:center}
+.loader-ic{width:52px;height:52px;background:linear-gradient(135deg,var(--bl),var(--gn));border-radius:15px;display:flex;align-items:center;justify-content:center;font-size:26px;margin:0 auto 14px}
+.loader-nm{font-family:'Syne',sans-serif;font-size:20px;font-weight:800;margin-bottom:12px}
+.spinner{width:22px;height:22px;border:3px solid var(--bl2);border-top-color:var(--bl);border-radius:50%;animation:spin .7s linear infinite;margin:0 auto}
+@keyframes spin{to{transform:rotate(360deg)}}
+/* AUTH LAYOUT */
+.auth{min-height:100vh;display:grid;grid-template-columns:1fr 1fr}
+@media(max-width:768px){.auth{grid-template-columns:1fr}}
+.auth-l{background:linear-gradient(160deg,#0D1B4B 0%,var(--bl) 45%,var(--gn) 100%);padding:44px;display:flex;flex-direction:column;justify-content:space-between;position:relative;overflow:hidden}
+.auth-l::before{content:'';position:absolute;inset:0;background:url("data:image/svg+xml,%3Csvg width='60' height='60' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='30' cy='30' r='2' fill='%23fff' fill-opacity='.03'/%3E%3C/svg%3E")}
+@media(max-width:768px){.auth-l{display:none}}
 .al-logo{display:flex;align-items:center;gap:12px;position:relative}
-.al-ic{width:44px;height:44px;background:rgba(255,255,255,.15);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:22px;border:1px solid rgba(255,255,255,.2)}
-.al-nm{font-family:'Syne',sans-serif;font-size:24px;font-weight:800;color:#fff}
+.al-logo-ic{width:42px;height:42px;background:rgba(255,255,255,.15);border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:20px;border:1px solid rgba(255,255,255,.2)}
+.al-logo-nm{font-family:'Syne',sans-serif;font-size:22px;font-weight:800;color:#fff}
 .al-body{position:relative}
-.al-h{font-family:'Syne',sans-serif;font-size:36px;font-weight:800;color:#fff;line-height:1.15;margin-bottom:14px;letter-spacing:-1px}
-.al-sub{font-size:14px;color:rgba(255,255,255,.7);line-height:1.7;margin-bottom:28px}
+.al-h{font-family:'Syne',sans-serif;font-size:34px;font-weight:800;color:#fff;line-height:1.15;margin-bottom:14px;letter-spacing:-1px}
+.al-sub{font-size:14px;color:rgba(255,255,255,.7);line-height:1.7;margin-bottom:26px}
 .al-stats{display:flex;flex-direction:column;gap:10px}
-.al-stat{display:flex;align-items:center;gap:12px;background:rgba(255,255,255,.1);border-radius:10px;padding:11px 14px;border:1px solid rgba(255,255,255,.15)}
+.al-stat{display:flex;align-items:center;gap:11px;background:rgba(255,255,255,.1);border-radius:10px;padding:11px 14px;border:1px solid rgba(255,255,255,.15)}
 .al-stat-ic{font-size:18px;flex-shrink:0}
 .al-stat-txt{font-size:12px;color:rgba(255,255,255,.85);line-height:1.4}
 .al-stat-txt strong{color:#fff}
 .al-ft{position:relative;font-size:11px;color:rgba(255,255,255,.4)}
-.auth-right{padding:40px;display:flex;flex-direction:column;justify-content:center;background:var(--sur);overflow-y:auto}
-.auth-right-in{max-width:400px;width:100%;margin:0 auto}
-.mob-logo{display:none;align-items:center;gap:10px;margin-bottom:28px}
+.auth-r{padding:40px;display:flex;flex-direction:column;justify-content:center;background:var(--sur);overflow-y:auto}
+.auth-r-in{max-width:400px;width:100%;margin:0 auto}
+.mob-logo{display:none;align-items:center;gap:10px;margin-bottom:26px}
 @media(max-width:768px){.mob-logo{display:flex}}
-.mob-ic{width:36px;height:36px;background:linear-gradient(135deg,var(--bl),var(--gn));border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:17px}
-.mob-nm{font-family:'Syne',sans-serif;font-size:19px;font-weight:800}
-.auth-h{font-family:'Syne',sans-serif;font-size:26px;font-weight:800;margin-bottom:5px;letter-spacing:-.5px}
-.auth-sub{font-size:13px;color:var(--mu);margin-bottom:22px;line-height:1.6}
+.mob-ic{width:34px;height:34px;background:linear-gradient(135deg,var(--bl),var(--gn));border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:16px}
+.mob-nm{font-family:'Syne',sans-serif;font-size:18px;font-weight:800}
+.auth-title{font-family:'Syne',sans-serif;font-size:24px;font-weight:800;margin-bottom:5px;letter-spacing:-.5px}
+.auth-sub{font-size:13px;color:var(--mu);margin-bottom:20px;line-height:1.6}
 .tabs{display:flex;background:var(--bg);border-radius:9px;padding:3px;margin-bottom:20px}
-.tab{flex:1;padding:7px;border-radius:7px;border:none;background:transparent;font-size:13px;font-weight:600;cursor:pointer;transition:all .15s;color:var(--mu)}
-.tab.on{background:var(--sur);color:var(--txt);box-shadow:0 1px 4px rgba(0,0,0,.1)}
-.fg{margin-bottom:13px}
-.fl{font-size:10px;font-weight:600;color:var(--mu);margin-bottom:4px;display:flex;justify-content:space-between;text-transform:uppercase;letter-spacing:.5px}
-.flink{font-size:10px;font-weight:500;color:var(--bl);cursor:pointer;text-transform:none;letter-spacing:0;border:none;background:none;padding:0}
-.fi-w{position:relative}
-.fi{width:100%;padding:10px 13px;border:1.5px solid var(--bd);border-radius:9px;font-size:13px;background:var(--bg);color:var(--txt);outline:none;transition:all .15s}
-.fi:focus{border-color:var(--bl);background:var(--sur);box-shadow:0 0 0 3px rgba(29,85,232,.07)}
-.fi.ferr{border-color:var(--rd);background:var(--rd2)}
-.fi.fok{border-color:var(--gn)}
-.eye{position:absolute;right:11px;top:50%;transform:translateY(-50%);cursor:pointer;color:var(--mu);background:none;border:none;font-size:15px;padding:3px}
-.fi-ic{position:absolute;right:11px;top:50%;transform:translateY(-50%);font-size:13px}
-.errmsg{font-size:11px;color:var(--rd);margin-top:3px}
+.tab{flex:1;padding:7px;border-radius:7px;border:none;background:transparent;font-size:12px;font-weight:600;cursor:pointer;color:var(--mu);transition:all .15s}
+.tab.active{background:var(--sur);color:var(--txt);box-shadow:0 1px 4px rgba(0,0,0,.1)}
+.form-group{margin-bottom:12px}
+.form-label{font-size:10px;font-weight:600;color:var(--mu);margin-bottom:4px;display:flex;justify-content:space-between;text-transform:uppercase;letter-spacing:.5px}
+.form-label button{font-size:10px;font-weight:500;color:var(--bl);text-transform:none;letter-spacing:0;border:none;background:none;cursor:pointer;padding:0}
+.input-wrap{position:relative}
+.form-input{width:100%;padding:10px 13px;border:1.5px solid var(--bd);border-radius:9px;font-size:13px;background:var(--bg);color:var(--txt);outline:none;transition:all .15s}
+.form-input:focus{border-color:var(--bl);background:var(--sur);box-shadow:0 0 0 3px rgba(29,85,232,.07)}
+.form-input.is-valid{border-color:var(--gn)}
+.form-input.is-invalid{border-color:var(--rd);background:var(--rd2)}
+.input-icon{position:absolute;right:11px;top:50%;transform:translateY(-50%);font-size:13px;pointer-events:none}
+.eye-btn{position:absolute;right:11px;top:50%;transform:translateY(-50%);cursor:pointer;color:var(--mu);background:none;border:none;font-size:15px;padding:3px}
+.error-msg{font-size:11px;color:var(--rd);margin-top:3px}
 .pwd-bars{display:flex;gap:3px;margin:5px 0 3px}
 .pwd-bar{flex:1;height:3px;border-radius:2px;background:var(--bd);transition:background .2s}
 .pwd-bar.s1{background:var(--rd)}.pwd-bar.s2{background:var(--am)}.pwd-bar.s3{background:#F59E0B}.pwd-bar.s4{background:var(--gn)}
-.pwd-reqs{display:grid;grid-template-columns:1fr 1fr;gap:2px}
-.req{font-size:10px;color:var(--mu);display:flex;align-items:center;gap:4px}
-.req.ok{color:var(--gn)}
-.req-dot{width:5px;height:5px;border-radius:50%;background:var(--bd);flex-shrink:0}
-.req.ok .req-dot{background:var(--gn)}
-.roles{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin-bottom:13px}
-.role-opt{border:1.5px solid var(--bd);border-radius:9px;padding:10px 6px;cursor:pointer;text-align:center;transition:all .15s;background:transparent}
-.role-opt:hover,.role-opt.sel{border-color:var(--bl);background:var(--bl2)}
-.role-opt-ic{font-size:20px;margin-bottom:3px}
-.role-opt-nm{font-size:11px;font-weight:600}
-.role-opt.sel .role-opt-nm{color:var(--bl)}
-.role-opt-ds{font-size:9px;color:var(--mu);margin-top:1px}
-.cb-row{display:flex;align-items:flex-start;gap:9px;margin-bottom:13px;cursor:pointer}
-.cb{width:15px;height:15px;border:1.5px solid var(--bd);border-radius:4px;flex-shrink:0;margin-top:1px;display:flex;align-items:center;justify-content:center;transition:all .15s}
-.cb.on{background:var(--bl);border-color:var(--bl)}
-.cb-lbl{font-size:11px;color:var(--mu);line-height:1.5}
-.auth-btn{width:100%;padding:12px;background:var(--bl);color:#fff;border:none;border-radius:9px;font-size:13px;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:7px;margin-top:7px}
-.auth-btn:hover{background:#1544C8}
-.auth-btn:disabled{opacity:.6;cursor:not-allowed}
-.alert{padding:10px 13px;border-radius:9px;font-size:12px;margin-bottom:13px;display:flex;align-items:flex-start;gap:8px;line-height:1.5}
-.alert.aerr{background:var(--rd2);color:var(--rd);border:1px solid var(--rd3)}
-.alert.aok{background:var(--gn2);color:var(--gn);border:1px solid var(--gn3)}
-.alert.ainfo{background:var(--bl2);color:var(--bl);border:1px solid var(--bl3)}
-.sec-box{background:var(--gn2);border:1px solid var(--gn3);border-radius:9px;padding:11px 13px;margin-top:18px;display:flex;gap:9px}
-.sec-txt{font-size:11px;color:var(--gn);line-height:1.5}
-.spin{display:inline-block;width:14px;height:14px;border:2px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:sp .7s linear infinite}
-@keyframes sp{to{transform:rotate(360deg)}}
-.g2{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:13px}
-.modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.5);display:flex;align-items:center;justify-content:center;z-index:1000;padding:20px}
-.modal{background:#fff;border-radius:14px;padding:24px;max-width:480px;width:100%;max-height:80vh;overflow-y:auto}
-.modal h2{font-family:'Syne',sans-serif;font-size:18px;font-weight:800;margin-bottom:12px}
-.modal p{font-size:12px;color:var(--mu);line-height:1.8;margin-bottom:8px}
+.pwd-reqs{display:grid;grid-template-columns:1fr 1fr;gap:2px;margin-bottom:4px}
+.pwd-req{font-size:10px;color:var(--mu);display:flex;align-items:center;gap:4px}
+.pwd-req.ok{color:var(--gn)}
+.pwd-req-dot{width:5px;height:5px;border-radius:50%;background:var(--bd);flex-shrink:0}
+.pwd-req.ok .pwd-req-dot{background:var(--gn)}
+.roles-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin-bottom:12px}
+.role-card{border:1.5px solid var(--bd);border-radius:9px;padding:10px 6px;cursor:pointer;text-align:center;transition:all .15s;background:transparent}
+.role-card:hover,.role-card.selected{border-color:var(--bl);background:var(--bl2)}
+.role-card-ic{font-size:20px;margin-bottom:3px}
+.role-card-nm{font-size:11px;font-weight:600}
+.role-card.selected .role-card-nm{color:var(--bl)}
+.role-card-ds{font-size:9px;color:var(--mu);margin-top:1px}
+.checkbox-row{display:flex;align-items:flex-start;gap:9px;margin-bottom:12px;cursor:pointer}
+.checkbox{width:15px;height:15px;border:1.5px solid var(--bd);border-radius:4px;flex-shrink:0;margin-top:1px;display:flex;align-items:center;justify-content:center;transition:all .15s}
+.checkbox.checked{background:var(--bl);border-color:var(--bl)}
+.checkbox-label{font-size:11px;color:var(--mu);line-height:1.5}
+.submit-btn{width:100%;padding:12px;background:var(--bl);color:#fff;border:none;border-radius:9px;font-size:13px;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:7px;margin-top:6px}
+.submit-btn:hover{background:#1544C8}
+.submit-btn:disabled{opacity:.6;cursor:not-allowed}
+.alert-box{padding:10px 13px;border-radius:9px;font-size:12px;margin-bottom:12px;display:flex;align-items:flex-start;gap:8px;line-height:1.5}
+.alert-box.error{background:var(--rd2);color:var(--rd);border:1px solid var(--rd3)}
+.alert-box.success{background:var(--gn2);color:var(--gn);border:1px solid var(--gn3)}
+.alert-box.info{background:var(--bl2);color:var(--bl);border:1px solid var(--bl3)}
+.security-note{background:var(--gn2);border:1px solid var(--gn3);border-radius:9px;padding:11px 13px;margin-top:16px;display:flex;gap:9px;font-size:11px;color:var(--gn);line-height:1.5}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);display:flex;align-items:center;justify-content:center;z-index:1000;padding:20px}
+.modal-box{background:#fff;border-radius:14px;padding:24px;max-width:460px;width:100%;max-height:80vh;overflow-y:auto}
+.modal-box h2{font-family:'Syne',sans-serif;font-size:18px;font-weight:800;margin-bottom:12px}
+.modal-box p{font-size:12px;color:var(--mu);line-height:1.8;margin-bottom:8px}
 .modal-close{width:100%;margin-top:14px;padding:10px;background:var(--bl);color:#fff;border:none;border-radius:9px;font-size:12px;font-weight:600;cursor:pointer}
-
-/* ── PATIENT ── */
-.pat{min-height:100vh;display:flex;flex-direction:column;background:var(--bg)}
-.pat-hd{background:linear-gradient(135deg,var(--bl),var(--gn));padding:18px 20px;display:flex;align-items:center;justify-content:space-between}
-.pat-hd-logo{display:flex;align-items:center;gap:9px}
-.pat-hd-ic{width:33px;height:33px;background:rgba(255,255,255,.2);border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:16px}
-.pat-hd-nm{font-family:'Syne',sans-serif;font-size:15px;font-weight:800;color:#fff}
-.pat-hd-btn{background:rgba(255,255,255,.2);border:none;color:#fff;padding:6px 12px;border-radius:7px;font-size:11px;font-weight:600;cursor:pointer}
+/* VERIFY */
+.verify-page{min-height:100vh;display:flex;align-items:center;justify-content:center;background:var(--bg);padding:40px}
+.verify-card{background:#fff;border-radius:18px;padding:36px;max-width:440px;width:100%;text-align:center;box-shadow:0 4px 40px rgba(0,0,0,.08)}
+.verify-icon{font-size:52px;margin-bottom:14px}
+.verify-title{font-family:'Syne',sans-serif;font-size:22px;font-weight:800;margin-bottom:8px}
+.verify-text{font-size:13px;color:var(--mu);line-height:1.7;margin-bottom:18px}
+.verify-note{background:var(--bl2);border-radius:10px;padding:12px;margin-bottom:18px;font-size:12px;color:var(--bl);line-height:1.6}
+/* PATIENT APP */
+.pat-app{min-height:100vh;display:flex;flex-direction:column;background:var(--bg)}
+.pat-header{background:linear-gradient(135deg,var(--bl),var(--gn));padding:16px 18px;display:flex;align-items:center;justify-content:space-between}
+.pat-header-logo{display:flex;align-items:center;gap:9px}
+.pat-header-ic{width:32px;height:32px;background:rgba(255,255,255,.2);border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:16px}
+.pat-header-nm{font-family:'Syne',sans-serif;font-size:14px;font-weight:800;color:#fff}
+.pat-header-btn{background:rgba(255,255,255,.2);border:none;color:#fff;padding:6px 12px;border-radius:7px;font-size:11px;font-weight:600;cursor:pointer}
 .pat-body{flex:1;padding:22px 18px}
 .pat-hello{font-family:'Syne',sans-serif;font-size:26px;font-weight:800;margin-bottom:5px}
-.pat-sub{font-size:15px;color:var(--mu);margin-bottom:24px}
-.pat-btns{display:flex;flex-direction:column;gap:12px}
-.pb{width:100%;padding:20px 22px;border-radius:16px;border:none;cursor:pointer;transition:all .15s;display:flex;align-items:center;gap:14px;text-align:left}
-.pb:hover{transform:translateY(-2px)}
-.pb-ic{font-size:30px;flex-shrink:0}
-.pb-tx{font-family:'Syne',sans-serif;font-size:19px;font-weight:700}
-.pb-sub{font-size:12px;opacity:.8;margin-top:2px}
-.pb-m{background:linear-gradient(135deg,var(--bl2),#D4E0FB);border:2px solid var(--bl3)}
-.pb-m .pb-tx{color:var(--bl)}
-.pb-r{background:linear-gradient(135deg,var(--gn2),#BBF7D0);border:2px solid var(--gn3)}
-.pb-r .pb-tx{color:var(--gn)}
-.pb-msg{background:linear-gradient(135deg,var(--am2),#FDE9C8);border:2px solid var(--am3)}
-.pb-msg .pb-tx{color:var(--am)}
-.feel-row{display:flex;gap:9px;margin-top:14px}
-.feel-btn{flex:1;padding:13px 6px;border-radius:12px;border:2px solid var(--bd);background:var(--sur);cursor:pointer;font-size:12px;font-weight:600;transition:all .15s;text-align:center}
-.feel-btn.fsel{border-color:var(--gn);background:var(--gn2);color:var(--gn)}
-.sub-hd{background:var(--sur);border-bottom:1px solid var(--bd);padding:14px 18px;display:flex;align-items:center;gap:11px}
-.back-btn{background:none;border:none;font-size:20px;cursor:pointer;color:var(--bl)}
-.sub-title{font-family:'Syne',sans-serif;font-size:16px;font-weight:800}
-.sub-body{flex:1;padding:20px 18px;display:flex;flex-direction:column;gap:14px}
-.med-card{background:var(--sur);border-radius:16px;border:2px solid var(--bd);padding:18px}
-.med-nm{font-family:'Syne',sans-serif;font-size:20px;font-weight:800;margin-bottom:3px}
-.med-dose{font-size:14px;color:var(--mu);margin-bottom:14px}
-.med-btns{display:flex;gap:9px;flex-wrap:wrap}
-.med-btn{padding:11px 18px;border-radius:12px;border:2px solid var(--bd);background:transparent;font-size:15px;font-weight:700;cursor:pointer;transition:all .15s}
-.med-btn.ok{background:var(--gn2);border-color:var(--gn);color:var(--gn)}
-.rdv-card{background:var(--sur);border-radius:16px;border:2px solid var(--gn3);padding:22px}
-.rdv-date{font-family:'Syne',sans-serif;font-size:40px;font-weight:800;color:var(--gn);line-height:1}
-.rdv-mo{font-size:16px;color:var(--gn);font-weight:600;margin-bottom:10px}
-.rdv-ti{font-size:18px;font-weight:700;margin-bottom:5px}
-.rdv-li{font-size:14px;color:var(--mu)}
-.rdv-hr{font-size:16px;font-weight:600;color:var(--bl);margin-top:8px}
-.msg-box{background:var(--sur);border-radius:16px;border:2px solid var(--bd);padding:18px;flex:1}
-.msg-ta{width:100%;border:none;outline:none;font-size:17px;line-height:1.7;resize:none;min-height:180px;background:transparent}
-.msg-send{width:100%;padding:16px;background:var(--am);color:#fff;border:none;border-radius:12px;font-size:16px;font-weight:700;cursor:pointer;margin-top:10px}
-.msg-sent{text-align:center;padding:36px 18px;font-size:19px;font-weight:700;color:var(--gn)}
-.lang-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.lang-card{background:var(--sur);border:2px solid var(--bd);border-radius:12px;padding:14px;cursor:pointer;transition:all .15s;display:flex;align-items:center;gap:10px}
-.lang-card:hover,.lang-card.lsel{border-color:var(--bl);background:var(--bl2)}
+.pat-welcome{font-size:14px;color:var(--mu);margin-bottom:22px}
+.pat-buttons{display:flex;flex-direction:column;gap:12px}
+.pat-btn{width:100%;padding:20px 22px;border-radius:16px;border:none;cursor:pointer;display:flex;align-items:center;gap:14px;text-align:left;transition:transform .15s}
+.pat-btn:hover{transform:translateY(-2px)}
+.pat-btn-icon{font-size:30px;flex-shrink:0}
+.pat-btn-title{font-family:'Syne',sans-serif;font-size:18px;font-weight:700}
+.pat-btn-sub{font-size:12px;opacity:.8;margin-top:2px}
+.pat-btn.meds{background:linear-gradient(135deg,var(--bl2),#D4E0FB);border:2px solid var(--bl3)}
+.pat-btn.meds .pat-btn-title{color:var(--bl)}
+.pat-btn.rdv{background:linear-gradient(135deg,var(--gn2),#BBF7D0);border:2px solid var(--gn3)}
+.pat-btn.rdv .pat-btn-title{color:var(--gn)}
+.pat-btn.msg{background:linear-gradient(135deg,var(--am2),#FDE9C8);border:2px solid var(--am3)}
+.pat-btn.msg .pat-btn-title{color:var(--am)}
+.feel-title{font-size:14px;font-weight:600;color:var(--mu);margin-top:22px;margin-bottom:10px;text-align:center}
+.feel-row{display:flex;gap:9px}
+.feel-btn{flex:1;padding:12px 6px;border-radius:12px;border:2px solid var(--bd);background:var(--sur);cursor:pointer;font-size:12px;font-weight:600;text-align:center;transition:all .15s}
+.feel-btn.active{border-color:var(--gn);background:var(--gn2);color:var(--gn)}
+.sub-screen{min-height:100vh;display:flex;flex-direction:column;background:var(--bg)}
+.sub-header{background:var(--sur);border-bottom:1px solid var(--bd);padding:14px 18px;display:flex;align-items:center;gap:11px}
+.back-icon-btn{background:none;border:none;font-size:20px;cursor:pointer;color:var(--bl);flex-shrink:0}
+.sub-header-title{font-family:'Syne',sans-serif;font-size:16px;font-weight:800}
+.sub-body{flex:1;padding:18px;display:flex;flex-direction:column;gap:13px}
+.med-item{background:var(--sur);border-radius:15px;border:2px solid var(--bd);padding:17px}
+.med-item-name{font-family:'Syne',sans-serif;font-size:20px;font-weight:800;margin-bottom:3px}
+.med-item-dose{font-size:14px;color:var(--mu);margin-bottom:13px}
+.med-item-btns{display:flex;gap:9px;flex-wrap:wrap}
+.confirm-btn{padding:11px 18px;border-radius:12px;border:2px solid var(--bd);background:transparent;font-size:15px;font-weight:700;cursor:pointer;transition:all .15s}
+.confirm-btn.done{background:var(--gn2);border-color:var(--gn);color:var(--gn)}
+.rdv-item{background:var(--sur);border-radius:15px;border:2px solid var(--gn3);padding:22px}
+.rdv-item-day{font-family:'Syne',sans-serif;font-size:40px;font-weight:800;color:var(--gn);line-height:1}
+.rdv-item-month{font-size:16px;color:var(--gn);font-weight:600;margin-bottom:10px}
+.rdv-item-title{font-size:18px;font-weight:700;margin-bottom:5px}
+.rdv-item-place{font-size:14px;color:var(--mu)}
+.rdv-item-time{font-size:16px;font-weight:600;color:var(--bl);margin-top:8px}
+.msg-area{background:var(--sur);border-radius:15px;border:2px solid var(--bd);padding:18px;flex:1}
+.msg-textarea{width:100%;border:none;outline:none;font-size:17px;line-height:1.7;resize:none;min-height:180px;background:transparent}
+.msg-send-btn{width:100%;padding:16px;background:var(--am);color:#fff;border:none;border-radius:12px;font-size:16px;font-weight:700;cursor:pointer;margin-top:10px}
+.msg-sent-msg{text-align:center;padding:36px;font-size:19px;font-weight:700;color:var(--gn)}
+.lang-options{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.lang-option{background:var(--sur);border:2px solid var(--bd);border-radius:12px;padding:14px;cursor:pointer;display:flex;align-items:center;gap:10px;transition:all .15s}
+.lang-option:hover,.lang-option.active{border-color:var(--bl);background:var(--bl2)}
 .lang-flag{font-size:26px}
-.lang-nm{font-size:14px;font-weight:700}
-
-/* ── AIDANT APP ── */
-.app{display:flex;min-height:100vh}
-.sb{width:var(--sw);background:var(--sur);border-right:1.5px solid var(--bd);position:fixed;top:0;left:0;bottom:0;display:flex;flex-direction:column;z-index:100;overflow-y:auto}
-.sb-hd{padding:16px 14px 12px;border-bottom:1px solid var(--bd)}
-.sb-logo{display:flex;align-items:center;gap:9px}
-.sb-logo-ic{width:32px;height:32px;background:linear-gradient(135deg,var(--bl),var(--gn));border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:800;color:#fff}
-.sb-logo-nm{font-family:'Syne',sans-serif;font-size:17px;font-weight:800;letter-spacing:-.5px}
-.pc{margin:10px 10px 0;background:linear-gradient(135deg,var(--bl2),#E8F5EE);border:1px solid var(--bl3);border-radius:10px;padding:9px 11px;cursor:pointer}
-.pc-n{font-size:12px;font-weight:600;color:var(--bl)}
-.pc-s{font-size:10px;color:var(--mu);margin-top:2px}
-.ni{display:flex;align-items:center;gap:8px;padding:7px 9px;margin:1px 7px;border-radius:7px;cursor:pointer;transition:background .12s;border:none;background:transparent;width:calc(100% - 14px);text-align:left}
-.ni:hover{background:var(--bg)}
-.ni.on{background:var(--bl2)}
-.ni-ic{font-size:13px;width:18px;text-align:center;color:var(--mu)}
-.ni.on .ni-ic{color:var(--bl)}
-.ni-lb{font-size:12px;font-weight:500;color:var(--mu)}
-.ni.on .ni-lb{color:var(--bl);font-weight:600}
-.sb-ft{margin-top:auto;padding:12px 14px;border-top:1px solid var(--bd);font-size:10px;color:#A8A49C}
-.sb-ft strong{color:var(--gn);font-weight:600}
-.sb-sw{margin:7px 10px;background:none;border:1px solid var(--bd);border-radius:7px;padding:6px 10px;font-size:11px;font-weight:600;color:var(--mu);cursor:pointer;width:calc(100% - 20px)}
-.sb-sw:hover{border-color:var(--bl);color:var(--bl);background:var(--bl2)}
-.main{margin-left:var(--sw);flex:1;padding:24px 28px;min-height:100vh;max-width:calc(100vw - var(--sw))}
-.ph{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:18px}
-.pt{font-family:'Syne',sans-serif;font-size:21px;font-weight:800;letter-spacing:-.5px}
-.ps{font-size:12px;color:var(--mu);margin-top:2px}
-.card{background:var(--sur);border:1px solid var(--bd);border-radius:12px;padding:16px 18px;margin-bottom:13px}
-.ct{font-size:9px;font-weight:600;color:var(--mu);text-transform:uppercase;letter-spacing:1px;margin-bottom:10px;display:flex;align-items:center;justify-content:space-between}
-.g2{display:grid;grid-template-columns:1fr 1fr;gap:13px}
-.g4{display:grid;grid-template-columns:repeat(4,1fr);gap:9px;margin-bottom:13px}
-.kpi{background:var(--sur);border:1px solid var(--bd);border-radius:11px;padding:13px 14px}
-.kv{font-family:'Syne',sans-serif;font-size:26px;font-weight:800;line-height:1.1}
-.kl{font-size:10px;color:var(--mu);margin-top:3px;font-weight:500}
-.al{display:flex;align-items:flex-start;gap:7px;padding:8px 11px;border-radius:7px;font-size:11px;margin-bottom:6px;font-weight:500;line-height:1.5}
-.al-w{background:var(--am2);color:var(--am);border:1px solid var(--am3)}
-.al-d{background:var(--rd2);color:var(--rd);border:1px solid var(--rd3)}
-.al-s{background:var(--gn2);color:var(--gn);border:1px solid var(--gn3)}
+.lang-name{font-size:14px;font-weight:700}
+/* AIDANT APP */
+.aidant-app{display:flex;min-height:100vh}
+.sidebar{width:var(--sw);background:var(--sur);border-right:1.5px solid var(--bd);position:fixed;top:0;left:0;bottom:0;display:flex;flex-direction:column;z-index:100;overflow-y:auto}
+.sidebar-header{padding:15px 13px 11px;border-bottom:1px solid var(--bd)}
+.sidebar-logo{display:flex;align-items:center;gap:9px}
+.sidebar-logo-ic{width:31px;height:31px;background:linear-gradient(135deg,var(--bl),var(--gn));border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:800;color:#fff}
+.sidebar-logo-nm{font-family:'Syne',sans-serif;font-size:16px;font-weight:800;letter-spacing:-.5px}
+.patient-card{margin:10px 10px 0;background:linear-gradient(135deg,var(--bl2),#E8F5EE);border:1px solid var(--bl3);border-radius:10px;padding:9px 11px;cursor:pointer}
+.patient-card-name{font-size:12px;font-weight:600;color:var(--bl)}
+.patient-card-info{font-size:10px;color:var(--mu);margin-top:2px}
+.nav-section-label{padding:12px 11px 3px;font-size:9px;font-weight:600;color:#A8A49C;text-transform:uppercase;letter-spacing:1.2px}
+.nav-item{display:flex;align-items:center;gap:8px;padding:7px 9px;margin:1px 7px;border-radius:7px;cursor:pointer;border:none;background:transparent;width:calc(100% - 14px);text-align:left}
+.nav-item:hover{background:var(--bg)}
+.nav-item.active{background:var(--bl2)}
+.nav-item-icon{font-size:13px;width:18px;text-align:center;color:var(--mu)}
+.nav-item.active .nav-item-icon{color:var(--bl)}
+.nav-item-label{font-size:12px;font-weight:500;color:var(--mu)}
+.nav-item.active .nav-item-label{color:var(--bl);font-weight:600}
+.sidebar-footer{margin-top:auto;padding:11px 13px;border-top:1px solid var(--bd);font-size:10px;color:#A8A49C}
+.sidebar-footer strong{color:var(--gn);font-weight:600}
+.sidebar-logout{margin:7px 10px;background:none;border:1px solid var(--bd);border-radius:7px;padding:6px 10px;font-size:11px;font-weight:600;color:var(--mu);cursor:pointer;width:calc(100% - 20px)}
+.sidebar-logout:hover{border-color:var(--rd);color:var(--rd);background:var(--rd2)}
+.main-content{margin-left:var(--sw);flex:1;padding:24px 28px;min-height:100vh;max-width:calc(100vw - var(--sw))}
+.page-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:16px}
+.page-title{font-family:'Syne',sans-serif;font-size:21px;font-weight:800;letter-spacing:-.5px}
+.page-sub{font-size:12px;color:var(--mu);margin-top:2px}
+.card{background:var(--sur);border:1px solid var(--bd);border-radius:12px;padding:15px 17px;margin-bottom:12px}
+.card-title{font-size:9px;font-weight:600;color:var(--mu);text-transform:uppercase;letter-spacing:1px;margin-bottom:10px;display:flex;align-items:center;justify-content:space-between}
+.grid2-main{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:9px;margin-bottom:12px}
+.kpi-card{background:var(--sur);border:1px solid var(--bd);border-radius:11px;padding:13px 14px}
+.kpi-value{font-family:'Syne',sans-serif;font-size:26px;font-weight:800;line-height:1.1}
+.kpi-label{font-size:10px;color:var(--mu);margin-top:3px;font-weight:500}
+.alert-bar{display:flex;align-items:flex-start;gap:7px;padding:8px 11px;border-radius:7px;font-size:11px;margin-bottom:6px;font-weight:500;line-height:1.5}
+.alert-bar.warn{background:var(--am2);color:var(--am);border:1px solid var(--am3)}
+.alert-bar.danger{background:var(--rd2);color:var(--rd);border:1px solid var(--rd3)}
+.alert-bar.ok{background:var(--gn2);color:var(--gn);border:1px solid var(--gn3)}
+.alert-bar.info{background:var(--bl2);color:var(--bl);border:1px solid var(--bl3)}
 .badge{display:inline-flex;align-items:center;padding:2px 7px;border-radius:20px;font-size:10px;font-weight:600;white-space:nowrap}
-.b-bl{background:var(--bl2);color:var(--bl)}.b-gn{background:var(--gn2);color:var(--gn)}.b-am{background:var(--am2);color:var(--am)}.b-rd{background:var(--rd2);color:var(--rd)}.b-mu{background:var(--bg);color:var(--mu);border:1px solid var(--bd)}
-.tag-i{display:inline-flex;align-items:center;gap:4px;padding:2px 7px 2px 9px;border-radius:20px;font-size:11px;font-weight:500;margin:2px}
-.tag-rm{background:none;border:none;cursor:pointer;font-size:13px;color:inherit;opacity:.6}
-.mr{display:flex;align-items:flex-start;justify-content:space-between;gap:11px;padding:11px 0;border-bottom:1px solid var(--bd)}
-.mr:last-child{border-bottom:none}
-.mn{font-size:13px;font-weight:600;margin-bottom:2px}
-.md{font-size:11px;color:var(--mu)}
-.hg{display:flex;gap:5px;flex-wrap:wrap}
-.hb{padding:4px 10px;border-radius:18px;font-size:11px;font-weight:600;cursor:pointer;border:1.5px solid var(--bd);background:transparent;transition:all .12s}
-.hb.ok{background:var(--gn2);border-color:var(--gn);color:var(--gn)}
-.rc{background:var(--sur);border:1px solid var(--bd);border-radius:11px;padding:12px 14px;margin-bottom:8px;display:flex;gap:12px}
-.rd-dt{border-radius:8px;padding:7px 9px;text-align:center;min-width:44px;flex-shrink:0}
-.rd-day{font-family:'Syne',sans-serif;font-size:18px;font-weight:800;line-height:1.1}
-.rd-mo{font-size:9px;text-transform:uppercase;font-weight:600}
-.je{border-left:3px solid;padding:10px 0 10px 14px;margin-bottom:14px}
-.je.bien{border-color:var(--gn)}.je.moyen{border-color:var(--am)}.je.difficile{border-color:var(--rd)}
-.jm{display:flex;gap:7px;align-items:center;flex-wrap:wrap;margin-bottom:4px}
-.jd{font-size:11px;font-weight:600;color:var(--mu)}
-.ja{font-size:11px;color:var(--bl);font-weight:500}
-.jc{font-size:12px;line-height:1.75}
-.ac{background:var(--sur);border:1px solid var(--bd);border-radius:11px;padding:14px;margin-bottom:10px}
-.an{font-size:13px;font-weight:600;margin-bottom:5px;line-height:1.4}
-.am-v{font-family:'Syne',sans-serif;font-size:17px;font-weight:800;margin-bottom:7px}
-.zq{background:var(--sur);border:1px solid var(--bd);border-radius:11px;padding:12px 14px;margin-bottom:7px}
-.zt{font-size:12px;line-height:1.55;margin-bottom:8px}
-.zo{display:flex;gap:5px;flex-wrap:wrap}
-.zob{flex:1;min-width:60px;padding:6px 3px;border-radius:7px;border:1.5px solid var(--bd);font-size:10px;cursor:pointer;text-align:center;font-weight:500;background:transparent}
-.zob.s0{border-color:var(--gn);background:var(--gn2);color:var(--gn)}
-.zob.s1{border-color:#4D9E65;background:#F0FAF3;color:#4D9E65}
-.zob.s2{border-color:var(--am);background:var(--am2);color:var(--am)}
-.zob.s3{border-color:#C04A20;background:#FFF0E8;color:#C04A20}
-.zob.s4{border-color:var(--rd);background:var(--rd2);color:var(--rd)}
-.sbar{height:7px;border-radius:4px;background:var(--bd);overflow:hidden;margin:7px 0}
-.sfill{height:100%;border-radius:4px;transition:width .5s}
-.fg{margin-bottom:11px}
-.fl{font-size:9px;font-weight:600;color:var(--mu);margin-bottom:3px;display:block;text-transform:uppercase;letter-spacing:.5px}
-.fi{width:100%;padding:7px 10px;border:1px solid var(--bd);border-radius:7px;font-size:12px;background:var(--bg);color:var(--txt);outline:none}
-.fi:focus{border-color:var(--bl);background:var(--sur)}
-.fta{resize:vertical;min-height:64px;line-height:1.6}
-.fsel{appearance:none}
-.btn{padding:7px 14px;border-radius:7px;font-size:12px;font-weight:600;cursor:pointer;border:none;display:inline-flex;align-items:center;gap:5px;white-space:nowrap}
-.bp{background:var(--bl);color:#fff}.bs{background:var(--bg);color:var(--txt);border:1px solid var(--bd)}.bg2{background:var(--gn);color:#fff}.br2{background:var(--rd2);color:var(--rd);border:1px solid var(--rd3)}
-.ai-box{background:linear-gradient(135deg,var(--bl2),#EEF7F1);border:1px solid var(--bl3);border-radius:11px;padding:12px 14px;margin-bottom:13px}
-.ai-lbl{font-size:9px;font-weight:600;color:var(--bl);text-transform:uppercase;letter-spacing:1px;margin-bottom:7px}
-.ai-txt{font-size:12px;line-height:1.8}
-.spin2{display:inline-block;width:12px;height:12px;border:2px solid var(--bl3);border-top-color:var(--bl);border-radius:50%;animation:sp .7s linear infinite}
-.ir{display:flex;justify-content:space-between;align-items:flex-start;gap:11px;padding:9px 0;border-bottom:1px solid var(--bd)}
-.ir:last-child{border-bottom:none}
-.ik{font-size:11px;color:var(--mu);font-weight:500}
-.iv{font-size:12px;font-weight:500;text-align:right}
-.fxb{display:flex;justify-content:space-between;align-items:center}
-.fxs{display:flex;align-items:center;gap:7px}
-.mt8{margin-top:8px}.mt12{margin-top:12px}
-.gap-b{display:flex;flex-direction:column;gap:13px}
-.empty{font-size:12px;color:var(--mu);padding:10px 0}
-.dc{display:flex;align-items:center;gap:11px;padding:10px 0;border-bottom:1px solid var(--bd)}
-.dc:last-child{border-bottom:none}
-.dc-ic{width:34px;height:34px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0}
-.dc-n{font-size:12px;font-weight:600}.dc-s{font-size:10px;color:var(--mu);margin-top:1px}
-.fc{background:var(--sur);border:1px solid var(--bd);border-radius:11px;padding:14px}
-@media(max-width:768px){.app{flex-direction:column}.sb{position:relative;width:100%;height:auto}.main{margin-left:0;padding:16px}.g2,.g4{grid-template-columns:1fr}}
+.badge-blue{background:var(--bl2);color:var(--bl)}.badge-green{background:var(--gn2);color:var(--gn)}.badge-orange{background:var(--am2);color:var(--am)}.badge-red{background:var(--rd2);color:var(--rd)}.badge-gray{background:var(--bg);color:var(--mu);border:1px solid var(--bd)}
+.tag{display:inline-flex;align-items:center;gap:4px;padding:2px 7px 2px 9px;border-radius:20px;font-size:11px;font-weight:500;margin:2px}
+.tag-remove{background:none;border:none;cursor:pointer;font-size:13px;color:inherit;opacity:.6}
+.med-row{display:flex;align-items:flex-start;justify-content:space-between;gap:11px;padding:11px 0;border-bottom:1px solid var(--bd)}
+.med-row:last-child{border-bottom:none}
+.med-row-name{font-size:13px;font-weight:600;margin-bottom:2px}
+.med-row-info{font-size:11px;color:var(--mu)}
+.dose-btns{display:flex;gap:5px;flex-wrap:wrap}
+.dose-btn{padding:4px 10px;border-radius:18px;font-size:11px;font-weight:600;cursor:pointer;border:1.5px solid var(--bd);background:transparent;transition:all .12s}
+.dose-btn.done{background:var(--gn2);border-color:var(--gn);color:var(--gn)}
+.rdv-row{background:var(--sur);border:1px solid var(--bd);border-radius:11px;padding:12px 14px;margin-bottom:8px;display:flex;gap:12px}
+.rdv-date-block{border-radius:8px;padding:7px 9px;text-align:center;min-width:44px;flex-shrink:0}
+.rdv-date-day{font-family:'Syne',sans-serif;font-size:18px;font-weight:800;line-height:1.1}
+.rdv-date-mo{font-size:9px;text-transform:uppercase;font-weight:600}
+.journal-entry{border-left:3px solid;padding:10px 0 10px 14px;margin-bottom:13px}
+.journal-entry.bien{border-color:var(--gn)}.journal-entry.moyen{border-color:var(--am)}.journal-entry.difficile{border-color:var(--rd)}
+.journal-meta{display:flex;gap:7px;align-items:center;flex-wrap:wrap;margin-bottom:4px;font-size:11px}
+.journal-date{font-weight:600;color:var(--mu)}.journal-author{color:var(--bl);font-weight:500}
+.journal-content{font-size:12px;line-height:1.75}
+.aide-card{background:var(--sur);border:1px solid var(--bd);border-radius:11px;padding:14px;margin-bottom:10px}
+.aide-name{font-size:13px;font-weight:600;margin-bottom:5px;line-height:1.4}
+.aide-amount{font-family:'Syne',sans-serif;font-size:17px;font-weight:800;margin-bottom:7px}
+.aide-info{font-size:11px;color:var(--mu);margin-bottom:3px}
+.zarit-q{background:var(--sur);border:1px solid var(--bd);border-radius:11px;padding:12px 14px;margin-bottom:7px}
+.zarit-q-text{font-size:12px;line-height:1.55;margin-bottom:8px}
+.zarit-opts{display:flex;gap:5px;flex-wrap:wrap}
+.zarit-opt{flex:1;min-width:58px;padding:6px 3px;border-radius:7px;border:1.5px solid var(--bd);font-size:10px;cursor:pointer;text-align:center;font-weight:500;background:transparent}
+.zarit-opt.sel-0{border-color:var(--gn);background:var(--gn2);color:var(--gn)}
+.zarit-opt.sel-1{border-color:#4D9E65;background:#F0FAF3;color:#4D9E65}
+.zarit-opt.sel-2{border-color:var(--am);background:var(--am2);color:var(--am)}
+.zarit-opt.sel-3{border-color:#C04A20;background:#FFF0E8;color:#C04A20}
+.zarit-opt.sel-4{border-color:var(--rd);background:var(--rd2);color:var(--rd)}
+.progress-bar{height:7px;border-radius:4px;background:var(--bd);overflow:hidden;margin:7px 0}
+.progress-fill{height:100%;border-radius:4px;transition:width .5s}
+.small-form .fg{margin-bottom:10px}
+.small-form .fl{display:block;font-size:9px;font-weight:600;color:var(--mu);margin-bottom:3px;text-transform:uppercase;letter-spacing:.5px}
+.small-form .fi{width:100%;padding:7px 10px;border:1px solid var(--bd);border-radius:7px;font-size:12px;background:var(--bg);color:var(--txt);outline:none}
+.small-form .fi:focus{border-color:var(--bl);background:var(--sur)}
+.small-form .fta{resize:vertical;min-height:62px;line-height:1.6}
+.btn{padding:7px 13px;border-radius:7px;font-size:12px;font-weight:600;cursor:pointer;border:none;display:inline-flex;align-items:center;gap:5px;white-space:nowrap}
+.btn-primary{background:var(--bl);color:#fff}.btn-secondary{background:var(--bg);color:var(--txt);border:1px solid var(--bd)}.btn-green{background:var(--gn);color:#fff}.btn-danger{background:var(--rd2);color:var(--rd);border:1px solid var(--rd3)}
+.ai-box{background:linear-gradient(135deg,var(--bl2),#EEF7F1);border:1px solid var(--bl3);border-radius:11px;padding:12px 14px;margin-bottom:12px}
+.ai-label{font-size:9px;font-weight:600;color:var(--bl);text-transform:uppercase;letter-spacing:1px;margin-bottom:7px}
+.ai-text{font-size:12px;line-height:1.8}
+.spinner-sm{display:inline-block;width:11px;height:11px;border:2px solid var(--bl3);border-top-color:var(--bl);border-radius:50%;animation:spin .7s linear infinite}
+.info-row{display:flex;justify-content:space-between;align-items:flex-start;gap:11px;padding:9px 0;border-bottom:1px solid var(--bd)}
+.info-row:last-child{border-bottom:none}
+.info-key{font-size:11px;color:var(--mu);font-weight:500}
+.info-val{font-size:12px;font-weight:500;text-align:right}
+.flex-between{display:flex;justify-content:space-between;align-items:center}
+.flex-center{display:flex;align-items:center;gap:7px}
+.mt8{margin-top:8px}.mt12{margin-top:12px}.mt16{margin-top:16px}
+.col-stack{display:flex;flex-direction:column;gap:12px}
+.empty-state{font-size:12px;color:var(--mu);padding:10px 0}
+.dc-row{display:flex;align-items:center;gap:11px;padding:10px 0;border-bottom:1px solid var(--bd)}
+.dc-row:last-child{border-bottom:none}
+.dc-ic{width:33px;height:33px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0}
+.dc-name{font-size:12px;font-weight:600}.dc-info{font-size:10px;color:var(--mu);margin-top:1px}
+.fc-card{background:var(--sur);border:1px solid var(--bd);border-radius:11px;padding:13px}
+.toggle{position:relative;width:36px;height:20px;border-radius:10px;cursor:pointer;transition:background .2s;flex-shrink:0}
+.toggle.on{background:var(--bl)}.toggle.off{background:var(--bd)}
+.toggle-knob{position:absolute;top:2px;width:16px;height:16px;border-radius:50%;background:#fff;transition:left .2s;box-shadow:0 1px 3px rgba(0,0,0,.2)}
+.toggle.on .toggle-knob{left:18px}.toggle.off .toggle-knob{left:2px}
+/* SOIGNANT */
+.soignant-page{min-height:100vh;background:linear-gradient(160deg,var(--bl2),var(--gn2));display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40px;text-align:center}
+@media(max-width:768px){.main-content{margin-left:0;padding:16px}.sidebar{display:none}.grid2-main,.grid4{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
 <div id="root"></div>
-<script type="text/babel">
-const {useState, useEffect} = React;
 
-// ═══════════════════════════════════
-// CONFIG SUPABASE
-// ═══════════════════════════════════
-const SB = 'https://yyfumysysdowpcnqeehs.supabase.co';
-const KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inl5ZnVteXN5c2Rvd3BjbnFlZWhzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg1NjI0NTUsImV4cCI6MjA5NDEzODQ1NX0.jYlYaildOLYgeSZWi_khNO9UusUl6hW-CUBkYvsSyjM';
-const H = {'Content-Type':'application/json','apikey':KEY,'Authorization':'Bearer '+KEY};
+<script type="module">
+import { h, render } from 'https://esm.sh/preact@10.25.4';
+import { useState, useEffect } from 'https://esm.sh/preact@10.25.4/hooks';
+import htm from 'https://esm.sh/htm@3.1.1';
+const html = htm.bind(h);
 
-// ═══════════════════════════════════
-// SUPABASE API (fetch direct, no SDK)
-// ═══════════════════════════════════
-async function sbSignIn(email, pwd) {
-  const r = await fetch(SB+'/auth/v1/token?grant_type=password', {method:'POST',headers:H,body:JSON.stringify({email,password:pwd})});
-  return r.json();
-}
-async function sbSignUp(email, pwd, prenom, nom, role) {
-  const r = await fetch(SB+'/auth/v1/signup', {method:'POST',headers:H,body:JSON.stringify({email,password:pwd,data:{prenom,nom,role}})});
-  return r.json();
-}
-async function sbSignOut(token) {
-  try { await fetch(SB+'/auth/v1/logout', {method:'POST',headers:{...H,'Authorization':'Bearer '+token}}); } catch(e){}
-}
-async function sbResetPwd(email) {
-  try { await fetch(SB+'/auth/v1/recover', {method:'POST',headers:H,body:JSON.stringify({email})}); } catch(e){}
-}
+// ═══════════════════════════════════════
+// CONFIG & API SUPABASE
+// ═══════════════════════════════════════
+const SB_URL = 'https://yyfumysysdowpcnqeehs.supabase.co';
+const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inl5ZnVteXN5c2Rvd3BjbnFlZWhzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg1NjI0NTUsImV4cCI6MjA5NDEzODQ1NX0.jYlYaildOLYgeSZWi_khNO9UusUl6hW-CUBkYvsSyjM';
+const H = { 'Content-Type': 'application/json', 'apikey': SB_KEY, 'Authorization': 'Bearer ' + SB_KEY };
+
+const api = {
+  signIn: async (email, pwd) => {
+    const r = await fetch(SB_URL + '/auth/v1/token?grant_type=password', { method: 'POST', headers: H, body: JSON.stringify({ email, password: pwd }) });
+    return r.json();
+  },
+  signUp: async (email, pwd, prenom, nom, role) => {
+    const r = await fetch(SB_URL + '/auth/v1/signup', { method: 'POST', headers: H, body: JSON.stringify({ email, password: pwd, data: { prenom, nom, role } }) });
+    return r.json();
+  },
+  signOut: async (token) => { try { await fetch(SB_URL + '/auth/v1/logout', { method: 'POST', headers: { ...H, 'Authorization': 'Bearer ' + token } }); } catch(e) {} },
+  resetPwd: async (email) => { try { await fetch(SB_URL + '/auth/v1/recover', { method: 'POST', headers: H, body: JSON.stringify({ email }) }); } catch(e) {} }
+};
 
 // Session
-const SK = 'ap_s';
-function getS() { try{return JSON.parse(sessionStorage.getItem(SK)||'null');}catch{return null;} }
-function saveS(s) { s?sessionStorage.setItem(SK,JSON.stringify(s)):sessionStorage.removeItem(SK); }
+const SK = 'ap_session';
+const session = { get: () => { try { return JSON.parse(sessionStorage.getItem(SK) || 'null'); } catch { return null; } }, set: (s) => { s ? sessionStorage.setItem(SK, JSON.stringify(s)) : sessionStorage.removeItem(SK); } };
 
-// Helpers sécurité
-function vEmail(e){return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e.trim());}
-function clean(s){return s.replace(/[<>'"]/g,'').trim();}
-const _rl={};
-function rateOk(k){const n=Date.now();if(!_rl[k])_rl[k]=[];_rl[k]=_rl[k].filter(t=>n-t<900000);if(_rl[k].length>=5)return false;_rl[k].push(n);return true;}
-function pwdS(p){const c={a:p.length>=8,b:/[A-Z]/.test(p),c:/[0-9]/.test(p),d:/[^A-Za-z0-9]/.test(p)};return{score:Object.values(c).filter(Boolean).length,c};}
+// Utils
+const isValidEmail = (e) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e.trim());
+const sanitize = (s) => s.replace(/[<>'"]/g, '').trim();
+const rl = {};
+const rateOk = (k) => { const n = Date.now(); if (!rl[k]) rl[k] = []; rl[k] = rl[k].filter(t => n - t < 900000); if (rl[k].length >= 5) return false; rl[k].push(n); return true; };
+const pwdStrength = (p) => { const c = { len: p.length >= 8, upper: /[A-Z]/.test(p), num: /[0-9]/.test(p), spec: /[^A-Za-z0-9]/.test(p) }; return { score: Object.values(c).filter(Boolean).length, c }; };
 
-// Données démo
-const MEDS_INIT=[{id:1,nom:"Donépézil",dose:"10mg",horaires:["20h00"],renouv:5,indication:"Alzheimer",prises:{}},{id:2,nom:"Amlodipine",dose:"5mg",horaires:["08h00"],renouv:18,indication:"Hypertension",prises:{}},{id:3,nom:"Metformine",dose:"500mg",horaires:["08h00","13h00","20h00"],renouv:22,indication:"Diabète",prises:{}}];
-const RDV_INIT=[{id:1,titre:"Neurologue Dr. Benali",date:"2026-05-28",heure:"14h30",lieu:"CHU Grenoble",assigne:"",fait:false},{id:2,titre:"Cardiologue Dr. Faure",date:"2026-06-05",heure:"10h15",lieu:"Clinique Belledonne",assigne:"",fait:false}];
-const JOURNAL_INIT=[{id:1,date:"2026-05-12",auteur:"Marie",humeur:"bien",contenu:"Pierre bien dormi. Humeur calme. A mangé tout son petit déjeuner.",tension:"13/8"},{id:2,date:"2026-05-11",auteur:"Marie",humeur:"moyen",contenu:"Légère confusion en fin d'après-midi. Refus médicament du soir.",tension:"14/9"}];
-const AIDES=[{nom:"APA – Allocation Personnalisée d'Autonomie",montant:"jusqu'à 1 807€/mois",cond:"GIR 1 à 4, 60 ans+",dossier:"Conseil Départemental",ok:true},{nom:"AJPA – Allocation Journalière Proche Aidant",montant:"64€/jour",cond:"Arrêt travail pour s'occuper du proche",dossier:"CPAM",ok:true},{nom:"Crédit d'impôt aidant",montant:"jusqu'à 1 200€/an",cond:"Frais aide à domicile",dossier:"Déclaration fiscale",ok:true},{nom:"PCH – Prestation Compensation Handicap",montant:"jusqu'à 1 800€/mois",cond:"Moins de 60 ans, handicap reconnu",dossier:"MDPH",ok:false}];
-const ZARIT_Q=["Vous sentez-vous débordé(e) par les soins ?","Manquez-vous de temps pour vous ?","Êtes-vous stressé(e) par votre rôle ?","Votre santé se dégrade-t-elle ?","Avez-vous renoncé à des activités sociales ?","Y a-t-il des conflits familiaux ?","Avez-vous perdu le contrôle de votre vie ?","Souhaiteriez-vous confier votre proche ?"];
-const NAV=[{id:"dashboard",icon:"⊞",label:"Tableau de bord"},{id:"dossier",icon:"◈",label:"Dossier médical"},{id:"agenda",icon:"◷",label:"Agenda"},{id:"medicaments",icon:"◎",label:"Médicaments"},{id:"journal",icon:"◐",label:"Journal de bord"},{id:"aides",icon:"◊",label:"Aides financières"},{id:"bienetre",icon:"♡",label:"Bien-être"},{id:"parametres",icon:"⊙",label:"Paramètres"}];
-const LANGS={fr:{flag:"🇫🇷",nm:"Français",hello:"Bonjour",wel:"Comment vous sentez-vous ?",m:"💊 Mes médicaments",r:"📅 Mon rendez-vous",msg:"💬 Message famille",back:"← Retour",confirm:"Confirmer",confirmed:"✓ Confirmé !",nrdv:"Prochain RDV",nordv:"Aucun RDV",send:"Envoyer",mph:"Écrivez votre message…",msent:"✓ Envoyé !",choose:"Choisir la langue",good:"Je vais bien 😊",ok:"Ça va 😐",bad:"Je ne vais pas bien 😔",how:"Comment vous sentez-vous ?",lang:"🌍 Langue"},ar:{flag:"🇲🇦",nm:"العربية",hello:"مرحباً",wel:"كيف حالك؟",m:"💊 دوائي",r:"📅 موعدي",msg:"💬 رسالة لعائلتي",back:"→ رجوع",confirm:"تأكيد",confirmed:"✓ تم!",nrdv:"الموعد القادم",nordv:"لا موعد",send:"إرسال",mph:"اكتب رسالتك…",msent:"✓ تم!",choose:"اختر لغتك",good:"أشعر بتحسن 😊",ok:"لا بأس 😐",bad:"لا أشعر بالتحسن 😔",how:"كيف تشعر؟",lang:"🌍 اللغة"},pt:{flag:"🇵🇹",nm:"Português",hello:"Olá",wel:"Como se sente?",m:"💊 Medicamentos",r:"📅 Consulta",msg:"💬 Mensagem família",back:"← Voltar",confirm:"Confirmar",confirmed:"✓ Confirmado!",nrdv:"Próxima consulta",nordv:"Sem consulta",send:"Enviar",mph:"Escreva a mensagem…",msent:"✓ Enviado!",choose:"Escolha idioma",good:"Sinto-me bem 😊",ok:"Estou bem 😐",bad:"Não me sinto bem 😔",how:"Como se sente?",lang:"🌍 Idioma"},en:{flag:"🇬🇧",nm:"English",hello:"Hello",wel:"How do you feel?",m:"💊 Medications",r:"📅 Appointment",msg:"💬 Message family",back:"← Back",confirm:"Confirm dose",confirmed:"✓ Confirmed!",nrdv:"Next appointment",nordv:"No appointment",send:"Send",mph:"Write your message…",msent:"✓ Sent!",choose:"Choose language",good:"I feel good 😊",ok:"I'm okay 😐",bad:"I don't feel well 😔",how:"How do you feel?",lang:"🌍 Language"}};
+// ═══════════════════════════════════════
+// INITIAL DATA
+// ═══════════════════════════════════════
+const MEDS0 = [
+  { id: 1, nom: 'Donépézil', dose: '10mg', horaires: ['20h00'], renouv: 5, indication: 'Alzheimer', prises: {} },
+  { id: 2, nom: 'Amlodipine', dose: '5mg', horaires: ['08h00'], renouv: 18, indication: 'Hypertension', prises: {} },
+  { id: 3, nom: 'Metformine', dose: '500mg', horaires: ['08h00', '20h00'], renouv: 22, indication: 'Diabète', prises: {} }
+];
+const RDV0 = [
+  { id: 1, titre: 'Neurologue Dr. Benali', date: '2026-05-28', heure: '14h30', lieu: 'CHU Grenoble', assigne: '', fait: false },
+  { id: 2, titre: 'Prise de sang', date: '2026-06-03', heure: '08h00', lieu: 'Laboratoire', assigne: '', fait: false }
+];
+const JOURNAL0 = [
+  { id: 1, date: '2026-05-12', auteur: 'Marie', humeur: 'bien', contenu: 'Pierre bien dormi. Humeur calme ce matin, a mangé tout son petit déjeuner.', tension: '13/8' },
+  { id: 2, date: '2026-05-11', auteur: 'Marie', humeur: 'moyen', contenu: 'Légère confusion en fin d\'après-midi. Refus médicament du soir.', tension: '14/9' }
+];
+const PROCHE0 = { prenom: 'Pierre', nom: 'Dubois', age: 78, gs: 'A+', pathologies: ['Alzheimer modéré', 'Hypertension', 'Diabète type 2'], allergies: ['Pénicilline', 'Aspirine'], mutuelle: 'MGEN', adresse: '12 rue des Lilas, Paris', medecins: [{ id: 1, nom: 'Dr. Martin Sophie', spec: 'Médecin traitant', tel: '04 76 00 12 34' }, { id: 2, nom: 'Dr. Benali Karim', spec: 'Neurologue', tel: '04 76 45 67 89' }] };
+const AIDES = [
+  { nom: 'APA – Allocation Personnalisée d\'Autonomie', montant: 'jusqu\'à 1 807€/mois', cond: 'GIR 1 à 4, 60 ans+', dossier: 'Conseil Départemental', ok: true },
+  { nom: 'AJPA – Allocation Journalière Proche Aidant', montant: '64€/jour', cond: 'Arrêt travail', dossier: 'CPAM', ok: true },
+  { nom: 'Crédit d\'impôt aidant', montant: 'jusqu\'à 1 200€/an', cond: 'Frais aide à domicile', dossier: 'Déclaration fiscale', ok: true },
+  { nom: 'PCH – Prestation Compensation Handicap', montant: 'jusqu\'à 1 800€/mois', cond: 'Moins de 60 ans', dossier: 'MDPH', ok: false }
+];
+const ZARIT_QS = ['Vous sentez-vous débordé(e) par les soins ?', 'Manquez-vous de temps pour vous ?', 'Êtes-vous stressé(e) par votre rôle ?', 'Votre santé se dégrade-t-elle ?', 'Avez-vous renoncé à des activités sociales ?', 'Y a-t-il des conflits familiaux ?', 'Avez-vous perdu le contrôle de votre vie ?', 'Souhaiteriez-vous confier votre proche ?'];
+const NAV_ITEMS = [
+  { id: 'dashboard', icon: '⊞', label: 'Tableau de bord' },
+  { id: 'dossier', icon: '◈', label: 'Dossier médical' },
+  { id: 'agenda', icon: '◷', label: 'Agenda' },
+  { id: 'medicaments', icon: '◎', label: 'Médicaments' },
+  { id: 'journal', icon: '◐', label: 'Journal de bord' },
+  { id: 'aides', icon: '◊', label: 'Aides financières' },
+  { id: 'bienetre', icon: '♡', label: 'Bien-être aidant' },
+  { id: 'parametres', icon: '⊙', label: 'Paramètres' }
+];
+const LANGS = {
+  fr: { flag: '🇫🇷', name: 'Français', hello: 'Bonjour', wel: 'Comment vous sentez-vous ?', meds: '💊 Mes médicaments', rdv: '📅 Mon rendez-vous', msg: '💬 Message famille', back: '← Retour', confirm: 'Confirmer', confirmed: '✓ Confirmé !', nrdv: 'Prochain RDV', nordv: 'Aucun RDV', send: 'Envoyer', mph: 'Écrivez votre message…', msent: '✓ Envoyé !', choose: 'Choisir la langue', good: 'Je vais bien 😊', okay: 'Ça va 😐', bad: 'Je ne vais pas bien 😔', how: 'Comment vous sentez-vous ?' },
+  ar: { flag: '🇲🇦', name: 'العربية', hello: 'مرحباً', wel: 'كيف حالك؟', meds: '💊 دوائي', rdv: '📅 موعدي', msg: '💬 رسالة', back: '→ رجوع', confirm: 'تأكيد', confirmed: '✓ تم!', nrdv: 'موعد قادم', nordv: 'لا موعد', send: 'إرسال', mph: 'اكتب رسالتك…', msent: '✓ تم!', choose: 'اختر لغتك', good: 'أشعر بتحسن 😊', okay: 'لا بأس 😐', bad: 'لا أشعر بالتحسن 😔', how: 'كيف تشعر؟' },
+  pt: { flag: '🇵🇹', name: 'Português', hello: 'Olá', wel: 'Como se sente?', meds: '💊 Medicamentos', rdv: '📅 Consulta', msg: '💬 Mensagem', back: '← Voltar', confirm: 'Confirmar', confirmed: '✓ Confirmado!', nrdv: 'Próxima consulta', nordv: 'Sem consulta', send: 'Enviar', mph: 'Escreva…', msent: '✓ Enviado!', choose: 'Escolha idioma', good: 'Sinto-me bem 😊', okay: 'Estou bem 😐', bad: 'Não me sinto bem 😔', how: 'Como se sente?' },
+  en: { flag: '🇬🇧', name: 'English', hello: 'Hello', wel: 'How do you feel today?', meds: '💊 Medications', rdv: '📅 Appointment', msg: '💬 Message family', back: '← Back', confirm: 'Confirm dose', confirmed: '✓ Confirmed!', nrdv: 'Next appointment', nordv: 'No appointment', send: 'Send', mph: 'Write your message…', msent: '✓ Sent!', choose: 'Choose language', good: 'I feel good 😊', okay: 'I\'m okay 😐', bad: 'I don\'t feel well 😔', how: 'How do you feel?' }
+};
 
-// ═══════════════════════════════════
-// APP ROOT
-// ═══════════════════════════════════
+// ═══════════════════════════════════════
+// ROOT APP
+// ═══════════════════════════════════════
 function App() {
   const [screen, setScreen] = useState('loading');
   const [user, setUser] = useState(null);
-  const [session, setSession] = useState(null);
+  const [sess, setSess] = useState(null);
   const [showTerms, setShowTerms] = useState(false);
 
   useEffect(() => {
-    const s = getS();
+    const s = session.get();
     if (s && s.access_token) {
-      setSession(s); setUser(s.user);
-      setScreen(s.user?.email_confirmed_at || s.user?.confirmed_at ? 'app' : 'verify');
+      setSess(s); setUser(s.user || null);
+      const confirmed = s.user?.email_confirmed_at || s.user?.confirmed_at;
+      setScreen(confirmed ? 'app' : 'verify');
     } else { setScreen('auth'); }
   }, []);
 
-  function onLogin(s) {
-    saveS(s); setSession(s); setUser(s.user);
-    setScreen(s.user?.email_confirmed_at || s.user?.confirmed_at ? 'app' : 'verify');
-  }
+  const onLogin = (s) => { session.set(s); setSess(s); setUser(s.user); const ok = s.user?.email_confirmed_at || s.user?.confirmed_at; setScreen(ok ? 'app' : 'verify'); };
+  const onOut = async () => { if (sess?.access_token) await api.signOut(sess.access_token); session.set(null); setSess(null); setUser(null); setScreen('auth'); };
 
-  async function onOut() {
-    if (session?.access_token) await sbSignOut(session.access_token);
-    saveS(null); setSession(null); setUser(null); setScreen('auth');
-  }
-
-  if (screen === 'loading') return <Loader/>;
-  if (screen === 'verify') return <Verify email={user?.email} onBack={() => { saveS(null); setScreen('auth'); }}/>;
+  if (screen === 'loading') return html`<${Loader}/>`;
+  if (screen === 'verify') return html`<${Verify} email=${user?.email} onBack=${() => { session.set(null); setScreen('auth'); }}/>`;
   if (screen === 'app') {
     const role = user?.user_metadata?.role || 'aidant';
-    if (role === 'patient') return <PatientApp user={user} onOut={onOut}/>;
-    if (role === 'soignant') return <SoignantApp user={user} onOut={onOut}/>;
-    return <AidantApp user={user} onOut={onOut}/>;
+    if (role === 'patient') return html`<${PatientApp} user=${user} onOut=${onOut}/>`;
+    if (role === 'soignant') return html`<${SoignantApp} onOut=${onOut}/>`;
+    return html`<${AidantApp} user=${user} onOut=${onOut}/>`;
   }
-  return <AuthScreen onLogin={onLogin} showTerms={showTerms} setShowTerms={setShowTerms}/>;
+  return html`<${AuthScreen} onLogin=${onLogin} showTerms=${showTerms} setShowTerms=${setShowTerms}/>`;
 }
 
+// ═══════════════════════════════════════
+// LOADER
+// ═══════════════════════════════════════
 function Loader() {
-  return <div style={{minHeight:'100vh',display:'flex',alignItems:'center',justifyContent:'center',background:'var(--bg)'}}>
-    <div style={{textAlign:'center'}}>
-      <div style={{width:48,height:48,background:'linear-gradient(135deg,#1D55E8,#137A3A)',borderRadius:14,display:'flex',alignItems:'center',justifyContent:'center',fontSize:24,margin:'0 auto 14px'}}>🤝</div>
-      <div style={{fontFamily:"'Syne',sans-serif",fontSize:19,fontWeight:800,marginBottom:10}}>AidantPro</div>
-      <div className="spin" style={{margin:'0 auto',borderColor:'var(--bl2)',borderTopColor:'var(--bl)'}}/>
-    </div>
-  </div>;
+  return html`<div class="loader"><div class="loader-inner"><div class="loader-ic">🤝</div><div class="loader-nm">AidantPro</div><div class="spinner"></div></div></div>`;
 }
 
-// ═══════════════════════════════════
+// ═══════════════════════════════════════
 // AUTH
-// ═══════════════════════════════════
-function AuthScreen({onLogin, showTerms, setShowTerms}) {
+// ═══════════════════════════════════════
+function AuthScreen({ onLogin, showTerms, setShowTerms }) {
   const [tab, setTab] = useState('login');
   const [loading, setLoading] = useState(false);
   const [alert, setAlert] = useState(null);
-  const [lE, setLE] = useState(''); const [lP, setLP] = useState(''); const [showLP, setShowLP] = useState(false);
-  const [rPr, setRPr] = useState(''); const [rN, setRN] = useState(''); const [rE, setRE] = useState('');
-  const [rP, setRP] = useState(''); const [rP2, setRP2] = useState(''); const [showRP, setShowRP] = useState(false);
+  const [lEmail, setLE] = useState(''); const [lPwd, setLP] = useState(''); const [showLP, setShowLP] = useState(false);
+  const [rPr, setRPr] = useState(''); const [rNm, setRNm] = useState(''); const [rEm, setREm] = useState('');
+  const [rPw, setRPw] = useState(''); const [rPw2, setRPw2] = useState(''); const [showRP, setShowRP] = useState(false);
   const [role, setRole] = useState('aidant'); const [terms, setTerms] = useState(false);
-  const [resetE, setResetE] = useState(''); const [resetOk, setResetOk] = useState(false);
-  const ps = pwdS(rP);
+  const [resetEm, setResetEm] = useState(''); const [resetSent, setResetSent] = useState(false);
+  const ps = pwdStrength(rPw);
 
-  async function doLogin(e) {
+  const doLogin = async (e) => {
     e.preventDefault(); setAlert(null);
-    if (!vEmail(lE)){setAlert({t:'aerr',m:'Email invalide'});return;}
-    if (!lP){setAlert({t:'aerr',m:'Mot de passe requis'});return;}
-    if (!rateOk(lE)){setAlert({t:'aerr',m:'Trop de tentatives. Attendez 15 min.'});return;}
+    if (!isValidEmail(lEmail)) { setAlert({ t: 'error', m: 'Email invalide' }); return; }
+    if (!lPwd) { setAlert({ t: 'error', m: 'Mot de passe requis' }); return; }
+    if (!rateOk(lEmail)) { setAlert({ t: 'error', m: 'Trop de tentatives. Attendez 15 min.' }); return; }
     setLoading(true);
-    const d = await sbSignIn(lE.trim().toLowerCase(), lP).catch(()=>({error:{message:'Erreur réseau'}}));
+    const d = await api.signIn(lEmail.trim().toLowerCase(), lPwd).catch(() => ({ error: { message: 'Erreur réseau' } }));
     setLoading(false);
-    if (!d.access_token) {
-      const msgs={'Invalid login credentials':'Email ou mot de passe incorrect','Email not confirmed':'Confirmez votre email d\'abord'};
-      setAlert({t:'aerr',m:msgs[d.error?.message]||d.error?.message||'Erreur de connexion'});
-    } else { onLogin(d); }
-  }
+    if (!d.access_token) { const m = { 'Invalid login credentials': 'Email ou mot de passe incorrect', 'Email not confirmed': 'Confirmez votre email d\'abord' }; setAlert({ t: 'error', m: m[d.error?.message] || d.error?.message || 'Erreur de connexion' }); }
+    else { onLogin(d); }
+  };
 
-  async function doRegister(e) {
+  const doRegister = async (e) => {
     e.preventDefault(); setAlert(null);
-    if (!rPr.trim()){setAlert({t:'aerr',m:'Prénom requis'});return;}
-    if (!vEmail(rE)){setAlert({t:'aerr',m:'Email invalide'});return;}
-    if (ps.score < 3){setAlert({t:'aerr',m:'Mot de passe trop faible'});return;}
-    if (rP !== rP2){setAlert({t:'aerr',m:'Mots de passe différents'});return;}
-    if (!terms){setAlert({t:'aerr',m:"Acceptez les conditions"});return;}
+    if (!rPr.trim()) { setAlert({ t: 'error', m: 'Prénom requis' }); return; }
+    if (!isValidEmail(rEm)) { setAlert({ t: 'error', m: 'Email invalide' }); return; }
+    if (ps.score < 3) { setAlert({ t: 'error', m: 'Mot de passe trop faible' }); return; }
+    if (rPw !== rPw2) { setAlert({ t: 'error', m: 'Les mots de passe ne correspondent pas' }); return; }
+    if (!terms) { setAlert({ t: 'error', m: "Acceptez les conditions d'utilisation" }); return; }
     setLoading(true);
-    const d = await sbSignUp(rE.trim().toLowerCase(), rP, clean(rPr), clean(rN), role).catch(()=>({error:{message:'Erreur réseau'}}));
+    const d = await api.signUp(rEm.trim().toLowerCase(), rPw, sanitize(rPr), sanitize(rNm), role).catch(() => ({ error: { message: 'Erreur réseau' } }));
     setLoading(false);
-    if (d.error && !d.id) {
-      const msgs={'User already registered':'Un compte existe déjà avec cet email'};
-      setAlert({t:'aerr',m:msgs[d.error?.message]||d.error?.message||'Erreur création compte'});
-    } else if (d.session) {
-      onLogin(d.session);
-    } else {
-      setAlert({t:'aok',m:'✓ Compte créé ! Vérifiez votre email pour confirmer.'});
-    }
-  }
+    if (d.error && !d.id) { const m = { 'User already registered': 'Un compte existe déjà avec cet email' }; setAlert({ t: 'error', m: m[d.error?.message] || d.error?.message || 'Erreur' }); }
+    else if (d.session) { onLogin(d.session); }
+    else { setAlert({ t: 'success', m: '✓ Compte créé ! Vérifiez votre email pour confirmer.' }); }
+  };
 
-  async function doReset(e) {
+  const doReset = async (e) => {
     e.preventDefault();
-    if (!vEmail(resetE)){setAlert({t:'aerr',m:'Email invalide'});return;}
-    setLoading(true); await sbResetPwd(resetE); setLoading(false); setResetOk(true);
-  }
+    if (!isValidEmail(resetEm)) { setAlert({ t: 'error', m: 'Email invalide' }); return; }
+    setLoading(true); await api.resetPwd(resetEm); setLoading(false); setResetSent(true);
+  };
 
-  return (
-    <div className="auth-wrap">
-      <div className="auth-left">
-        <div className="al-logo"><div className="al-ic">🤝</div><span className="al-nm">AidantPro</span></div>
-        <div className="al-body">
-          <h1 className="al-h">Coordonnez les soins de votre proche en toute sécurité</h1>
-          <p className="al-sub">La plateforme qui réunit famille, patient et soignants autour d'un dossier médical partagé et sécurisé.</p>
-          <div className="al-stats">
-            <div className="al-stat"><span className="al-stat-ic">🔒</span><div className="al-stat-txt"><strong>Données chiffrées AES-256</strong> · Hébergées en Europe · RGPD</div></div>
-            <div className="al-stat"><span className="al-stat-ic">👨‍👩‍👧</span><div className="al-stat-txt"><strong>11 millions d'aidants</strong> sans outil adapté en France</div></div>
-            <div className="al-stat"><span className="al-stat-ic">💰</span><div className="al-stat-txt"><strong>12 000€/an</strong> d'aides non réclamées par famille</div></div>
+  return html`
+    <div class="auth">
+      <div class="auth-l">
+        <div class="al-logo"><div class="al-logo-ic">🤝</div><span class="al-logo-nm">AidantPro</span></div>
+        <div class="al-body">
+          <h1 class="al-h">Coordonnez les soins de votre proche en toute sécurité</h1>
+          <p class="al-sub">La plateforme qui réunit famille, patient et soignants autour d'un dossier médical partagé et sécurisé.</p>
+          <div class="al-stats">
+            <div class="al-stat"><span class="al-stat-ic">🔒</span><div class="al-stat-txt"><strong>Données chiffrées AES-256</strong> · Hébergées en Europe · RGPD</div></div>
+            <div class="al-stat"><span class="al-stat-ic">👨‍👩‍👧</span><div class="al-stat-txt"><strong>11 millions d'aidants</strong> sans outil adapté en France</div></div>
+            <div class="al-stat"><span class="al-stat-ic">💰</span><div class="al-stat-txt"><strong>12 000€/an</strong> d'aides non réclamées par famille</div></div>
           </div>
         </div>
-        <p className="al-ft">© 2026 AidantPro · Hébergé en Europe 🇪🇺</p>
+        <p class="al-ft">© 2026 AidantPro · Hébergé en Europe 🇪🇺</p>
       </div>
 
-      <div className="auth-right">
-        <div className="auth-right-in">
-          <div className="mob-logo"><div className="mob-ic">🤝</div><span className="mob-nm">AidantPro</span></div>
-          {tab !== 'reset' && <>
-            <h1 className="auth-h">{tab==='login'?'Connexion':'Créer un compte'}</h1>
-            <p className="auth-sub">{tab==='login'?'Accédez à votre espace sécurisé':'Rejoignez AidantPro — 14 jours gratuits'}</p>
-            <div className="tabs">
-              <button className={'tab '+(tab==='login'?'on':'')} onClick={()=>{setTab('login');setAlert(null);}}>Connexion</button>
-              <button className={'tab '+(tab==='register'?'on':'')} onClick={()=>{setTab('register');setAlert(null);}}>Inscription</button>
-            </div>
-          </>}
-          {alert && <div className={'alert '+alert.t}><span>{alert.t==='aerr'?'⊘':'✓'}</span><div>{alert.m}</div></div>}
+      <div class="auth-r">
+        <div class="auth-r-in">
+          <div class="mob-logo"><div class="mob-ic">🤝</div><span class="mob-nm">AidantPro</span></div>
 
-          {tab==='login' && <form onSubmit={doLogin}>
-            <div className="fg"><label className="fl">Email</label>
-              <div className="fi-w"><input className={'fi '+(lE&&!vEmail(lE)?'ferr':lE&&vEmail(lE)?'fok':'')} type="email" placeholder="marie@email.fr" value={lE} onChange={e=>setLE(e.target.value)} autoComplete="email" required/>
-              {lE&&<span className="fi-ic">{vEmail(lE)?'✓':'⊘'}</span>}</div></div>
-            <div className="fg"><label className="fl" style={{display:'flex',justifyContent:'space-between'}}>Mot de passe <button type="button" className="flink" onClick={()=>{setTab('reset');setAlert(null);}}>Oublié ?</button></label>
-              <div className="fi-w"><input className="fi" type={showLP?'text':'password'} placeholder="••••••••" value={lP} onChange={e=>setLP(e.target.value)} autoComplete="current-password" style={{paddingRight:38}} required/>
-              <button type="button" className="eye" onClick={()=>setShowLP(!showLP)}>{showLP?'🙈':'👁️'}</button></div></div>
-            <button className="auth-btn" type="submit" disabled={loading}>{loading?<><span className="spin"/>Connexion…</>:'Se connecter →'}</button>
-          </form>}
-
-          {tab==='register' && <form onSubmit={doRegister}>
-            <div className="g2">
-              <div><label className="fl">Prénom *</label><input className="fi" placeholder="Marie" value={rPr} onChange={e=>setRPr(e.target.value)} required/></div>
-              <div><label className="fl">Nom</label><input className="fi" placeholder="Dupont" value={rN} onChange={e=>setRN(e.target.value)}/></div>
+          ${tab !== 'reset' && html`
+            <h1 class="auth-title">${tab === 'login' ? 'Connexion' : 'Créer un compte'}</h1>
+            <p class="auth-sub">${tab === 'login' ? 'Accédez à votre espace sécurisé' : 'Rejoignez AidantPro — 14 jours gratuits'}</p>
+            <div class="tabs">
+              <button class=${'tab' + (tab === 'login' ? ' active' : '')} onClick=${() => { setTab('login'); setAlert(null); }}>Connexion</button>
+              <button class=${'tab' + (tab === 'register' ? ' active' : '')} onClick=${() => { setTab('register'); setAlert(null); }}>Inscription</button>
             </div>
-            <div className="fg"><label className="fl">Email *</label>
-              <div className="fi-w"><input className={'fi '+(rE&&!vEmail(rE)?'ferr':rE&&vEmail(rE)?'fok':'')} type="email" placeholder="marie@email.fr" value={rE} onChange={e=>setRE(e.target.value)} required/>
-              {rE&&<span className="fi-ic">{vEmail(rE)?'✓':'⊘'}</span>}</div></div>
-            <div className="fg"><label className="fl">Votre rôle *</label>
-              <div className="roles">
-                {[['aidant','👩‍👧','Aidant','Famille'],['patient','👴','Patient','Proche aidé'],['soignant','👨‍⚕️','Soignant','Pro santé']].map(([v,ic,nm,ds])=>(
-                  <div key={v} className={'role-opt '+(role===v?'sel':'')} onClick={()=>setRole(v)}>
-                    <div className="role-opt-ic">{ic}</div><div className="role-opt-nm">{nm}</div><div className="role-opt-ds">{ds}</div>
-                  </div>
-                ))}
+          `}
+
+          ${alert && html`<div class=${'alert-box ' + (alert.t === 'error' ? 'error' : 'success')}><span>${alert.t === 'error' ? '⊘' : '✓'}</span><div>${alert.m}</div></div>`}
+
+          ${tab === 'login' && html`
+            <form onSubmit=${doLogin}>
+              <div class="form-group">
+                <div class="form-label">Email</div>
+                <div class="input-wrap">
+                  <input class=${'form-input' + (lEmail && !isValidEmail(lEmail) ? ' is-invalid' : lEmail && isValidEmail(lEmail) ? ' is-valid' : '')} type="email" placeholder="marie@email.fr" value=${lEmail} onInput=${e => setLE(e.target.value)} autocomplete="email" required/>
+                  ${lEmail && html`<span class="input-icon">${isValidEmail(lEmail) ? '✓' : '⊘'}</span>`}
+                </div>
               </div>
-            </div>
-            <div className="fg"><label className="fl">Mot de passe *</label>
-              <div className="fi-w"><input className="fi" type={showRP?'text':'password'} placeholder="Min. 8 caractères" value={rP} onChange={e=>setRP(e.target.value)} style={{paddingRight:38}} required/>
-              <button type="button" className="eye" onClick={()=>setShowRP(!showRP)}>{showRP?'🙈':'👁️'}</button></div>
-              {rP&&<><div className="pwd-bars">{[1,2,3,4].map(i=><div key={i} className={'pwd-bar '+(i<=ps.score?'s'+ps.score:'')}/>)}</div>
-              <div className="pwd-reqs">{[['a','8 car. min'],['b','Majuscule'],['c','Chiffre'],['d','Spécial']].map(([k,l])=><div key={k} className={'req '+(ps.c[k]?'ok':'')}><div className="req-dot"/>{l}</div>)}</div></>}
-            </div>
-            <div className="fg"><label className="fl">Confirmer le mot de passe *</label>
-              <div className="fi-w"><input className={'fi '+(rP2&&rP!==rP2?'ferr':rP2&&rP===rP2?'fok':'')} type="password" placeholder="Répétez" value={rP2} onChange={e=>setRP2(e.target.value)} style={{paddingRight:38}} required/>
-              {rP2&&<span className="fi-ic">{rP===rP2?'✓':'⊘'}</span>}</div>
-              {rP2&&rP!==rP2&&<div className="errmsg">⊘ Mots de passe différents</div>}</div>
-            <div className="cb-row" onClick={()=>setTerms(!terms)}>
-              <div className={'cb '+(terms?'on':'')}>{terms&&<span style={{color:'#fff',fontSize:9,fontWeight:700}}>✓</span>}</div>
-              <span className="cb-lbl">J'accepte les <span style={{color:'var(--bl)',cursor:'pointer'}} onClick={e=>{e.stopPropagation();setShowTerms(true);}}>conditions d'utilisation</span> et la politique RGPD</span>
-            </div>
-            <button className="auth-btn" type="submit" disabled={loading||!terms}>{loading?<><span className="spin"/>Création…</>:'Créer mon compte →'}</button>
-          </form>}
+              <div class="form-group">
+                <div class="form-label">
+                  <span>Mot de passe</span>
+                  <button type="button" onClick=${() => { setTab('reset'); setAlert(null); }}>Oublié ?</button>
+                </div>
+                <div class="input-wrap">
+                  <input class="form-input" type=${showLP ? 'text' : 'password'} placeholder="••••••••" value=${lPwd} onInput=${e => setLP(e.target.value)} style="padding-right:38px" autocomplete="current-password" required/>
+                  <button type="button" class="eye-btn" onClick=${() => setShowLP(!showLP)}>${showLP ? '🙈' : '👁️'}</button>
+                </div>
+              </div>
+              <button class="submit-btn" type="submit" disabled=${loading}>${loading ? html`<span class="spinner-sm"></span><span>Connexion…</span>` : 'Se connecter →'}</button>
+            </form>
+          `}
 
-          {tab==='reset' && <div>
-            <button className="flink" style={{display:'flex',alignItems:'center',gap:6,marginBottom:18,fontSize:13}} onClick={()=>{setTab('login');setAlert(null);setResetOk(false);}}>← Retour</button>
-            <h1 className="auth-h">Mot de passe oublié</h1>
-            <p className="auth-sub">Entrez votre email — nous envoyons un lien de réinitialisation.</p>
-            {resetOk?<div className="alert aok">✓ Email envoyé ! Vérifiez votre boîte mail.</div>:
-            <form onSubmit={doReset}>
-              <div className="fg"><label className="fl">Email</label><input className="fi" type="email" placeholder="marie@email.fr" value={resetE} onChange={e=>setResetE(e.target.value)} required/></div>
-              <button className="auth-btn" type="submit" disabled={loading}>{loading?<><span className="spin"/>Envoi…</>:'Envoyer le lien →'}</button>
-            </form>}
-          </div>}
+          ${tab === 'register' && html`
+            <form onSubmit=${doRegister}>
+              <div class="grid2">
+                <div class="form-group"><div class="form-label">Prénom *</div><input class="form-input" placeholder="Marie" value=${rPr} onInput=${e => setRPr(e.target.value)} required/></div>
+                <div class="form-group"><div class="form-label">Nom</div><input class="form-input" placeholder="Dupont" value=${rNm} onInput=${e => setRNm(e.target.value)}/></div>
+              </div>
+              <div class="form-group">
+                <div class="form-label">Email *</div>
+                <div class="input-wrap">
+                  <input class=${'form-input' + (rEm && !isValidEmail(rEm) ? ' is-invalid' : rEm && isValidEmail(rEm) ? ' is-valid' : '')} type="email" placeholder="marie@email.fr" value=${rEm} onInput=${e => setREm(e.target.value)} required/>
+                  ${rEm && html`<span class="input-icon">${isValidEmail(rEm) ? '✓' : '⊘'}</span>`}
+                </div>
+              </div>
+              <div class="form-group">
+                <div class="form-label">Votre rôle *</div>
+                <div class="roles-grid">
+                  ${[['aidant','👩‍👧','Aidant','Famille'],['patient','👴','Patient','Proche aidé'],['soignant','👨‍⚕️','Soignant','Pro santé']].map(([v,ic,nm,ds]) => html`
+                    <div class=${'role-card' + (role === v ? ' selected' : '')} onClick=${() => setRole(v)}>
+                      <div class="role-card-ic">${ic}</div>
+                      <div class="role-card-nm">${nm}</div>
+                      <div class="role-card-ds">${ds}</div>
+                    </div>
+                  `)}
+                </div>
+              </div>
+              <div class="form-group">
+                <div class="form-label">Mot de passe *</div>
+                <div class="input-wrap">
+                  <input class="form-input" type=${showRP ? 'text' : 'password'} placeholder="Min. 8 caractères" value=${rPw} onInput=${e => setRPw(e.target.value)} style="padding-right:38px" required/>
+                  <button type="button" class="eye-btn" onClick=${() => setShowRP(!showRP)}>${showRP ? '🙈' : '👁️'}</button>
+                </div>
+                ${rPw && html`
+                  <div class="pwd-bars">${[1,2,3,4].map(i => html`<div class=${'pwd-bar' + (i <= ps.score ? ' s' + ps.score : '')}></div>`)}</div>
+                  <div class="pwd-reqs">
+                    ${[['len','8 car. min'],['upper','Majuscule'],['num','Chiffre'],['spec','Spécial']].map(([k,l]) => html`<div class=${'pwd-req' + (ps.c[k] ? ' ok' : '')}><div class="pwd-req-dot"></div>${l}</div>`)}
+                  </div>
+                `}
+              </div>
+              <div class="form-group">
+                <div class="form-label">Confirmer le mot de passe *</div>
+                <div class="input-wrap">
+                  <input class=${'form-input' + (rPw2 && rPw !== rPw2 ? ' is-invalid' : rPw2 && rPw === rPw2 ? ' is-valid' : '')} type="password" placeholder="Répétez" value=${rPw2} onInput=${e => setRPw2(e.target.value)} style="padding-right:38px" required/>
+                  ${rPw2 && html`<span class="input-icon">${rPw === rPw2 ? '✓' : '⊘'}</span>`}
+                </div>
+                ${rPw2 && rPw !== rPw2 && html`<div class="error-msg">⊘ Les mots de passe ne correspondent pas</div>`}
+              </div>
+              <div class="checkbox-row" onClick=${() => setTerms(!terms)}>
+                <div class=${'checkbox' + (terms ? ' checked' : '')}>${terms && html`<span style="color:#fff;font-size:9px;font-weight:700">✓</span>`}</div>
+                <span class="checkbox-label">J'accepte les <span style="color:var(--bl);cursor:pointer" onClick=${e => { e.stopPropagation(); setShowTerms(true); }}>conditions d'utilisation</span> et la politique RGPD</span>
+              </div>
+              <button class="submit-btn" type="submit" disabled=${loading || !terms}>${loading ? html`<span class="spinner-sm"></span><span>Création…</span>` : 'Créer mon compte →'}</button>
+            </form>
+          `}
 
-          <div className="sec-box"><span>🔒</span><div className="sec-txt"><strong>Connexion sécurisée.</strong> Données chiffrées AES-256, hébergées en Europe, conformité RGPD.</div></div>
+          ${tab === 'reset' && html`
+            <div>
+              <button style="display:flex;align-items:center;gap:6px;color:var(--bl);font-size:13px;cursor:pointer;border:none;background:none;margin-bottom:18px" onClick=${() => { setTab('login'); setAlert(null); setResetSent(false); }}>← Retour</button>
+              <h1 class="auth-title">Mot de passe oublié</h1>
+              <p class="auth-sub">Entrez votre email — nous envoyons un lien de réinitialisation.</p>
+              ${resetSent ? html`<div class="alert-box success">✓ Email envoyé ! Vérifiez votre boîte mail.</div>` : html`
+                <form onSubmit=${doReset}>
+                  <div class="form-group"><div class="form-label">Email</div><input class="form-input" type="email" placeholder="marie@email.fr" value=${resetEm} onInput=${e => setResetEm(e.target.value)} required/></div>
+                  <button class="submit-btn" type="submit" disabled=${loading}>${loading ? html`<span class="spinner-sm"></span><span>Envoi…</span>` : 'Envoyer le lien →'}</button>
+                </form>
+              `}
+            </div>
+          `}
+
+          <div class="security-note"><span>🔒</span><span><strong>Connexion sécurisée.</strong> Données chiffrées AES-256, hébergées en Europe, conformité RGPD totale.</span></div>
         </div>
       </div>
 
-      {showTerms&&<div className="modal-bg" onClick={()=>setShowTerms(false)}>
-        <div className="modal" onClick={e=>e.stopPropagation()}>
-          <h2>Conditions d'utilisation</h2>
-          <p><strong>1. Objet</strong><br/>AidantPro est une plateforme de coordination de soins pour aidants familiaux, patients et professionnels.</p>
-          <p><strong>2. RGPD</strong><br/>Vos données sont chiffrées AES-256, hébergées dans l'UE. Droit d'accès, rectification et suppression garantis.</p>
-          <p><strong>3. Usage</strong><br/>AidantPro ne remplace pas un avis médical professionnel.</p>
-          <p><strong>4. Abonnement</strong><br/>14 jours gratuits sans carte bancaire. Annulable à tout moment.</p>
-          <button className="modal-close" onClick={()=>setShowTerms(false)}>Fermer</button>
+      ${showTerms && html`
+        <div class="modal-overlay" onClick=${() => setShowTerms(false)}>
+          <div class="modal-box" onClick=${e => e.stopPropagation()}>
+            <h2>Conditions d'utilisation</h2>
+            <p><strong>1. Objet</strong><br/>AidantPro est une plateforme de coordination de soins pour aidants familiaux, patients et professionnels.</p>
+            <p><strong>2. RGPD</strong><br/>Vos données de santé sont chiffrées AES-256 et hébergées dans l'UE. Droit d'accès, rectification et suppression garantis.</p>
+            <p><strong>3. Usage</strong><br/>AidantPro est un outil de coordination et ne remplace pas un avis médical professionnel.</p>
+            <p><strong>4. Abonnement</strong><br/>14 jours gratuits sans carte bancaire. Abonnement mensuel annulable à tout moment.</p>
+            <button class="modal-close" onClick=${() => setShowTerms(false)}>Fermer</button>
+          </div>
         </div>
-      </div>}
+      `}
     </div>
-  );
+  `;
 }
 
-function Verify({email, onBack}) {
-  return <div style={{minHeight:'100vh',display:'flex',alignItems:'center',justifyContent:'center',background:'var(--bg)',padding:40}}>
-    <div style={{background:'#fff',borderRadius:18,padding:36,maxWidth:440,width:'100%',textAlign:'center',boxShadow:'0 4px 40px rgba(0,0,0,.08)'}}>
-      <div style={{fontSize:52,marginBottom:14}}>📧</div>
-      <h2 style={{fontFamily:"'Syne',sans-serif",fontSize:22,fontWeight:800,marginBottom:8}}>Vérifiez votre email</h2>
-      <p style={{fontSize:13,color:'var(--mu)',lineHeight:1.7,marginBottom:18}}>Email de confirmation envoyé à <strong style={{color:'var(--bl)'}}>{email}</strong>.<br/>Cliquez sur le lien pour activer votre compte.</p>
-      <div style={{background:'var(--bl2)',borderRadius:10,padding:13,marginBottom:18,fontSize:12,color:'var(--bl)',lineHeight:1.6}}>🔒 Cette étape protège vos données médicales.</div>
-      <button onClick={onBack} style={{background:'none',border:'1px solid var(--bd)',borderRadius:8,padding:'7px 14px',fontSize:12,cursor:'pointer',color:'var(--mu)'}}>← Retour</button>
+// ═══════════════════════════════════════
+// VERIFY EMAIL
+// ═══════════════════════════════════════
+function Verify({ email, onBack }) {
+  return html`
+    <div class="verify-page">
+      <div class="verify-card">
+        <div class="verify-icon">📧</div>
+        <h2 class="verify-title">Vérifiez votre email</h2>
+        <p class="verify-text">Email de confirmation envoyé à <strong style="color:var(--bl)">${email}</strong>.<br/>Cliquez sur le lien pour activer votre compte.</p>
+        <div class="verify-note">🔒 Cette étape protège vos données médicales.</div>
+        <button style="background:none;border:1px solid var(--bd);border-radius:8px;padding:7px 14px;font-size:12px;cursor:pointer;color:var(--mu)" onClick=${onBack}>← Retour à la connexion</button>
+      </div>
     </div>
-  </div>;
+  `;
 }
 
-// ═══════════════════════════════════
-// PATIENT INTERFACE
-// ═══════════════════════════════════
-function PatientApp({user, onOut}) {
+// ═══════════════════════════════════════
+// PATIENT APP
+// ═══════════════════════════════════════
+function PatientApp({ user, onOut }) {
   const [lang, setLang] = useState('fr');
   const [screen, setScreen] = useState('home');
-  const [meds, setMeds] = useState(MEDS_INIT);
+  const [meds, setMeds] = useState(MEDS0);
   const [msg, setMsg] = useState(''); const [msgSent, setMsgSent] = useState(false);
   const [feel, setFeel] = useState(null);
   const today = new Date().toISOString().split('T')[0];
   const t = LANGS[lang] || LANGS.fr;
-  const dir = lang === 'ar' ? 'rtl' : 'ltr';
+  const rtl = lang === 'ar';
   const prenom = user?.user_metadata?.prenom || 'Pierre';
-  const pr = RDV_INIT.filter(r=>!r.fait).sort((a,b)=>a.date.localeCompare(b.date))[0];
-  const pris = meds.reduce((a,m)=>a+m.horaires.filter(h=>m.prises[today+'_'+h]).length,0);
-  const tot = meds.reduce((a,m)=>a+m.horaires.length,0);
-  function tp(id,h){const k=today+'_'+h;setMeds(p=>p.map(m=>m.id!==id?m:{...m,prises:{...m.prises,[k]:!m.prises[k]}}));}
+  const pr = RDV0.filter(r => !r.fait).sort((a, b) => a.date.localeCompare(b.date))[0];
+  const prisCnt = meds.reduce((a, m) => a + m.horaires.filter(h => m.prises[today + '_' + h]).length, 0);
+  const totCnt = meds.reduce((a, m) => a + m.horaires.length, 0);
+  const togglePrise = (id, h) => { const k = today + '_' + h; setMeds(p => p.map(m => m.id !== id ? m : { ...m, prises: { ...m.prises, [k]: !m.prises[k] } })); };
 
-  if (screen==='lang') return <div className="pat" dir={dir}>
-    <div className="sub-hd"><button className="back-btn" onClick={()=>setScreen('home')}>{t.back}</button><div className="sub-title">{t.choose}</div></div>
-    <div className="sub-body"><div className="lang-grid">{Object.entries(LANGS).map(([k,v])=><div key={k} className={'lang-card '+(lang===k?'lsel':'')} onClick={()=>{setLang(k);setScreen('home');}}><span className="lang-flag">{v.flag}</span><span className="lang-nm">{v.nm}</span></div>)}</div></div>
-  </div>;
+  if (screen === 'lang') return html`
+    <div class="sub-screen" dir=${rtl ? 'rtl' : 'ltr'}>
+      <div class="sub-header"><button class="back-icon-btn" onClick=${() => setScreen('home')}>${t.back}</button><span class="sub-header-title">${t.choose}</span></div>
+      <div class="sub-body"><div class="lang-options">${Object.entries(LANGS).map(([k, v]) => html`<div class=${'lang-option' + (lang === k ? ' active' : '')} onClick=${() => { setLang(k); setScreen('home'); }}><span class="lang-flag">${v.flag}</span><span class="lang-name">${v.name}</span></div>`)}</div></div>
+    </div>`;
 
-  if (screen==='meds') return <div className="pat" dir={dir}>
-    <div className="sub-hd"><button className="back-btn" onClick={()=>setScreen('home')}>{t.back}</button><div className="sub-title">💊</div></div>
-    <div className="sub-body">{meds.map(m=><div key={m.id} className="med-card"><div className="med-nm">💊 {m.nom}</div><div className="med-dose">{m.dose} — {m.indication}</div><div className="med-btns">{m.horaires.map(h=>{const ok=!!m.prises[today+'_'+h];return <button key={h} className={'med-btn '+(ok?'ok':'')} onClick={()=>tp(m.id,h)}>{h} {ok?t.confirmed:t.confirm}</button>;})}</div></div>)}</div>
-  </div>;
+  if (screen === 'meds') return html`
+    <div class="sub-screen" dir=${rtl ? 'rtl' : 'ltr'}>
+      <div class="sub-header"><button class="back-icon-btn" onClick=${() => setScreen('home')}>${t.back}</button><span class="sub-header-title">💊</span></div>
+      <div class="sub-body">${meds.map(m => html`
+        <div class="med-item">
+          <div class="med-item-name">💊 ${m.nom}</div>
+          <div class="med-item-dose">${m.dose} — ${m.indication}</div>
+          <div class="med-item-btns">${m.horaires.map(h => { const done = !!m.prises[today + '_' + h]; return html`<button class=${'confirm-btn' + (done ? ' done' : '')} onClick=${() => togglePrise(m.id, h)}>${h} ${done ? t.confirmed : t.confirm}</button>`; })}</div>
+        </div>`)}</div>
+    </div>`;
 
-  if (screen==='rdv') return <div className="pat" dir={dir}>
-    <div className="sub-hd"><button className="back-btn" onClick={()=>setScreen('home')}>{t.back}</button><div className="sub-title">📅</div></div>
-    <div className="sub-body">{pr?<div className="rdv-card"><div className="rdv-date">{pr.date.split('-')[2]}</div><div className="rdv-mo">{new Date(pr.date+'T12:00').toLocaleString('fr-FR',{month:'long',year:'numeric'})}</div><div className="rdv-ti">{pr.titre}</div><div className="rdv-li">📍 {pr.lieu}</div><div className="rdv-hr">🕐 {pr.heure}</div></div>:<div style={{textAlign:'center',padding:'36px',fontSize:17,color:'var(--mu)'}}>{t.nordv}</div>}</div>
-  </div>;
-
-  if (screen==='msg') return <div className="pat" dir={dir}>
-    <div className="sub-hd"><button className="back-btn" onClick={()=>{setScreen('home');setMsgSent(false);setMsg('');}}>{t.back}</button><div className="sub-title">💬</div></div>
-    <div className="sub-body">{msgSent?<div className="msg-sent">{t.msent}</div>:<><div className="msg-box"><textarea className="msg-ta" placeholder={t.mph} value={msg} onChange={e=>setMsg(e.target.value)}/></div><button className="msg-send" onClick={()=>{if(msg.trim())setMsgSent(true);}}>{t.send} →</button></>}</div>
-  </div>;
-
-  return <div className="pat" dir={dir}>
-    <div className="pat-hd">
-      <div className="pat-hd-logo"><div className="pat-hd-ic">🤝</div><div className="pat-hd-nm">AidantPro</div></div>
-      <div className="fxs"><button className="pat-hd-btn" onClick={()=>setScreen('lang')}>{t.lang}</button><button className="pat-hd-btn" onClick={onOut}>←</button></div>
-    </div>
-    <div className="pat-body">
-      <div className="pat-hello">{t.hello}, {prenom} 👋</div>
-      <div className="pat-sub">{t.wel}</div>
-      <div className="pat-btns">
-        <button className="pb pb-m" onClick={()=>setScreen('meds')}><div className="pb-ic">💊</div><div><div className="pb-tx">{t.m}</div><div className="pb-sub">{pris}/{tot} confirmés</div></div></button>
-        <button className="pb pb-r" onClick={()=>setScreen('rdv')}><div className="pb-ic">📅</div><div><div className="pb-tx">{t.r}</div><div className="pb-sub">{pr?pr.date.split('-')[2]+' — '+pr.heure:t.nordv}</div></div></button>
-        <button className="pb pb-msg" onClick={()=>setScreen('msg')}><div className="pb-ic">💬</div><div><div className="pb-tx">{t.msg}</div><div className="pb-sub">Famille...</div></div></button>
+  if (screen === 'rdv') return html`
+    <div class="sub-screen" dir=${rtl ? 'rtl' : 'ltr'}>
+      <div class="sub-header"><button class="back-icon-btn" onClick=${() => setScreen('home')}>${t.back}</button><span class="sub-header-title">📅</span></div>
+      <div class="sub-body">${pr ? html`
+        <div class="rdv-item">
+          <div class="rdv-item-day">${pr.date.split('-')[2]}</div>
+          <div class="rdv-item-month">${new Date(pr.date + 'T12:00').toLocaleString('fr-FR', { month: 'long', year: 'numeric' })}</div>
+          <div class="rdv-item-title">${pr.titre}</div>
+          <div class="rdv-item-place">📍 ${pr.lieu}</div>
+          <div class="rdv-item-time">🕐 ${pr.heure}</div>
+        </div>` : html`<div style="text-align:center;padding:36px;font-size:17px;color:var(--mu)">${t.nordv}</div>`}
       </div>
-      <div style={{fontSize:14,fontWeight:600,color:'var(--mu)',marginTop:22,marginBottom:10,textAlign:'center'}}>{t.how}</div>
-      <div className="feel-row">{[['good',t.good],['ok',t.ok],['bad',t.bad]].map(([k,l])=><button key={k} className={'feel-btn '+(feel===k?'fsel':'')} onClick={()=>setFeel(k)}>{l}</button>)}</div>
-    </div>
-  </div>;
+    </div>`;
+
+  if (screen === 'msg') return html`
+    <div class="sub-screen" dir=${rtl ? 'rtl' : 'ltr'}>
+      <div class="sub-header"><button class="back-icon-btn" onClick=${() => { setScreen('home'); setMsgSent(false); setMsg(''); }}>${t.back}</button><span class="sub-header-title">💬</span></div>
+      <div class="sub-body">${msgSent ? html`<div class="msg-sent-msg">${t.msent}</div>` : html`
+        <div class="msg-area"><textarea class="msg-textarea" placeholder=${t.mph} value=${msg} onInput=${e => setMsg(e.target.value)}></textarea></div>
+        <button class="msg-send-btn" onClick=${() => { if (msg.trim()) setMsgSent(true); }}>${t.send} →</button>`}
+      </div>
+    </div>`;
+
+  return html`
+    <div class="pat-app" dir=${rtl ? 'rtl' : 'ltr'}>
+      <div class="pat-header">
+        <div class="pat-header-logo"><div class="pat-header-ic">🤝</div><div class="pat-header-nm">AidantPro</div></div>
+        <div style="display:flex;gap:8px">
+          <button class="pat-header-btn" onClick=${() => setScreen('lang')}>🌍 ${t.flag || ''}</button>
+          <button class="pat-header-btn" onClick=${onOut}>←</button>
+        </div>
+      </div>
+      <div class="pat-body">
+        <div class="pat-hello">${t.hello}, ${prenom} 👋</div>
+        <div class="pat-welcome">${t.wel}</div>
+        <div class="pat-buttons">
+          <button class="pat-btn meds" onClick=${() => setScreen('meds')}>
+            <div class="pat-btn-icon">💊</div>
+            <div><div class="pat-btn-title">${t.meds}</div><div class="pat-btn-sub">${prisCnt}/${totCnt} confirmés</div></div>
+          </button>
+          <button class="pat-btn rdv" onClick=${() => setScreen('rdv')}>
+            <div class="pat-btn-icon">📅</div>
+            <div><div class="pat-btn-title">${t.rdv}</div><div class="pat-btn-sub">${pr ? pr.date.split('-')[2] + ' — ' + pr.heure : t.nordv}</div></div>
+          </button>
+          <button class="pat-btn msg" onClick=${() => setScreen('msg')}>
+            <div class="pat-btn-icon">💬</div>
+            <div><div class="pat-btn-title">${t.msg}</div><div class="pat-btn-sub">Famille…</div></div>
+          </button>
+        </div>
+        <div class="feel-title">${t.how}</div>
+        <div class="feel-row">
+          ${[['good', t.good], ['ok', t.okay], ['bad', t.bad]].map(([k, l]) => html`<button class=${'feel-btn' + (feel === k ? ' active' : '')} onClick=${() => setFeel(k)}>${l}</button>`)}
+        </div>
+      </div>
+    </div>`;
 }
 
-// ═══════════════════════════════════
-// AIDANT INTERFACE
-// ═══════════════════════════════════
-function AidantApp({user, onOut}) {
+// ═══════════════════════════════════════
+// AIDANT APP
+// ═══════════════════════════════════════
+function AidantApp({ user, onOut }) {
   const [page, setPage] = useState('dashboard');
-  const [proche, setProche] = useState({prenom:'Pierre',nom:'Dubois',age:78,groupeSanguin:'A+',pathologies:["Maladie d'Alzheimer (stade modéré)","Hypertension","Diabète type 2"],allergies:["Pénicilline","Aspirine"],mutuelle:'MGEN',adresse:'12 rue des Lilas, Paris',medecins:[{id:1,nom:'Dr. Martin Sophie',spec:'Médecin traitant',tel:'04 76 00 12 34'},{id:2,nom:'Dr. Benali Karim',spec:'Neurologue',tel:'04 76 45 67 89'}]});
-  const [meds, setMeds] = useState(MEDS_INIT);
-  const [rdvs, setRdvs] = useState(RDV_INIT);
-  const [journal, setJournal] = useState(JOURNAL_INIT);
+  const [proche, setProche] = useState(PROCHE0);
+  const [meds, setMeds] = useState(MEDS0);
+  const [rdvs, setRdvs] = useState(RDV0);
+  const [journal, setJournal] = useState(JOURNAL0);
   const [zarit, setZarit] = useState({});
   const [aiTxt, setAiTxt] = useState(''); const [aiLoad, setAiLoad] = useState(false);
   const today = new Date().toISOString().split('T')[0];
-  const pris = meds.reduce((a,m)=>a+m.horaires.filter(h=>m.prises[today+'_'+h]).length,0);
-  const tot = meds.reduce((a,m)=>a+m.horaires.length,0);
-  const zScore = Object.values(zarit).reduce((a,b)=>a+b,0);
-  const zPct = ZARIT_Q.length ? Math.round((zScore/(ZARIT_Q.length*4))*100) : 0;
-  const zColor = zPct<30?'var(--gn)':zPct<60?'var(--am)':'var(--rd)';
+  const prisCnt = meds.reduce((a, m) => a + m.horaires.filter(h => m.prises[today + '_' + h]).length, 0);
+  const totCnt = meds.reduce((a, m) => a + m.horaires.length, 0);
+  const zScore = Object.values(zarit).reduce((a, b) => a + b, 0);
+  const zPct = ZARIT_QS.length ? Math.round((zScore / (ZARIT_QS.length * 4)) * 100) : 0;
+  const zColor = zPct < 30 ? 'var(--gn)' : zPct < 60 ? 'var(--am)' : 'var(--rd)';
   const prenom = user?.user_metadata?.prenom || 'Marie';
-  function tp(id,h){const k=today+'_'+h;setMeds(p=>p.map(m=>m.id!==id?m:{...m,prises:{...m.prises,[k]:!m.prises[k]}}));}
-  const alerts=[...meds.filter(m=>m.renouv<=10).map(m=>({t:'w',m:`Renouvellement ${m.nom} dans ${m.renouv} jours`})),...rdvs.filter(r=>!r.fait&&!r.assigne).map(r=>({t:'d',m:`RDV non assigné : ${r.titre}`}))];
+  const togglePrise = (id, h) => { const k = today + '_' + h; setMeds(p => p.map(m => m.id !== id ? m : { ...m, prises: { ...m.prises, [k]: !m.prises[k] } })); };
+  const alerts = [...meds.filter(m => m.renouv <= 10).map(m => ({ t: 'warn', m: 'Renouvellement ' + m.nom + ' dans ' + m.renouv + ' jours' })), ...rdvs.filter(r => !r.fait && !r.assigne).map(r => ({ t: 'danger', m: 'RDV non assigné : ' + r.titre }))];
 
-  async function genAI(){
-    setAiLoad(true);setAiTxt('');
-    try{
-      const ctx=journal.slice(0,3).map(j=>`${j.date}: ${j.contenu}`).join('\n');
-      const r=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1000,messages:[{role:'user',content:`Résumé clinique factuel 3-4 phrases pour médecin traitant:\n${ctx}\nPatient: ${proche.prenom} ${proche.nom}, ${proche.age} ans. Pathologies: ${proche.pathologies.join(', ')}.`}]})});
-      const d=await r.json();
-      setAiTxt(d.content?.[0]?.text||'Erreur.');
-    }catch{setAiTxt('Erreur de connexion.');}
+  const genAI = async () => {
+    setAiLoad(true); setAiTxt('');
+    try {
+      const ctx = journal.slice(0, 3).map(j => j.date + ': ' + j.contenu).join('\n');
+      const r = await fetch('https://api.anthropic.com/v1/messages', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ model: 'claude-sonnet-4-20250514', max_tokens: 1000, messages: [{ role: 'user', content: 'Résumé clinique factuel 3-4 phrases pour médecin traitant:\n' + ctx + '\nPatient: ' + proche.prenom + ' ' + proche.nom + ', ' + proche.age + ' ans. Pathologies: ' + proche.pathologies.join(', ') + '.' }] }) });
+      const d = await r.json();
+      setAiTxt(d.content?.[0]?.text || 'Erreur.');
+    } catch(e) { setAiTxt('Erreur de connexion à l\'API.'); }
     setAiLoad(false);
-  }
+  };
 
-  const P = {proche,setProche,meds,setMeds,rdvs,setRdvs,journal,setJournal,zarit,setZarit,zPct,zColor,aiTxt,aiLoad,genAI,today,tp,pris,tot,alerts,setPage,prenom};
+  const ctx = { proche, setProche, meds, setMeds, rdvs, setRdvs, journal, setJournal, zarit, setZarit, zPct, zColor, aiTxt, aiLoad, genAI, today, togglePrise, prisCnt, totCnt, alerts, setPage, prenom };
 
-  return <div className="app">
-    <aside className="sb">
-      <div className="sb-hd"><div className="sb-logo"><div className="sb-logo-ic">A</div><span className="sb-logo-nm">AidantPro</span></div></div>
-      <div className="pc" onClick={()=>setPage('dossier')}><div className="pc-n">{proche.prenom} {proche.nom}</div><div className="pc-s">{proche.age} ans · Alzheimer</div></div>
-      <nav style={{padding:'5px 7px',flex:1,overflowY:'auto'}}>
-        {NAV.map(n=><button key={n.id} className={'ni '+(page===n.id?'on':'')} onClick={()=>setPage(n.id)}><span className="ni-ic">{n.icon}</span><span className="ni-lb">{n.label}</span></button>)}
-      </nav>
-      <button className="sb-sw" onClick={onOut}>⇄ Déconnexion</button>
-      <div className="sb-ft">Bonjour <strong>{prenom}</strong> · Plan Famille</div>
-    </aside>
-    <main className="main">
-      {page==='dashboard'&&<DB {...P}/>}
-      {page==='dossier'&&<Dossier {...P}/>}
-      {page==='agenda'&&<Agenda rdvs={rdvs} setRdvs={setRdvs}/>}
-      {page==='medicaments'&&<Medicaments meds={meds} setMeds={setMeds} today={today} tp={tp} pris={pris} tot={tot}/>}
-      {page==='journal'&&<Journal journal={journal} setJournal={setJournal} today={today} aiTxt={aiTxt} aiLoad={aiLoad} genAI={genAI}/>}
-      {page==='aides'&&<Aides/>}
-      {page==='bienetre'&&<Bienetre zarit={zarit} setZarit={setZarit} zPct={zPct} zColor={zColor}/>}
-      {page==='parametres'&&<Params prenom={prenom} onOut={onOut}/>}
-    </main>
-  </div>;
-}
-
-function DB({proche,alerts,rdvs,journal,meds,pris,tot,setPage,today,tp,aiTxt,aiLoad,genAI,prenom}){
-  const pr=rdvs.filter(r=>!r.fait).sort((a,b)=>a.date.localeCompare(b.date))[0];
-  return <>
-    <div className="ph"><div><div className="pt">Bonjour, {prenom} 👋</div><div className="ps">{new Date().toLocaleDateString('fr-FR',{weekday:'long',day:'numeric',month:'long'})}</div></div><button className="btn bg2" onClick={genAI} disabled={aiLoad}>{aiLoad?<><span className="spin2"/>Génération…</>:'Résumé IA'}</button></div>
-    {alerts.map((a,i)=><div key={i} className={'al al-'+(a.t==='w'?'w':'d')}><span>{a.t==='w'?'⚠':'⊘'}</span>{a.m}</div>)}
-    {aiTxt&&<div className="ai-box"><div className="ai-lbl">Résumé IA — pour le médecin</div><div className="ai-txt">{aiTxt}</div></div>}
-    <div className="g4">
-      <div className="kpi"><div className="kv">{pris}<span style={{fontSize:16,fontWeight:400,color:'var(--mu)'}}>/{{tot}}</span></div><div className="kl">Prises confirmées</div></div>
-      <div className="kpi"><div className="kv">{rdvs.filter(r=>!r.fait).length}</div><div className="kl">RDV à venir</div></div>
-      <div className="kpi"><div className="kv">{journal.length}</div><div className="kl">Notes journal</div></div>
-      <div className="kpi" style={{background:'var(--bl2)',cursor:'pointer'}} onClick={()=>setPage('aides')}><div className="kv" style={{color:'var(--bl)'}}>{AIDES.filter(a=>a.ok).length}</div><div className="kl" style={{color:'var(--bl)'}}>Aides →</div></div>
-    </div>
-    <div className="g2">
-      <div className="card" style={{cursor:'pointer'}} onClick={()=>setPage('agenda')}>
-        <div className="ct">Prochain RDV</div>
-        {pr?<div style={{display:'flex',gap:10}}><div className="rd-dt" style={{background:'var(--bl2)'}}><div className="rd-day" style={{color:'var(--bl)'}}>{pr.date.split('-')[2]}</div><div className="rd-mo" style={{color:'var(--bl)'}}>{new Date(pr.date+'T12:00').toLocaleString('fr-FR',{month:'short'})}</div><div style={{fontSize:10,color:'var(--mu)',marginTop:2}}>{pr.heure}</div></div><div><div style={{fontSize:13,fontWeight:600,marginBottom:3}}>{pr.titre}</div><div style={{fontSize:11,color:'var(--mu)'}}>{pr.lieu}</div></div></div>:<div className="empty">Aucun RDV</div>}
-      </div>
-      <div className="card" style={{cursor:'pointer'}} onClick={()=>setPage('journal')}>
-        <div className="ct">Dernière note</div>
-        {journal[0]?<><div style={{fontSize:12,lineHeight:1.75,marginBottom:8}}>{journal[0].contenu.slice(0,100)}…</div><span className={'badge '+(journal[0].humeur==='bien'?'b-gn':journal[0].humeur==='moyen'?'b-am':'b-rd')}>{journal[0].humeur}</span></>:<div className="empty">Aucune note</div>}
-      </div>
-    </div>
-    <div className="card">
-      <div className="fxb"><div className="ct" style={{marginBottom:0}}>Médicaments du jour</div><span style={{fontSize:10,color:'var(--mu)'}}>{pris}/{tot}</span></div>
-      <div className="sbar" style={{margin:'8px 0 12px'}}><div className="sfill" style={{width:`${tot?(pris/tot)*100:0}%`,background:pris===tot?'var(--gn)':'var(--bl)'}}/></div>
-      {meds.map(m=><div key={m.id} className="mr"><div><div className="mn">{m.nom} <span style={{fontWeight:400,color:'var(--mu)',fontSize:12}}>{m.dose}</span></div>{m.renouv<=10&&<div style={{fontSize:10,color:'var(--am)'}}>⚠ J-{m.renouv}</div>}</div><div className="hg">{m.horaires.map(h=>{const ok=!!m.prises[today+'_'+h];return<button key={h} className={'hb '+(ok?'ok':'')} onClick={()=>tp(m.id,h)}>{h} {ok?'✓':'○'}</button>;})}</div></div>)}
-    </div>
-  </>;
-}
-
-function Dossier({proche,setProche,aiTxt,aiLoad,genAI}){
-  const [edit,setEdit]=useState(false);const [ed,setEd]=useState({...proche});
-  const [np,setNp]=useState('');const [na,setNa]=useState('');
-  function save(){setProche({...ed});setEdit(false);}
-  function addTag(f,v,sv){if(!v.trim())return;setProche(p=>({...p,[f]:[...p[f],v.trim()]}));sv('');}
-  function rmTag(f,i){setProche(p=>({...p,[f]:p[f].filter((_,idx)=>idx!==i)}));}
-  return <>
-    <div className="ph"><div><div className="pt">Dossier médical</div><div className="ps">{proche.prenom} {proche.nom} · {proche.age} ans</div></div><div className="fxs"><button className="btn bg2" onClick={genAI} disabled={aiLoad}>{aiLoad?<><span className="spin2"/>…</>:'Résumé IA'}</button><button className="btn bs" onClick={()=>{setEdit(!edit);setEd({...proche});}}>{edit?'Annuler':'Modifier'}</button></div></div>
-    {aiTxt&&<div className="ai-box"><div className="ai-lbl">Résumé IA — pour le médecin</div><div className="ai-txt">{aiTxt}</div></div>}
-    <div className="g2">
-      <div className="gap-b">
-        <div className="card"><div className="ct">Informations</div>
-          {edit?<><div className="g2"><div className="fg"><label className="fl">Prénom</label><input className="fi" value={ed.prenom} onChange={e=>setEd({...ed,prenom:e.target.value})}/></div><div className="fg"><label className="fl">Nom</label><input className="fi" value={ed.nom} onChange={e=>setEd({...ed,nom:e.target.value})}/></div><div className="fg"><label className="fl">Groupe sanguin</label><input className="fi" value={ed.groupeSanguin} onChange={e=>setEd({...ed,groupeSanguin:e.target.value})}/></div><div className="fg"><label className="fl">Mutuelle</label><input className="fi" value={ed.mutuelle} onChange={e=>setEd({...ed,mutuelle:e.target.value})}/></div></div><div className="fxs"><button className="btn bp" onClick={save}>Enregistrer</button><button className="btn bs" onClick={()=>setEdit(false)}>Annuler</button></div></>:
-          <><div className="ir"><span className="ik">Nom</span><span className="iv">{proche.prenom} {proche.nom}</span></div><div className="ir"><span className="ik">Âge</span><span className="iv">{proche.age} ans</span></div><div className="ir"><span className="ik">Groupe sanguin</span><span className="iv"><span className="badge b-rd">{proche.groupeSanguin}</span></span></div><div className="ir"><span className="ik">Mutuelle</span><span className="iv" style={{fontSize:11}}>{proche.mutuelle}</span></div></>}
+  return html`
+    <div class="aidant-app">
+      <aside class="sidebar">
+        <div class="sidebar-header">
+          <div class="sidebar-logo"><div class="sidebar-logo-ic">A</div><span class="sidebar-logo-nm">AidantPro</span></div>
         </div>
-        <div className="card"><div className="ct">Pathologies</div>
-          <div style={{marginBottom:8}}>{proche.pathologies.map((p,i)=><span key={i} className="tag-i" style={{background:'var(--am2)',color:'var(--am)'}}>{p}<button className="tag-rm" onClick={()=>rmTag('pathologies',i)}>×</button></span>)}</div>
-          <div className="fxs"><input className="fi" style={{flex:1,fontSize:11}} placeholder="Ajouter…" value={np} onChange={e=>setNp(e.target.value)} onKeyDown={e=>e.key==='Enter'&&addTag('pathologies',np,setNp)}/><button className="btn bp" style={{padding:'5px 10px'}} onClick={()=>addTag('pathologies',np,setNp)}>+</button></div>
+        <div class="patient-card" onClick=${() => setPage('dossier')}>
+          <div class="patient-card-name">${proche.prenom} ${proche.nom}</div>
+          <div class="patient-card-info">${proche.age} ans · Alzheimer modéré</div>
         </div>
-        <div className="card"><div className="ct">Allergies</div>
-          <div style={{marginBottom:8}}>{proche.allergies.map((a,i)=><span key={i} className="tag-i" style={{background:'var(--rd2)',color:'var(--rd)'}}>{a}<button className="tag-rm" onClick={()=>rmTag('allergies',i)}>×</button></span>)}</div>
-          <div className="fxs"><input className="fi" style={{flex:1,fontSize:11}} placeholder="Ajouter…" value={na} onChange={e=>setNa(e.target.value)} onKeyDown={e=>e.key==='Enter'&&addTag('allergies',na,setNa)}/><button className="btn br2" style={{padding:'5px 10px'}} onClick={()=>addTag('allergies',na,setNa)}>+</button></div>
+        <div class="nav-section-label">Navigation</div>
+        <nav style="padding:2px 6px;flex:1;overflow-y:auto">
+          ${NAV_ITEMS.map(n => html`
+            <button class=${'nav-item' + (page === n.id ? ' active' : '')} onClick=${() => setPage(n.id)}>
+              <span class="nav-item-icon">${n.icon}</span>
+              <span class="nav-item-label">${n.label}</span>
+            </button>`)}
+        </nav>
+        <button class="sidebar-logout" onClick=${onOut}>⇄ Déconnexion</button>
+        <div class="sidebar-footer">Bonjour <strong>${prenom}</strong> · Plan Famille</div>
+      </aside>
+
+      <main class="main-content">
+        ${page === 'dashboard' && html`<${Dashboard} ...${ctx}/>`}
+        ${page === 'dossier' && html`<${Dossier} ...${ctx}/>`}
+        ${page === 'agenda' && html`<${AgendaPage} rdvs=${rdvs} setRdvs=${setRdvs}/>`}
+        ${page === 'medicaments' && html`<${MedicamentsPage} meds=${meds} setMeds=${setMeds} today=${today} togglePrise=${togglePrise} prisCnt=${prisCnt} totCnt=${totCnt}/>`}
+        ${page === 'journal' && html`<${JournalPage} journal=${journal} setJournal=${setJournal} today=${today} aiTxt=${aiTxt} aiLoad=${aiLoad} genAI=${genAI}/>`}
+        ${page === 'aides' && html`<${AidesPage}/>`}
+        ${page === 'bienetre' && html`<${BienetrePage} zarit=${zarit} setZarit=${setZarit} zPct=${zPct} zColor=${zColor}/>`}
+        ${page === 'parametres' && html`<${ParametresPage} prenom=${prenom} onOut=${onOut}/>`}
+      </main>
+    </div>`;
+}
+
+// ─── DASHBOARD ─────────────────────────
+function Dashboard({ proche, alerts, rdvs, journal, meds, prisCnt, totCnt, setPage, today, togglePrise, aiTxt, aiLoad, genAI, prenom }) {
+  const pr = rdvs.filter(r => !r.fait).sort((a, b) => a.date.localeCompare(b.date))[0];
+  const humeurBadge = (h) => h === 'bien' ? 'badge-green' : h === 'moyen' ? 'badge-orange' : 'badge-red';
+  return html`
+    <div class="page-header">
+      <div><div class="page-title">Bonjour, ${prenom} 👋</div><div class="page-sub">${new Date().toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long' })}</div></div>
+      <button class="btn btn-green" onClick=${genAI} disabled=${aiLoad}>${aiLoad ? html`<span class="spinner-sm"></span><span>Génération…</span>` : '🤖 Résumé IA médecin'}</button>
+    </div>
+    ${alerts.map((a, i) => html`<div key=${i} class=${'alert-bar ' + a.t}><span>${a.t === 'warn' ? '⚠' : '⊘'}</span>${a.m}</div>`)}
+    ${aiTxt && html`<div class="ai-box"><div class="ai-label">Résumé IA — à présenter au médecin</div><div class="ai-text">${aiTxt}</div></div>`}
+    <div class="grid4">
+      <div class="kpi-card"><div class="kpi-value">${prisCnt}<span style="font-size:16px;font-weight:400;color:var(--mu)">/${totCnt}</span></div><div class="kpi-label">Prises confirmées</div></div>
+      <div class="kpi-card"><div class="kpi-value">${rdvs.filter(r => !r.fait).length}</div><div class="kpi-label">RDV à venir</div></div>
+      <div class="kpi-card"><div class="kpi-value">${journal.length}</div><div class="kpi-label">Notes journal</div></div>
+      <div class="kpi-card" style="background:var(--bl2);cursor:pointer" onClick=${() => setPage('aides')}><div class="kpi-value" style="color:var(--bl)">${AIDES.filter(a => a.ok).length}</div><div class="kpi-label" style="color:var(--bl)">Aides → voir</div></div>
+    </div>
+    <div class="grid2-main">
+      <div class="card" style="cursor:pointer" onClick=${() => setPage('agenda')}>
+        <div class="card-title">Prochain RDV</div>
+        ${pr ? html`<div style="display:flex;gap:11px">
+          <div class="rdv-date-block" style="background:var(--bl2)"><div class="rdv-date-day" style="color:var(--bl)">${pr.date.split('-')[2]}</div><div class="rdv-date-mo" style="color:var(--bl)">${new Date(pr.date + 'T12:00').toLocaleString('fr-FR', { month: 'short' })}</div><div style="font-size:10px;color:var(--mu);margin-top:2px">${pr.heure}</div></div>
+          <div><div style="font-size:13px;font-weight:600;margin-bottom:3px">${pr.titre}</div><div style="font-size:11px;color:var(--mu)">${pr.lieu}</div><div class="mt8"><span class=${'badge ' + (pr.assigne ? 'badge-blue' : 'badge-red')}>${pr.assigne || 'Non assigné'}</span></div></div>
+        </div>` : html`<div class="empty-state">Aucun RDV à venir</div>`}
+      </div>
+      <div class="card" style="cursor:pointer" onClick=${() => setPage('journal')}>
+        <div class="card-title">Dernière note</div>
+        ${journal[0] ? html`<div style="font-size:12px;line-height:1.75;margin-bottom:8px">${journal[0].contenu.slice(0, 110)}…</div><span class=${'badge ' + humeurBadge(journal[0].humeur)}>${journal[0].humeur}</span>` : html`<div class="empty-state">Aucune note</div>`}
+      </div>
+    </div>
+    <div class="card">
+      <div class="flex-between"><div class="card-title" style="margin:0">Médicaments du jour</div><span style="font-size:10px;color:var(--mu)">${prisCnt}/${totCnt}</span></div>
+      <div class="progress-bar mt8" style="margin-bottom:13px"><div class="progress-fill" style=${'width:' + (totCnt ? (prisCnt / totCnt) * 100 : 0) + '%;background:' + (prisCnt === totCnt ? 'var(--gn)' : 'var(--bl)')}></div></div>
+      ${meds.map(m => html`
+        <div class="med-row">
+          <div><div class="med-row-name">${m.nom} <span style="font-weight:400;color:var(--mu);font-size:12px">${m.dose}</span></div>${m.renouv <= 10 && html`<div style="font-size:10px;color:var(--am)">⚠ Renouvellement J-${m.renouv}</div>`}</div>
+          <div class="dose-btns">${m.horaires.map(h => { const done = !!m.prises[today + '_' + h]; return html`<button class=${'dose-btn' + (done ? ' done' : '')} onClick=${() => togglePrise(m.id, h)}>${h} ${done ? '✓' : '○'}</button>`; })}</div>
+        </div>`)}
+    </div>`;
+}
+
+// ─── DOSSIER MÉDICAL ───────────────────
+function Dossier({ proche, setProche, aiTxt, aiLoad, genAI }) {
+  const [edit, setEdit] = useState(false);
+  const [ed, setEd] = useState({ ...proche });
+  const [nPath, setNPath] = useState(''); const [nAller, setNAller] = useState('');
+  const save = () => { setProche({ ...ed }); setEdit(false); };
+  const addTag = (f, v, sv) => { if (!v.trim()) return; setProche(p => ({ ...p, [f]: [...p[f], v.trim()] })); sv(''); };
+  const rmTag = (f, i) => setProche(p => ({ ...p, [f]: p[f].filter((_, idx) => idx !== i) }));
+  return html`
+    <div class="page-header">
+      <div><div class="page-title">Dossier médical</div><div class="page-sub">${proche.prenom} ${proche.nom} · ${proche.age} ans</div></div>
+      <div class="flex-center">
+        <button class="btn btn-green" onClick=${genAI} disabled=${aiLoad}>${aiLoad ? html`<span class="spinner-sm"></span>` : '🤖 Résumé IA'}</button>
+        <button class="btn btn-secondary" onClick=${() => { setEdit(!edit); setEd({ ...proche }); }}>${edit ? 'Annuler' : 'Modifier'}</button>
+      </div>
+    </div>
+    ${aiTxt && html`<div class="ai-box"><div class="ai-label">Résumé IA — pour le médecin</div><div class="ai-text">${aiTxt}</div></div>`}
+    <div class="grid2-main">
+      <div class="col-stack">
+        <div class="card">
+          <div class="card-title">Informations générales</div>
+          ${edit ? html`
+            <div class="small-form">
+              <div class="grid2">
+                <div class="fg"><label class="fl">Prénom</label><input class="fi" value=${ed.prenom} onInput=${e => setEd({ ...ed, prenom: e.target.value })}/></div>
+                <div class="fg"><label class="fl">Nom</label><input class="fi" value=${ed.nom} onInput=${e => setEd({ ...ed, nom: e.target.value })}/></div>
+                <div class="fg"><label class="fl">Groupe sanguin</label><input class="fi" value=${ed.gs} onInput=${e => setEd({ ...ed, gs: e.target.value })}/></div>
+                <div class="fg"><label class="fl">Mutuelle</label><input class="fi" value=${ed.mutuelle} onInput=${e => setEd({ ...ed, mutuelle: e.target.value })}/></div>
+              </div>
+              <div class="flex-center"><button class="btn btn-primary" onClick=${save}>Enregistrer</button><button class="btn btn-secondary" onClick=${() => setEdit(false)}>Annuler</button></div>
+            </div>` : html`
+            <div class="info-row"><span class="info-key">Nom complet</span><span class="info-val">${proche.prenom} ${proche.nom}</span></div>
+            <div class="info-row"><span class="info-key">Âge</span><span class="info-val">${proche.age} ans</span></div>
+            <div class="info-row"><span class="info-key">Groupe sanguin</span><span class="info-val"><span class="badge badge-red">${proche.gs}</span></span></div>
+            <div class="info-row"><span class="info-key">Mutuelle</span><span class="info-val" style="font-size:11px">${proche.mutuelle}</span></div>
+          `}
+        </div>
+        <div class="card">
+          <div class="card-title">Pathologies</div>
+          <div style="margin-bottom:9px">${proche.pathologies.map((p, i) => html`<span class="tag" style="background:var(--am2);color:var(--am)">${p}<button class="tag-remove" onClick=${() => rmTag('pathologies', i)}>×</button></span>`)}</div>
+          <div class="flex-center"><input class="small-form" style="flex:1;padding:6px 9px;border:1px solid var(--bd);border-radius:7px;font-size:11px;background:var(--bg);outline:none" placeholder="Ajouter une pathologie…" value=${nPath} onInput=${e => setNPath(e.target.value)} onKeyDown=${e => e.key === 'Enter' && addTag('pathologies', nPath, setNPath)}/><button class="btn btn-primary" style="padding:5px 10px" onClick=${() => addTag('pathologies', nPath, setNPath)}>+</button></div>
+        </div>
+        <div class="card">
+          <div class="card-title">Allergies</div>
+          <div style="margin-bottom:9px">${proche.allergies.map((a, i) => html`<span class="tag" style="background:var(--rd2);color:var(--rd)">${a}<button class="tag-remove" onClick=${() => rmTag('allergies', i)}>×</button></span>`)}</div>
+          <div class="flex-center"><input class="small-form" style="flex:1;padding:6px 9px;border:1px solid var(--bd);border-radius:7px;font-size:11px;background:var(--bg);outline:none" placeholder="Ajouter une allergie…" value=${nAller} onInput=${e => setNAller(e.target.value)} onKeyDown=${e => e.key === 'Enter' && addTag('allergies', nAller, setNAller)}/><button class="btn btn-danger" style="padding:5px 10px" onClick=${() => addTag('allergies', nAller, setNAller)}>+</button></div>
         </div>
       </div>
-      <div className="card"><div className="ct">Équipe médicale</div>
-        {proche.medecins.map(m=><div key={m.id} style={{padding:'10px 0',borderBottom:'1px solid var(--bd)'}}><div style={{fontSize:13,fontWeight:600,marginBottom:2}}>{m.nom}</div><span className="badge b-bl">{m.spec}</span><div style={{fontSize:11,color:'var(--mu)',marginTop:5}}>📞 {m.tel}</div></div>)}
-        <div className="ir mt8"><span className="ik">Urgences</span><span className="iv" style={{color:'var(--rd)',fontWeight:700}}>SAMU 15</span></div>
+      <div class="col-stack">
+        <div class="card">
+          <div class="card-title">Équipe médicale</div>
+          ${proche.medecins.map(m => html`
+            <div style="padding:10px 0;border-bottom:1px solid var(--bd)">
+              <div style="font-size:13px;font-weight:600;margin-bottom:2px">${m.nom}</div>
+              <span class="badge badge-blue">${m.spec}</span>
+              <div style="font-size:11px;color:var(--mu);margin-top:5px">📞 ${m.tel}</div>
+            </div>`)}
+          <div class="info-row mt8"><span class="info-key">Urgences</span><span class="info-val" style="color:var(--rd);font-weight:700">SAMU 15</span></div>
+        </div>
+        <div class="card">
+          <div class="card-title">Contacts d'urgence</div>
+          <div class="info-row"><span class="info-key">Marie Dubois (Fille)</span><span class="info-val" style="font-size:11px">06 12 34 56 78</span></div>
+          <div class="info-row"><span class="info-key">Émile Dubois (Fils)</span><span class="info-val" style="font-size:11px">06 98 76 54 32</span></div>
+        </div>
+      </div>
+    </div>`;
+}
+
+// ─── AGENDA ────────────────────────────
+function AgendaPage({ rdvs, setRdvs }) {
+  const [show, setShow] = useState(false);
+  const [nr, setNr] = useState({ titre: '', date: '', heure: '', lieu: '', assigne: '', notes: '' });
+  const add = () => { if (!nr.titre || !nr.date) return; setRdvs(p => [...p, { ...nr, id: Date.now(), fait: false }].sort((a, b) => a.date.localeCompare(b.date))); setNr({ titre: '', date: '', heure: '', lieu: '', assigne: '', notes: '' }); setShow(false); };
+  const av = rdvs.filter(r => !r.fait);
+  return html`
+    <div class="page-header"><div><div class="page-title">Agenda médical</div><div class="page-sub">${av.length} rendez-vous à venir</div></div><button class="btn btn-primary" onClick=${() => setShow(!show)}>+ Nouveau RDV</button></div>
+    ${show && html`
+      <div class="card">
+        <div class="card-title">Nouveau rendez-vous</div>
+        <div class="small-form">
+          <div class="grid2">
+            <div class="fg"><label class="fl">Titre *</label><input class="fi" value=${nr.titre} onInput=${e => setNr({ ...nr, titre: e.target.value })} placeholder="Neurologue Dr. Benali"/></div>
+            <div class="fg"><label class="fl">Date *</label><input class="fi" type="date" value=${nr.date} onInput=${e => setNr({ ...nr, date: e.target.value })}/></div>
+            <div class="fg"><label class="fl">Heure</label><input class="fi" value=${nr.heure} onInput=${e => setNr({ ...nr, heure: e.target.value })} placeholder="14h30"/></div>
+            <div class="fg"><label class="fl">Lieu</label><input class="fi" value=${nr.lieu} onInput=${e => setNr({ ...nr, lieu: e.target.value })}/></div>
+          </div>
+          <div class="flex-center"><button class="btn btn-primary" onClick=${add}>Enregistrer</button><button class="btn btn-secondary" onClick=${() => setShow(false)}>Annuler</button></div>
+        </div>
+      </div>`}
+    ${av.map(r => { const d = new Date(r.date + 'T12:00'); return html`
+      <div class="rdv-row">
+        <div class="rdv-date-block" style="background:var(--bl2)"><div class="rdv-date-day" style="color:var(--bl)">${r.date.split('-')[2]}</div><div class="rdv-date-mo" style="color:var(--bl)">${d.toLocaleString('fr-FR', { month: 'short' })}</div><div style="font-size:10px;color:var(--mu)">${r.heure}</div></div>
+        <div style="flex:1"><div style="font-size:13px;font-weight:600;margin-bottom:3px">${r.titre}</div><div style="font-size:11px;color:var(--mu);margin-bottom:8px">${r.lieu}</div><div class="flex-center"><span class=${'badge ' + (r.assigne ? 'badge-blue' : 'badge-red')}>${r.assigne || 'Non assigné'}</span><button class="btn btn-secondary" style="padding:2px 8px;font-size:10px" onClick=${() => setRdvs(p => p.map(x => x.id === r.id ? { ...x, fait: true } : x))}>Effectué</button><button class="btn btn-danger" style="padding:2px 8px;font-size:10px" onClick=${() => setRdvs(p => p.filter(x => x.id !== r.id))}>×</button></div></div>
+      </div>`; })}
+    ${rdvs.filter(r => r.fait).length > 0 && html`
+      <div style="font-size:10px;font-weight:600;color:var(--mu);text-transform:uppercase;margin:14px 0 7px">Passés</div>
+      ${rdvs.filter(r => r.fait).map(r => html`<div class="rdv-row" style="opacity:.4"><div class="rdv-date-block" style="background:var(--bg)"><div class="rdv-date-day" style="color:var(--mu)">${r.date.split('-')[2]}</div></div><div><div style="font-size:13px;font-weight:600;text-decoration:line-through">${r.titre}</div><span class="badge badge-green">Effectué</span></div></div>`)}`}`;
+}
+
+// ─── MÉDICAMENTS ───────────────────────
+function MedicamentsPage({ meds, setMeds, today, togglePrise, prisCnt, totCnt }) {
+  const [show, setShow] = useState(false);
+  const [nm, setNm] = useState({ nom: '', dose: '', horaires: '08h00', renouv: 30, indication: '' });
+  const add = () => { if (!nm.nom) return; setMeds(p => [...p, { ...nm, id: Date.now(), horaires: nm.horaires.split(',').map(h => h.trim()), prises: {} }]); setNm({ nom: '', dose: '', horaires: '08h00', renouv: 30, indication: '' }); setShow(false); };
+  return html`
+    <div class="page-header"><div><div class="page-title">Médicaments</div><div class="page-sub">${prisCnt}/${totCnt} prises · ${meds.length} traitements</div></div><button class="btn btn-primary" onClick=${() => setShow(!show)}>+ Ajouter</button></div>
+    <div class="progress-bar" style="margin-bottom:14px"><div class="progress-fill" style=${'width:' + (totCnt ? (prisCnt / totCnt) * 100 : 0) + '%;background:' + (prisCnt === totCnt ? 'var(--gn)' : 'var(--bl)')}></div></div>
+    ${show && html`
+      <div class="card small-form">
+        <div class="card-title">Nouveau médicament</div>
+        <div class="grid2">
+          <div class="fg"><label class="fl">Nom *</label><input class="fi" value=${nm.nom} onInput=${e => setNm({ ...nm, nom: e.target.value })}/></div>
+          <div class="fg"><label class="fl">Dosage</label><input class="fi" value=${nm.dose} onInput=${e => setNm({ ...nm, dose: e.target.value })} placeholder="500mg"/></div>
+          <div class="fg"><label class="fl">Horaires (virgules)</label><input class="fi" value=${nm.horaires} onInput=${e => setNm({ ...nm, horaires: e.target.value })}/></div>
+          <div class="fg"><label class="fl">Indication</label><input class="fi" value=${nm.indication} onInput=${e => setNm({ ...nm, indication: e.target.value })}/></div>
+        </div>
+        <div class="flex-center"><button class="btn btn-primary" onClick=${add}>Enregistrer</button><button class="btn btn-secondary" onClick=${() => setShow(false)}>Annuler</button></div>
+      </div>`}
+    <div class="card">
+      ${meds.map(m => html`
+        <div class="med-row">
+          <div style="flex:1"><div class="flex-center" style="flex-wrap:wrap;margin-bottom:3px"><div class="med-row-name">${m.nom}</div><span class="badge badge-blue">${m.dose}</span>${m.renouv <= 10 && html`<span class="badge badge-orange">J-${m.renouv}</span>`}</div><div class="med-row-info">${m.indication}</div></div>
+          <div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px"><div class="dose-btns">${m.horaires.map(h => { const done = !!m.prises[today + '_' + h]; return html`<button class=${'dose-btn' + (done ? ' done' : '')} onClick=${() => togglePrise(m.id, h)}>${h} ${done ? '✓' : '○'}</button>`; })}</div><button class="btn btn-danger" style="padding:2px 7px;font-size:10px" onClick=${() => setMeds(p => p.filter(x => x.id !== m.id))}>Supprimer</button></div>
+        </div>`)}
+    </div>`;
+}
+
+// ─── JOURNAL ───────────────────────────
+function JournalPage({ journal, setJournal, today, aiTxt, aiLoad, genAI }) {
+  const [nn, setNn] = useState({ contenu: '', humeur: 'bien', tension: '', auteur: 'Marie' });
+  const add = () => { if (!nn.contenu.trim()) return; setJournal(p => [{ ...nn, id: Date.now(), date: today }, ...p]); setNn({ contenu: '', humeur: 'bien', tension: '', auteur: 'Marie' }); };
+  const hBadge = (h) => h === 'bien' ? 'badge-green' : h === 'moyen' ? 'badge-orange' : 'badge-red';
+  return html`
+    <div class="page-header"><div><div class="page-title">Journal de bord</div><div class="page-sub">${journal.length} observations</div></div><button class="btn btn-green" onClick=${genAI} disabled=${aiLoad}>${aiLoad ? html`<span class="spinner-sm"></span>` : '🤖 Résumé IA'}</button></div>
+    ${aiTxt && html`<div class="ai-box"><div class="ai-label">Résumé IA — pour le médecin</div><div class="ai-text">${aiTxt}</div></div>`}
+    <div class="card small-form" style="margin-bottom:14px">
+      <div class="card-title">Nouvelle note — ${today}</div>
+      <div class="fg"><label class="fl">Observation</label><textarea class="fi fta" placeholder="Comportement, humeur, médicaments, incidents…" value=${nn.contenu} onInput=${e => setNn({ ...nn, contenu: e.target.value })}></textarea></div>
+      <div class="grid2">
+        <div class="fg"><label class="fl">Tension</label><input class="fi" value=${nn.tension} onInput=${e => setNn({ ...nn, tension: e.target.value })} placeholder="13/8"/></div>
+        <div class="fg"><label class="fl">Auteur</label><select class="fi" value=${nn.auteur} onChange=${e => setNn({ ...nn, auteur: e.target.value })}>${['Marie', 'Émile', 'Aide domicile', 'Autre'].map(v => html`<option value=${v}>${v}</option>`)}</select></div>
+      </div>
+      <div class="flex-between">
+        <div class="flex-center">${[['bien', '😊 Bien'], ['moyen', '😐 Moyen'], ['difficile', '😔 Difficile']].map(([v, l]) => html`<button class=${'btn ' + (nn.humeur === v ? 'btn-primary' : 'btn-secondary')} style="padding:4px 10px;font-size:11px" onClick=${() => setNn({ ...nn, humeur: v })}>${l}</button>`)}</div>
+        <button class="btn btn-primary" onClick=${add}>Enregistrer</button>
       </div>
     </div>
-  </>;
+    ${journal.map(e => html`
+      <div class=${'journal-entry ' + e.humeur}>
+        <div class="journal-meta"><span class="journal-date">${e.date}</span><span class="journal-author">${e.auteur}</span><span class=${'badge ' + hBadge(e.humeur)}>${e.humeur}</span></div>
+        <div class="journal-content">${e.contenu}</div>
+        ${e.tension && html`<span style="font-size:10px;background:var(--bg);border:1px solid var(--bd);border-radius:5px;padding:2px 6px;color:var(--mu);margin-top:5px;display:inline-block">❤️ ${e.tension}</span>`}
+        <button class="btn btn-danger mt8" style="padding:2px 7px;font-size:10px" onClick=${() => setJournal(p => p.filter(j => j.id !== e.id))}>Supprimer</button>
+      </div>`)}`;
 }
 
-function Agenda({rdvs,setRdvs}){
-  const [show,setShow]=useState(false);const [nr,setNr]=useState({titre:'',date:'',heure:'',lieu:'',assigne:'',notes:''});
-  function add(){if(!nr.titre||!nr.date)return;setRdvs(p=>[...p,{...nr,id:Date.now(),fait:false}].sort((a,b)=>a.date.localeCompare(b.date)));setNr({titre:'',date:'',heure:'',lieu:'',assigne:'',notes:''});setShow(false);}
-  const av=rdvs.filter(r=>!r.fait);
-  return <>
-    <div className="ph"><div><div className="pt">Agenda médical</div><div className="ps">{av.length} rendez-vous à venir</div></div><button className="btn bp" onClick={()=>setShow(!show)}>+ Nouveau RDV</button></div>
-    {show&&<div className="card"><div className="ct">Nouveau RDV</div><div className="g2"><div className="fg"><label className="fl">Titre</label><input className="fi" value={nr.titre} onChange={e=>setNr({...nr,titre:e.target.value})}/></div><div className="fg"><label className="fl">Date</label><input className="fi" type="date" value={nr.date} onChange={e=>setNr({...nr,date:e.target.value})}/></div><div className="fg"><label className="fl">Heure</label><input className="fi" value={nr.heure} onChange={e=>setNr({...nr,heure:e.target.value})} placeholder="14h30"/></div><div className="fg"><label className="fl">Lieu</label><input className="fi" value={nr.lieu} onChange={e=>setNr({...nr,lieu:e.target.value})}/></div></div><div className="fxs"><button className="btn bp" onClick={add}>Enregistrer</button><button className="btn bs" onClick={()=>setShow(false)}>Annuler</button></div></div>}
-    {av.map(r=>{const d=new Date(r.date+'T12:00');return<div key={r.id} className="rc"><div className="rd-dt" style={{background:'var(--bl2)'}}><div className="rd-day" style={{color:'var(--bl)'}}>{r.date.split('-')[2]}</div><div className="rd-mo" style={{color:'var(--bl)'}}>{d.toLocaleString('fr-FR',{month:'short'})}</div><div style={{fontSize:10,color:'var(--mu)'}}>{r.heure}</div></div><div style={{flex:1}}><div style={{fontSize:13,fontWeight:600,marginBottom:2}}>{r.titre}</div><div style={{fontSize:11,color:'var(--mu)',marginBottom:7}}>{r.lieu}</div><div className="fxs"><span className={'badge '+(r.assigne?'b-bl':'b-rd')}>{r.assigne||'Non assigné'}</span><button className="btn bs" style={{padding:'2px 8px',fontSize:10}} onClick={()=>setRdvs(p=>p.map(x=>x.id===r.id?{...x,fait:true}:x))}>Effectué</button><button className="btn br2" style={{padding:'2px 8px',fontSize:10}} onClick={()=>setRdvs(p=>p.filter(x=>x.id!==r.id))}>×</button></div></div></div>;})}
-    {rdvs.filter(r=>r.fait).length>0&&<div style={{fontSize:10,fontWeight:600,color:'var(--mu)',textTransform:'uppercase',margin:'14px 0 6px'}}>Passés</div>}
-    {rdvs.filter(r=>r.fait).map(r=><div key={r.id} className="rc" style={{opacity:.4}}><div className="rd-dt" style={{background:'var(--bg)'}}><div className="rd-day" style={{color:'var(--mu)'}}>{r.date.split('-')[2]}</div></div><div><div style={{fontSize:13,fontWeight:600,textDecoration:'line-through'}}>{r.titre}</div><span className="badge b-gn">Effectué</span></div></div>)}
-  </>;
+// ─── AIDES ─────────────────────────────
+function AidesPage() {
+  return html`
+    <div class="page-header"><div><div class="page-title">Aides financières</div><div class="page-sub">${AIDES.filter(a => a.ok).length} aides éligibles pour votre situation</div></div></div>
+    <div class="alert-bar ok">💰 Estimation : <strong>≈ 14 000€/an</strong> d'aides potentielles non réclamées en moyenne par famille aidante.</div>
+    <div class="grid2-main mt12">
+      ${AIDES.map((a, i) => html`
+        <div class="aide-card" key=${i} style=${'border-color:' + (a.ok ? 'var(--gn3)' : 'var(--rd3)') + ';opacity:' + (a.ok ? '1' : '0.6')}>
+          <div style="margin-bottom:7px"><span class=${'badge ' + (a.ok ? 'badge-green' : 'badge-red')}>${a.ok ? '✓ Éligible' : '✗ Non éligible'}</span></div>
+          <div class="aide-name">${a.nom}</div>
+          <div class="aide-amount" style=${'color:' + (a.ok ? 'var(--gn)' : 'var(--mu)')}>${a.montant}</div>
+          <div class="aide-info">◎ ${a.cond}</div>
+          <div class="aide-info">◈ Dossier : ${a.dossier}</div>
+          ${a.ok && html`<button class="btn btn-primary mt12" style="width:100%;justify-content:center;font-size:11px">Voir le formulaire →</button>`}
+        </div>`)}
+    </div>`;
 }
 
-function Medicaments({meds,setMeds,today,tp,pris,tot}){
-  const [show,setShow]=useState(false);const [nm,setNm]=useState({nom:'',dose:'',horaires:'08h00',renouv:30,indication:''});
-  function add(){if(!nm.nom)return;setMeds(p=>[...p,{...nm,id:Date.now(),horaires:nm.horaires.split(',').map(h=>h.trim()),prises:{}}]);setNm({nom:'',dose:'',horaires:'08h00',renouv:30,indication:''});setShow(false);}
-  return <>
-    <div className="ph"><div><div className="pt">Médicaments</div><div className="ps">{pris}/{tot} prises · {meds.length} traitements</div></div><button className="btn bp" onClick={()=>setShow(!show)}>+ Ajouter</button></div>
-    <div className="sbar" style={{marginBottom:14}}><div className="sfill" style={{width:`${tot?(pris/tot)*100:0}%`,background:pris===tot?'var(--gn)':'var(--bl)'}}/></div>
-    {show&&<div className="card"><div className="g2"><div className="fg"><label className="fl">Nom</label><input className="fi" value={nm.nom} onChange={e=>setNm({...nm,nom:e.target.value})}/></div><div className="fg"><label className="fl">Dosage</label><input className="fi" value={nm.dose} onChange={e=>setNm({...nm,dose:e.target.value})} placeholder="500mg"/></div><div className="fg"><label className="fl">Horaires (virgules)</label><input className="fi" value={nm.horaires} onChange={e=>setNm({...nm,horaires:e.target.value})}/></div><div className="fg"><label className="fl">Indication</label><input className="fi" value={nm.indication} onChange={e=>setNm({...nm,indication:e.target.value})}/></div></div><div className="fxs"><button className="btn bp" onClick={add}>Enregistrer</button><button className="btn bs" onClick={()=>setShow(false)}>Annuler</button></div></div>}
-    <div className="card">{meds.map(m=><div key={m.id} className="mr"><div style={{flex:1}}><div className="fxs" style={{flexWrap:'wrap',marginBottom:3}}><div className="mn">{m.nom}</div><span className="badge b-bl">{m.dose}</span>{m.renouv<=10&&<span className="badge b-am">J-{m.renouv}</span>}</div><div className="md">{m.indication}</div></div><div className="fxs" style={{flexDirection:'column',alignItems:'flex-end',gap:5}}><div className="hg">{m.horaires.map(h=>{const ok=!!m.prises[today+'_'+h];return<button key={h} className={'hb '+(ok?'ok':'')} onClick={()=>tp(m.id,h)}>{h} {ok?'✓':'○'}</button>;})}</div><button className="btn br2" style={{padding:'2px 7px',fontSize:10}} onClick={()=>setMeds(p=>p.filter(x=>x.id!==m.id))}>Supprimer</button></div></div>)}</div>
-  </>;
+// ─── BIEN-ÊTRE ─────────────────────────
+function BienetrePage({ zarit, setZarit, zPct, zColor }) {
+  const nb = Object.keys(zarit).length;
+  const label = zPct < 30 ? 'Faible charge' : zPct < 60 ? 'Charge modérée' : 'Charge élevée';
+  const opts = ['Jamais', 'Rarement', 'Parfois', 'Souvent', 'Toujours'];
+  return html`
+    <div class="page-header"><div><div class="page-title">Mon bien-être</div><div class="page-sub">Échelle de Zarit · ${nb}/${ZARIT_QS.length}</div></div>${nb > 0 && html`<button class="btn btn-secondary" onClick=${() => setZarit({})}>Réinitialiser</button>`}</div>
+    ${nb === ZARIT_QS.length && html`
+      <div class="card" style="margin-bottom:14px">
+        <div class="card-title">Score de charge aidant</div>
+        <div style="display:flex;align-items:center;gap:14px">
+          <div style="flex:1"><div class="progress-bar"><div class="progress-fill" style=${'width:' + zPct + '%;background:' + zColor}></div></div><div style="display:flex;justify-content:space-between;font-size:10px;color:var(--mu);margin-top:3px"><span>Faible</span><span>Élevée</span></div></div>
+          <div style="text-align:center;min-width:80px"><div style=${'font-family:Syne,sans-serif;font-size:30px;font-weight:800;color:' + zColor}>${zPct}%</div><div style=${'font-size:12px;font-weight:600;color:' + zColor}>${label}</div></div>
+        </div>
+        ${zPct >= 60 && html`<div class="alert-bar danger mt8">⚠ Charge élevée. <strong>0 800 360 360</strong> — numéro aidants gratuit 7j/7</div>`}
+      </div>`}
+    ${ZARIT_QS.map((q, i) => html`
+      <div class="zarit-q">
+        <div class="zarit-q-text"><strong style="color:var(--mu);font-size:11px">${i + 1}.</strong> ${q}</div>
+        <div class="zarit-opts">${opts.map((opt, val) => html`<button class=${'zarit-opt' + (zarit[i] === val ? ' sel-' + val : '')} onClick=${() => setZarit(p => ({ ...p, [i]: val }))}>${opt}</button>`)}</div>
+      </div>`)}
+    <div class="card mt12">
+      <div class="card-title">Ressources de soutien</div>
+      ${[['Numéro national aidants', '0 800 360 360', 'Gratuit · 7j/7'], ['France Alzheimer', '0 811 112 112', 'Accompagnement familles'], ['Répit Grenoble', 'CCAS', 'Groupes de parole']].map((r, i) => html`<div class="info-row"><div><div style="font-size:12px;font-weight:600">${r[0]}</div><div style="font-size:10px;color:var(--mu)">${r[2]}</div></div><span class="badge badge-blue">${r[1]}</span></div>`)}
+    </div>`;
 }
 
-function Journal({journal,setJournal,today,aiTxt,aiLoad,genAI}){
-  const [nn,setNn]=useState({contenu:'',humeur:'bien',tension:'',auteur:'Marie'});
-  function add(){if(!nn.contenu.trim())return;setJournal(p=>[{...nn,id:Date.now(),date:today},...p]);setNn({contenu:'',humeur:'bien',tension:'',auteur:'Marie'});}
-  return <>
-    <div className="ph"><div><div className="pt">Journal de bord</div><div className="ps">{journal.length} observations</div></div><button className="btn bg2" onClick={genAI} disabled={aiLoad}>{aiLoad?<><span className="spin2"/>…</>:'Résumé IA'}</button></div>
-    {aiTxt&&<div className="ai-box"><div className="ai-lbl">Résumé IA — pour le médecin</div><div className="ai-txt">{aiTxt}</div></div>}
-    <div className="card" style={{marginBottom:14}}>
-      <div className="ct">Nouvelle note — {today}</div>
-      <div className="fg"><textarea className="fi fta" placeholder="Comportement, humeur, médicaments, incidents…" value={nn.contenu} onChange={e=>setNn({...nn,contenu:e.target.value})}/></div>
-      <div className="g2" style={{marginBottom:9}}><div className="fg"><label className="fl">Tension</label><input className="fi" value={nn.tension} onChange={e=>setNn({...nn,tension:e.target.value})} placeholder="13/8"/></div><div className="fg"><label className="fl">Auteur</label><select className="fi fsel" value={nn.auteur} onChange={e=>setNn({...nn,auteur:e.target.value})}>{['Marie','Émile','Aide domicile','Autre'].map(v=><option key={v}>{v}</option>)}</select></div></div>
-      <div className="fxb"><div className="fxs">{[['bien','😊 Bien'],['moyen','😐 Moyen'],['difficile','😔 Difficile']].map(([v,l])=><button key={v} className={'btn '+(nn.humeur===v?'bp':'bs')} style={{padding:'4px 10px',fontSize:11}} onClick={()=>setNn({...nn,humeur:v})}>{l}</button>)}</div><button className="btn bp" onClick={add}>Enregistrer</button></div>
-    </div>
-    {journal.map(e=><div key={e.id} className={'je '+e.humeur}><div className="jm"><span className="jd">{e.date}</span><span className="ja">{e.auteur}</span><span className={'badge '+(e.humeur==='bien'?'b-gn':e.humeur==='moyen'?'b-am':'b-rd')}>{e.humeur}</span></div><div className="jc">{e.contenu}</div>{e.tension&&<span style={{fontSize:10,background:'var(--bg)',border:'1px solid var(--bd)',borderRadius:5,padding:'2px 6px',color:'var(--mu)',marginTop:6,display:'inline-block'}}>❤️ {e.tension}</span>}<button className="btn br2 mt8" style={{padding:'2px 7px',fontSize:10}} onClick={()=>setJournal(p=>p.filter(j=>j.id!==e.id))}>Supprimer</button></div>)}
-  </>;
-}
-
-function Aides(){
-  return <>
-    <div className="ph"><div><div className="pt">Aides financières</div><div className="ps">{AIDES.filter(a=>a.ok).length} aides éligibles identifiées</div></div></div>
-    <div className="al al-s">💰 Estimation : <strong>≈ 14 000€/an</strong> d'aides potentielles. La plupart des aidants ne les réclament pas.</div>
-    <div style={{height:10}}/>
-    <div className="g2">{AIDES.map((a,i)=><div key={i} className="ac" style={{borderColor:a.ok?'var(--gn3)':'var(--rd3)',opacity:a.ok?1:.6}}><div style={{marginBottom:7}}><span className={'badge '+(a.ok?'b-gn':'b-rd')}>{a.ok?'✓ Éligible':'✗ Non éligible'}</span></div><div className="an">{a.nom}</div><div className="am-v" style={{color:a.ok?'var(--gn)':'var(--mu)'}}>{a.montant}</div><div style={{fontSize:11,color:'var(--mu)',marginBottom:3}}>◎ {a.cond}</div><div style={{fontSize:11,color:'var(--mu)'}}>◈ {a.dossier}</div>{a.ok&&<button className="btn bp mt8" style={{width:'100%',justifyContent:'center',fontSize:11}}>Voir le formulaire →</button>}</div>)}</div>
-  </>;
-}
-
-function Bienetre({zarit,setZarit,zPct,zColor}){
-  const nb=Object.keys(zarit).length;
-  const label=zPct<30?'Faible charge':zPct<60?'Charge modérée':'Charge élevée';
-  const opts=['Jamais','Rarement','Parfois','Souvent','Toujours'];
-  return <>
-    <div className="ph"><div><div className="pt">Mon bien-être</div><div className="ps">Échelle de Zarit · {nb}/{ZARIT_Q.length}</div></div>{nb>0&&<button className="btn bs" onClick={()=>setZarit({})}>Réinitialiser</button>}</div>
-    {nb===ZARIT_Q.length&&<div className="card"><div className="ct">Score de charge aidant</div><div style={{display:'flex',alignItems:'center',gap:14}}><div style={{flex:1}}><div className="sbar"><div className="sfill" style={{width:`${zPct}%`,background:zColor}}/></div><div style={{display:'flex',justifyContent:'space-between',fontSize:10,color:'var(--mu)',marginTop:3}}><span>Faible</span><span>Élevée</span></div></div><div style={{textAlign:'center',minWidth:80}}><div style={{fontFamily:"'Syne',sans-serif",fontSize:30,fontWeight:800,color:zColor}}>{zPct}%</div><div style={{fontSize:12,fontWeight:600,color:zColor}}>{label}</div></div></div>{zPct>=60&&<div className="al al-d mt8">⚠ <strong>0 800 360 360</strong> — Numéro aidants gratuit 7j/7</div>}</div>}
-    {ZARIT_Q.map((q,i)=><div key={i} className="zq"><div className="zt"><strong style={{color:'var(--mu)',fontSize:11}}>{i+1}.</strong> {q}</div><div className="zo">{opts.map((opt,val)=><button key={val} className={'zob '+(zarit[i]===val?'s'+val:'')} onClick={()=>setZarit(p=>({...p,[i]:val}))}>{opt}</button>)}</div></div>)}
-    <div className="card mt12"><div className="ct">Ressources</div>{[{n:'Numéro aidants',v:'0 800 360 360',s:'Gratuit · 7j/7'},{n:'France Alzheimer',v:'0 811 112 112',s:'Familles'}].map((r,i)=><div key={i} className="ir"><div><div style={{fontSize:12,fontWeight:600}}>{r.n}</div><div style={{fontSize:10,color:'var(--mu)'}}>{r.s}</div></div><span className="badge b-bl">{r.v}</span></div>)}</div>
-  </>;
-}
-
-function Params({prenom, onOut}){
-  const [notifs,setNotifs]=useState({meds:true,rdv:true,renouv:true,urgent:true});
-  return <>
-    <div className="ph"><div><div className="pt">Paramètres</div><div className="ps">Profil, notifications, abonnement</div></div></div>
-    <div className="g2">
-      <div className="gap-b">
-        <div className="card"><div className="ct">Profil</div><div style={{display:'flex',alignItems:'center',gap:12,marginBottom:12}}><div style={{width:40,height:40,borderRadius:'50%',background:'var(--bl2)',display:'flex',alignItems:'center',justifyContent:'center',fontFamily:"'Syne',sans-serif",fontWeight:700,fontSize:14,color:'var(--bl)'}}>{prenom.charAt(0)}</div><div><div style={{fontSize:14,fontWeight:700}}>{prenom}</div><div style={{fontSize:11,color:'var(--mu)'}}>Aidant principal</div></div></div><div className="fg"><label className="fl">Email</label><input className="fi" placeholder="votre@email.fr"/></div><button className="btn bp mt8">Enregistrer</button></div>
-        <div className="card"><div className="ct">Abonnement</div><div className="ir"><span className="ik">Plan</span><span className="iv"><span className="badge b-gn">Famille · 15€/mois</span></span></div><div className="ir"><span className="ik">Données</span><span className="iv"><span className="badge b-bl">🇪🇺 Europe</span></span></div><button className="btn bs mt8" style={{fontSize:11}}>Gérer l'abonnement</button></div>
-        <div className="card"><div className="ct">Session</div><button className="btn br2" style={{width:'100%',justifyContent:'center'}} onClick={onOut}>Se déconnecter</button></div>
+// ─── PARAMÈTRES ────────────────────────
+function ParametresPage({ prenom, onOut }) {
+  const [notifs, setNotifs] = useState({ meds: true, rdv: true, renouv: true, urgent: true });
+  return html`
+    <div class="page-header"><div><div class="page-title">Paramètres</div><div class="page-sub">Profil, notifications, abonnement</div></div></div>
+    <div class="grid2-main">
+      <div class="col-stack">
+        <div class="card small-form">
+          <div class="card-title">Mon profil</div>
+          <div style="display:flex;align-items:center;gap:12px;margin-bottom:14px">
+            <div style="width:40px;height:40px;border-radius:50%;background:var(--bl2);display:flex;align-items:center;justify-content:center;font-family:Syne,sans-serif;font-weight:700;font-size:14px;color:var(--bl)">${prenom.charAt(0)}</div>
+            <div><div style="font-size:14px;font-weight:700">${prenom}</div><div style="font-size:11px;color:var(--mu)">Aidant principal</div></div>
+          </div>
+          <div class="fg"><label class="fl">Email</label><input class="fi" placeholder="votre@email.fr"/></div>
+          <button class="btn btn-primary mt8">Enregistrer</button>
+        </div>
+        <div class="card">
+          <div class="card-title">Abonnement</div>
+          <div class="info-row"><span class="info-key">Plan actuel</span><span class="info-val"><span class="badge badge-green">Famille · 15€/mois</span></span></div>
+          <div class="info-row"><span class="info-key">Données</span><span class="info-val"><span class="badge badge-blue">🇪🇺 Europe</span></span></div>
+          <div class="info-row"><span class="info-key">RGPD</span><span class="info-val"><span class="badge badge-green">✓ Conforme</span></span></div>
+        </div>
+        <div class="card">
+          <div class="card-title">Session</div>
+          <button class="btn btn-danger" style="width:100%;justify-content:center" onClick=${onOut}>Se déconnecter</button>
+        </div>
       </div>
-      <div className="card"><div className="ct">Notifications</div>{[['meds','Rappels médicaments','Prises non confirmées'],['rdv','Rappels RDV','48h et 2h avant'],['renouv','Renouvellements','15 jours avant'],['urgent','Alertes urgentes','En temps réel']].map(([k,l,s])=><div key={k} className="ir"><div><div style={{fontSize:12,fontWeight:500}}>{l}</div><div style={{fontSize:10,color:'var(--mu)'}}>{s}</div></div><div style={{position:'relative',width:36,height:20,borderRadius:10,background:notifs[k]?'var(--bl)':'var(--bd)',cursor:'pointer',transition:'background .2s',flexShrink:0}} onClick={()=>setNotifs(p=>({...p,[k]:!p[k]}))}><div style={{position:'absolute',top:2,left:notifs[k]?18:2,width:16,height:16,borderRadius:'50%',background:'#fff',transition:'left .2s',boxShadow:'0 1px 3px rgba(0,0,0,.2)'}}/></div></div>)}</div>
-    </div>
-  </>;
+      <div class="card">
+        <div class="card-title">Notifications</div>
+        ${[['meds', 'Rappels médicaments', 'Prises non confirmées'], ['rdv', 'Rappels rendez-vous', '48h et 2h avant'], ['renouv', 'Renouvellements', '15 jours avant la fin'], ['urgent', 'Alertes urgentes', 'En temps réel']].map(([k, l, s]) => html`
+          <div class="info-row">
+            <div><div style="font-size:12px;font-weight:500">${l}</div><div style="font-size:10px;color:var(--mu)">${s}</div></div>
+            <div class=${'toggle ' + (notifs[k] ? 'on' : 'off')} onClick=${() => setNotifs(p => ({ ...p, [k]: !p[k] }))}><div class="toggle-knob"></div></div>
+          </div>`)}
+      </div>
+    </div>`;
 }
 
-// ═══════════════════════════════════
-// SOIGNANT INTERFACE
-// ═══════════════════════════════════
-function SoignantApp({user, onOut}){
-  const [email,setEmail]=useState('');const [sent,setSent]=useState(false);
-  return <div style={{minHeight:'100vh',background:'linear-gradient(160deg,var(--bl2),var(--gn2))',display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center',padding:40,textAlign:'center'}}>
-    <div style={{fontSize:60,marginBottom:18}}>👨‍⚕️</div>
-    <h2 style={{fontFamily:"'Syne',sans-serif",fontSize:28,fontWeight:800,marginBottom:10}}>Interface Soignant — Bêta</h2>
-    <p style={{fontSize:14,color:'var(--mu)',maxWidth:440,margin:'0 auto 28px',lineHeight:1.7}}>L'espace dédié aux médecins et professionnels de santé est en cours de finalisation. Inscrivez-vous pour y accéder en avant-première.</p>
-    {sent?<div style={{fontSize:17,fontWeight:700,color:'var(--gn)',marginBottom:24}}>✓ Vous serez notifié dès l'ouverture !</div>:<div style={{display:'flex',gap:10,maxWidth:400,width:'100%',margin:'0 auto 24px'}}><input style={{flex:1,padding:'11px 14px',border:'1.5px solid var(--bd)',borderRadius:10,fontSize:13,outline:'none'}} type="email" placeholder="Email professionnel" value={email} onChange={e=>setEmail(e.target.value)}/><button style={{background:'var(--bl)',color:'#fff',border:'none',padding:'11px 18px',borderRadius:10,fontSize:13,fontWeight:600,cursor:'pointer'}} onClick={()=>{if(email.trim())setSent(true);}}>Notifier</button></div>}
-    <button style={{background:'none',border:'1px solid var(--bd)',borderRadius:8,padding:'8px 16px',fontSize:12,cursor:'pointer',color:'var(--mu)'}} onClick={onOut}>← Déconnexion</button>
-  </div>;
+// ═══════════════════════════════════════
+// SOIGNANT
+// ═══════════════════════════════════════
+function SoignantApp({ onOut }) {
+  const [email, setEmail] = useState(''); const [sent, setSent] = useState(false);
+  return html`
+    <div class="soignant-page">
+      <div style="font-size:60px;margin-bottom:18px">👨‍⚕️</div>
+      <h2 style="font-family:Syne,sans-serif;font-size:28px;font-weight:800;margin-bottom:10px">Interface Soignant — Bêta</h2>
+      <p style="font-size:14px;color:var(--mu);max-width:440px;margin:0 auto 28px;line-height:1.7">L'espace dédié aux médecins et professionnels de santé est en finalisation. Inscrivez-vous pour accéder en avant-première.</p>
+      ${sent ? html`<div style="font-size:17px;font-weight:700;color:var(--gn);margin-bottom:24px">✓ Vous serez notifié dès l'ouverture !</div>` : html`
+        <div style="display:flex;gap:10px;max-width:400px;width:100%;margin:0 auto 24px">
+          <input style="flex:1;padding:11px 14px;border:1.5px solid var(--bd);border-radius:10px;font-size:13px;outline:none" type="email" placeholder="Email professionnel" value=${email} onInput=${e => setEmail(e.target.value)}/>
+          <button style="background:var(--bl);color:#fff;border:none;padding:11px 18px;border-radius:10px;font-size:13px;font-weight:600;cursor:pointer" onClick=${() => { if (email.trim()) setSent(true); }}>Notifier</button>
+        </div>`}
+      <button style="background:none;border:1px solid var(--bd);border-radius:8px;padding:8px 16px;font-size:12px;cursor:pointer;color:var(--mu)" onClick=${onOut}>← Déconnexion</button>
+    </div>`;
 }
 
-// ═══════════════════════════════════
-// RENDU
-// ═══════════════════════════════════
-ReactDOM.createRoot(document.getElementById('root')).render(<App/>);
+// ═══════════════════════════════════════
+// RENDER
+// ═══════════════════════════════════════
+render(html`<${App}/>`, document.getElementById('root'));
 </script>
 </body>
 </html>
