@@ -623,11 +623,24 @@ window.addEventListener('DOMContentLoaded',function(){
 });
 
 function goToApp(){
-  const role=S.user&&S.user.user_metadata&&S.user.user_metadata.role||'aidant';
-  S.role=role;
-  if(role==='patient'){showScreen('patient');renderPatient();}
-  else if(role==='soignant'){showScreen('soignant');}
-  else{showScreen('app');const p=S.user&&S.user.user_metadata&&S.user.user_metadata.prenom||'Marie';document.getElementById('sb-prenom').textContent=p;navTo('dashboard');}
+  try{
+    var meta=S.user&&S.user.user_metadata||{};
+    var roles=meta.roles||[meta.role||'aidant'];
+    S.role=roles[0]||'aidant';
+    S.selectedRoles=roles;
+    // Update mode switcher visibility based on user's roles
+    ['aidant','patient','soignant','pharmacien'].forEach(function(r){
+      var opt=document.getElementById('mopt-'+r);
+      if(opt)opt.style.display=roles.indexOf(r)>=0?'flex':'flex'; // show all for now
+    });
+    // Always show main app screen for aidant/default
+    showScreen('app');
+    var p=meta.prenom||'';
+    var sb=document.getElementById('sb-prenom');
+    if(sb)sb.textContent=p||'Vous';
+    navTo('dashboard');
+    setTimeout(function(){try{initNotifications();}catch(e){}},200);
+  }catch(err){console.error('goToApp error:',err);showScreen('auth');}
 }
 
 function showVerify(){
@@ -833,13 +846,37 @@ function sgNotif(){
 // AIDANT APP - NAVIGATION
 // ═══════════════════════════════════════════════
 function navTo(page){
-  S.page=page;
-  document.querySelectorAll('#sidebar-nav .ni').forEach(btn=>{
-    btn.classList.toggle('on',btn.dataset.page===page);
-  });
-  const mc=document.getElementById('main-content');
-  const pages={dashboard:renderDashboard,dossier:renderDossier,agenda:renderAgenda,medicaments:renderMedicaments,journal:renderJournal,aides:renderAides,bienetre:renderBienetre,parametres:renderParametres,voiceloop:renderVoiceLoop};
-  if(pages[page]){mc.innerHTML=pages[page]();bindEvents(page);}
+  try{
+    S.page=page;
+    var btns=document.querySelectorAll('#sidebar-nav .ni');
+    btns.forEach(function(btn){btn.classList.toggle('on',btn.dataset.page===page);});
+    var mc=document.getElementById('main-content');
+    if(!mc){console.error('main-content not found');return;}
+    var pageMap={
+      dashboard:renderDashboard,
+      dossier:renderDossier,
+      agenda:renderAgenda,
+      medicaments:renderMedicaments,
+      journal:renderJournal,
+      aides:renderAides,
+      bienetre:renderBienetre,
+      parametres:renderParametres,
+      voiceloop:renderVoiceLoop
+    };
+    var fn=pageMap[page];
+    if(fn){
+      try{
+        var html=fn();
+        mc.innerHTML=html||'<div class="card" style="margin:20px"><p>Contenu en cours de chargement...</p></div>';
+        bindEvents(page);
+      }catch(renderErr){
+        console.error('Render error for '+page+':', renderErr);
+        mc.innerHTML='<div class="card" style="margin:20px"><div class="ct">'+page+'</div><p style="color:var(--rd)">Erreur : '+renderErr.message+'</p></div>';
+      }
+    }else{
+      mc.innerHTML='<div class="card" style="margin:20px"><div class="ct">Page en construction</div></div>';
+    }
+  }catch(e){console.error('navTo error:',e);}
 }
 
 // ═══════════════════════════════════════════════
