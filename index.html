@@ -639,22 +639,27 @@ window.addEventListener('DOMContentLoaded',function(){
 function goToApp(){
   try{
     var meta=S.user&&S.user.user_metadata||{};
-    var roles=meta.roles||[meta.role||'aidant'];
+    var roles=meta.roles||[meta.role]||['aidant'];
     S.role=roles[0]||'aidant';
-    S.selectedRoles=roles;
-    // Update mode switcher visibility based on user's roles
-    ['aidant','patient','soignant','pharmacien'].forEach(function(r){
-      var opt=document.getElementById('mopt-'+r);
-      if(opt)opt.style.display=roles.indexOf(r)>=0?'flex':'flex'; // show all for now
-    });
-    // Always show main app screen for aidant/default
-    showScreen('app');
-    var p=meta.prenom||'';
+    S.activeMode=roles[0]||'aidant';
+    // Set mode switcher label
+    var modeIcons={aidant:'👩‍👧',patient:'🤒',soignant:'👨‍⚕️',pharmacien:'💊'};
+    var modeNames={aidant:'Mode Aidant',patient:'Mode Soigné',soignant:'Mode Soignant',pharmacien:'Mode Pharmacien'};
+    var ic=document.getElementById('mode-ic');var nm=document.getElementById('mode-nm');
+    if(ic)ic.textContent=modeIcons[S.activeMode]||'👤';
+    if(nm)nm.textContent=modeNames[S.activeMode]||'Mode';
+    // Show prenom in sidebar
     var sb=document.getElementById('sb-prenom');
-    if(sb)sb.textContent=p||'Vous';
-    navTo('dashboard');
-    setTimeout(function(){try{initNotifications();}catch(e){}},200);
-  }catch(err){console.error('goToApp error:',err);showScreen('auth');}
+    if(sb)sb.textContent=meta.prenom||'Vous';
+    // Always show screen-app (sidebar stays visible)
+    showScreen('app');
+    // Switch to correct mode content
+    switchMode(S.activeMode);
+    setTimeout(function(){try{initNotifications();}catch(e){}},300);
+  }catch(err){
+    console.error('goToApp:',err);
+    showScreen('auth');
+  }
 }
 
 function showVerify(){
@@ -721,11 +726,64 @@ function toggleModeSwitcher(){
   if(dd)dd.classList.toggle('open');
 }
 
+
+// ── RENDERERS MODE (toujours dans screen-app, sidebar visible) ──
+
+function renderModePatient(){
+  var meds=S.meds.map(function(m){
+    var k=S.today+'_'+m.horaires[0];
+    var pris=m.prises&&m.prises[k];
+    return '<div style="background:var(--sur);border:1.5px solid '+(pris?'var(--gn3)':'var(--bd)')+';border-radius:12px;padding:14px 16px;margin-bottom:9px;display:flex;justify-content:space-between;align-items:center">'
+      +'<div><div style="font-weight:700;font-size:14px;margin-bottom:3px">'+m.nom+' '+m.dose+'</div>'
+      +'<div style="font-size:11px;color:var(--mu)">'+m.horaires.join(' · ')+'</div></div>'
+      +'<button onclick="togglePrise('+m.id+',''+m.horaires[0]+'')" style="padding:8px 16px;border-radius:9px;border:none;cursor:pointer;font-weight:700;font-size:12px;background:'+(pris?'var(--gn)':'var(--bl)')+';color:#fff">'+(pris?'✓ Pris':'Prendre')+'</button>'
+      +'</div>';
+  }).join('');
+
+  var rdvs=S.rdvs.slice(0,2).map(function(r){
+    return '<div style="background:var(--sur);border:1px solid var(--bd);border-radius:10px;padding:11px 14px;margin-bottom:7px">'
+      +'<div style="font-weight:600;font-size:13px">'+r.titre+'</div>'
+      +'<div style="font-size:11px;color:var(--mu);margin-top:2px">'+r.date+' · '+r.heure+'</div>'
+      +'</div>';
+  }).join('');
+
+  return '<div class="ph"><div><div class="pt">Bonjour, '+S.proche.prenom+' 👋</div><div class="ps">Mon suivi personnel</div></div></div>'
+    +'<div class="card" style="margin-bottom:13px"><div class="ct">Mes médicaments aujourd'hui</div>'+meds+'</div>'
+    +'<div class="card"><div class="ct">Mes prochains rendez-vous</div>'+rdvs+'</div>';
+}
+
+function renderModeSoignant(){
+  var tasks=(S.careTasks||[]).map(function(t){
+    var last=t.lastDone?new Date(t.lastDone):null;
+    var next=last?new Date(last.getTime()+t.frequencyHours*3600000):null;
+    var now=new Date();
+    var retard=next&&now>next;
+    return '<div style="background:var(--sur);border:1.5px solid '+(retard?'var(--rd3)':'var(--bd)')+';border-radius:11px;padding:12px 15px;margin-bottom:8px;display:flex;justify-content:space-between;align-items:center">'
+      +'<div><div style="font-weight:600;font-size:13px;margin-bottom:2px">'+t.name+'</div>'
+      +'<div style="font-size:11px;color:var(--mu)">'+t.patient+' · toutes les '+t.frequency+'</div></div>'
+      +'<button onclick="markCareTaskDone('+t.id+')" style="padding:7px 12px;border-radius:8px;border:none;cursor:pointer;font-size:11px;font-weight:700;background:var(--gn2);color:var(--gn)">Effectué ✓</button>'
+      +'</div>';
+  }).join('');
+
+  return '<div class="ph"><div><div class="pt">Mode Soignant</div><div class="ps">Suivi professionnel · Pierre Dubois</div></div></div>'
+    +'<div class="card" style="margin-bottom:13px"><div class="ct">Tâches de soins en cours</div>'+(tasks||'<div class="empty-state">Aucune tâche planifiée</div>')+'</div>'
+    +'<div class="card"><div class="ct">Transmissions</div>'
+    +'<textarea class="fi fta" placeholder="Rédiger une transmission... (l'IA peut vous aider)" style="min-height:80px;margin-bottom:8px"></textarea>'
+    +'<button class="btn btn-p" style="width:100%">Générer avec l'IA ✦</button></div>';
+}
+
+function renderModePharmacien(){
+  return '<div class="ph"><div><div class="pt">Mode Pharmacien</div><div class="ps">Dispensation · Alertes · Interactions</div></div></div>'
+    +'<div class="card"><div class="ct">Recherche patient</div>'
+    +'<div style="display:flex;gap:8px"><input class="fi" placeholder="NIR ou nom du patient..." style="flex:1"><button class="btn btn-p">Rechercher</button></div></div>';
+}
+
 function switchMode(mode){
   S.activeMode=mode;
   var icons={aidant:'👩‍👧',patient:'🤒',soignant:'👨‍⚕️',pharmacien:'💊'};
   var names={aidant:'Mode Aidant',patient:'Mode Soigné',soignant:'Mode Soignant',pharmacien:'Mode Pharmacien'};
-  var ic=document.getElementById('mode-ic');var nm=document.getElementById('mode-nm');
+  var ic=document.getElementById('mode-ic');
+  var nm=document.getElementById('mode-nm');
   if(ic)ic.textContent=icons[mode]||'👤';
   if(nm)nm.textContent=names[mode]||mode;
   ['aidant','patient','soignant','pharmacien'].forEach(function(m){
@@ -733,10 +791,19 @@ function switchMode(mode){
     if(opt)opt.classList.toggle('active',m===mode);
   });
   toggleModeSwitcher();
-  if(mode==='patient'){showScreen('patient');renderPatient();}
-  else if(mode==='soignant'){showScreen('soignant');}
-  else if(mode==='pharmacien'){showPharmacien();}
-  else{showScreen('app');navTo('dashboard');}
+  // ALWAYS keep screen-app visible — just change the content
+  showScreen('app');
+  var mc=document.getElementById('main-content');
+  if(!mc)return;
+  if(mode==='patient'){
+    mc.innerHTML=renderModePatient();
+  } else if(mode==='soignant'){
+    mc.innerHTML=renderModeSoignant();
+  } else if(mode==='pharmacien'){
+    mc.innerHTML=renderModePharmacien();
+  } else {
+    navTo('dashboard');
+  }
 }
 
 // Clic extérieur ferme le dropdown
@@ -913,56 +980,43 @@ function togglePrise(id,h){
 // DASHBOARD
 // ═══════════════════════════════════════════════
 function renderDashboard(){
-  const pris=getPrises(),tot=getTot();
-  const pr=S.rdvs.filter(r=>!r.fait).sort((a,b)=>a.date.localeCompare(b.date))[0];
-  const prenom=S.user&&S.user.user_metadata&&S.user.user_metadata.prenom||'Marie';
-  const alerts=[];
-  S.meds.filter(m=>m.renouv<=10).forEach(m=>alerts.push({t:'warn',m:'Renouvellement '+m.nom+' dans '+m.renouv+' jours'}));
-  S.rdvs.filter(r=>!r.fait&&!r.assigne).forEach(r=>alerts.push({t:'danger',m:'RDV non assigné : '+r.titre}));
-  const pct=tot?Math.round((pris/tot)*100):0;
-  return `
-  <div class="ph">
-    <div><div class="pt">Bonjour, ${prenom} 👋</div><div class="ps">${new Date().toLocaleDateString('fr-FR',{weekday:'long',day:'numeric',month:'long'})}</div></div>
-    <button class="btn btn-g" id="ai-btn">🤖 Résumé IA médecin</button>
-  </div>
-  ${alerts.map(a=>`<div class="alert alert-${a.t}"><span>${a.t==='warn'?'⚠':'⊘'}</span>${a.m}</div>`).join('')}
-  ${S.aiTxt?`<div class="ai-box"><div class="ai-lbl">Résumé IA — pour le médecin</div><div class="ai-txt">${S.aiTxt}</div></div>`:''}
-  <div class="kpi-grid">
-    <div class="kpi"><div class="kv">${pris}<span style="font-size:16px;font-weight:400;color:var(--mu)">/${tot}</span></div><div class="kl">Prises confirmées</div></div>
-    <div class="kpi"><div class="kv">${S.rdvs.filter(r=>!r.fait).length}</div><div class="kl">RDV à venir</div></div>
-    <div class="kpi"><div class="kv">${S.journal.length}</div><div class="kl">Notes journal</div></div>
-    <div class="kpi" style="background:var(--bl2);cursor:pointer" onclick="navTo('aides')"><div class="kv" style="color:var(--bl)">${AIDES.filter(a=>a.ok).length}</div><div class="kl" style="color:var(--bl)">Aides → voir</div></div>
-  </div>
-  <div class="grid2">
-    <div class="card" style="cursor:pointer" onclick="navTo('agenda')">
-      <div class="ct">Prochain RDV</div>
-      ${pr?`<div style="display:flex;gap:11px">
-        <div class="rdv-dt"><div class="rdv-day">${dateDay(pr.date)}</div><div class="rdv-mo">${dateMo(pr.date)}</div><div class="rdv-hr">${pr.heure}</div></div>
-        <div><div style="font-size:13px;font-weight:600;margin-bottom:3px">${pr.titre}</div><div style="font-size:11px;color:var(--mu);margin-bottom:7px">${pr.lieu}</div><span class="badge ${pr.assigne?'b-bl':'b-rd'}">${pr.assigne||'Non assigné'}</span></div>
-      </div>`:'<div style="font-size:12px;color:var(--mu)">Aucun RDV à venir</div>'}
-    </div>
-    <div class="card" style="cursor:pointer" onclick="navTo('journal')">
-      <div class="ct">Dernière note</div>
-      ${S.journal[0]?`<div style="font-size:12px;line-height:1.75;margin-bottom:8px">${S.journal[0].contenu.slice(0,110)}…</div><span class="badge ${hBadge(S.journal[0].humeur)}">${S.journal[0].humeur}</span>`:'<div style="font-size:12px;color:var(--mu)">Aucune note</div>'}
-    </div>
-  </div>
-  <div class="card">
-    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
-      <div class="ct" style="margin:0">Médicaments du jour</div>
-      <span style="font-size:10px;color:var(--mu)">${pris}/${tot}</span>
-    </div>
-    <div class="bar"><div class="bar-fill" style="width:${pct}%;background:${pct===100?'var(--gn)':'var(--bl)'}"></div></div>
-    ${S.meds.map(m=>`
-      <div class="med-row">
-        <div><div class="med-nm">${m.nom} <span style="font-weight:400;color:var(--mu);font-size:12px">${m.dose}</span></div>${m.renouv<=10?`<div style="font-size:10px;color:var(--am)">⚠ Renouvellement J-${m.renouv}</div>`:''}</div>
-        <div class="dose-btns">${m.horaires.map(h=>`<button class="dose-btn${m.prises[S.today+'_'+h]?' done':''}" onclick="togglePrise(${m.id},'${h}')">${h} ${m.prises[S.today+'_'+h]?'✓':'○'}</button>`).join('')}</div>
-      </div>`).join('')}
-  </div>`;
-}
+  try{
+    var prenom=S.user&&S.user.user_metadata&&S.user.user_metadata.prenom||'Vous';
+    var pris=getPrises();
+    var tot=getTot();
+    var pct=tot>0?Math.round(pris/tot*100):0;
+    var nextRdv=S.rdvs.filter(function(r){return !r.fait;}).sort(function(a,b){return a.date.localeCompare(b.date);})[0];
+    var rdvTxt=nextRdv?(nextRdv.date+' · '+nextRdv.heure+' · '+nextRdv.titre):'Aucun rendez-vous à venir';
 
-// ═══════════════════════════════════════════════
-// DOSSIER
-// ═══════════════════════════════════════════════
+    var medsHtml=S.meds.map(function(m){
+      var k=S.today+'_'+m.horaires[0];
+      var prise=m.prises&&m.prises[k];
+      return '<div style="display:flex;justify-content:space-between;align-items:center;padding:9px 0;border-bottom:1px solid var(--bd)">'
+        +'<div><div style="font-size:13px;font-weight:600">'+m.nom+' '+m.dose+'</div>'
+        +'<div style="font-size:11px;color:var(--mu)">'+m.horaires.join(' · ')+'</div></div>'
+        +'<span style="font-size:11px;font-weight:700;color:'+(prise?'var(--gn)':'var(--am)')+';">'+(prise?'✅ Pris':'⏳ En attente')+'</span>'
+        +'</div>';
+    }).join('');
+
+    var alertesHtml='';
+    S.meds.filter(function(m){return m.renouv<=10;}).forEach(function(m){
+      alertesHtml+='<div style="font-size:12px;padding:6px 0;color:var(--rd)">⚠️ '+m.nom+' : renouvellement dans '+m.renouv+' jours</div>';
+    });
+
+    return '<div class="ph"><div><div class="pt">Bonjour, '+prenom+' 👋</div><div class="ps">'+new Date().toLocaleDateString('fr-FR',{weekday:'long',day:'numeric',month:'long'})+'</div></div></div>'
+      +'<div class="grid2" style="margin-bottom:13px">'
+      +'<div class="card"><div class="ct">Observance du jour</div>'
+      +'<div style="text-align:center;padding:10px 0"><div style="font-size:36px;font-weight:800;color:var(--bl)">'+pct+'%</div>'
+      +'<div style="font-size:12px;color:var(--mu);margin-top:3px">'+pris+' / '+tot+' prises confirmées</div></div></div>'
+      +'<div class="card"><div class="ct">Prochain RDV</div>'
+      +'<div style="font-size:12px;line-height:1.7;padding-top:6px">'+rdvTxt+'</div></div>'
+      +'</div>'
+      +'<div class="card" style="margin-bottom:13px"><div class="ct">Médicaments · '+S.proche.prenom+'</div>'+medsHtml+'</div>'
+      +(alertesHtml?'<div class="card" style="border-color:var(--rd3)"><div class="ct" style="color:var(--rd)">Alertes renouvellement</div>'+alertesHtml+'</div>':'');
+  }catch(err){
+    return '<div class="card" style="margin:20px"><div class="ct">Tableau de bord</div><p style="color:var(--rd);font-size:12px">Erreur : '+err.message+'</p></div>';
+  }
+}
 function renderDossier(){
   const p=S.proche;
   const prenom=S.user&&S.user.user_metadata&&S.user.user_metadata.prenom||'Marie';
