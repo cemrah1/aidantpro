@@ -243,6 +243,68 @@ a{color:var(--bl)}
   .kpi-grid,.grid2,.grid4{grid-template-columns:1fr 1fr}
   .kpi-grid{grid-template-columns:1fr 1fr}
 }
+
+/* ── MULTI-ROLES INSCRIPTION ── */
+.roles-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-bottom:13px}
+.role-card{border:2px solid var(--bd);border-radius:12px;padding:13px 9px;cursor:pointer;text-align:center;transition:all .15s;background:var(--sur);position:relative;user-select:none}
+.role-card:hover{border-color:var(--bl);background:var(--bl2)}
+.role-card.selected{border-color:var(--bl);background:var(--bl2)}
+.role-card.selected .role-nm{color:var(--bl)}
+.role-check-ic{position:absolute;top:8px;right:8px;width:18px;height:18px;background:var(--bl);border-radius:50%;display:none;align-items:center;justify-content:center;font-size:10px;color:#fff;font-weight:700}
+.role-card.selected .role-check-ic{display:flex}
+.role-ic{font-size:22px;margin-bottom:5px}
+.role-nm{font-size:12px;font-weight:700;margin-bottom:2px}
+.role-ds{font-size:10px;color:var(--mu);line-height:1.3}
+.roles-hint{font-size:11px;color:var(--bl);background:var(--bl2);border-radius:8px;padding:8px 11px;margin-bottom:12px;line-height:1.5}
+
+/* ── MODE SWITCHER (sidebar) ── */
+.mode-switcher{margin:8px 10px;position:relative}
+.mode-btn{width:100%;display:flex;align-items:center;justify-content:space-between;padding:9px 11px;background:linear-gradient(135deg,var(--bl2),#EAF5EE);border:1.5px solid var(--bl3);border-radius:10px;cursor:pointer;font-size:12px;font-weight:600}
+.mode-btn-txt{display:flex;align-items:center;gap:7px;color:var(--bl)}
+.mode-btn-arrow{color:var(--mu);font-size:11px;transition:transform .2s}
+.mode-btn.open .mode-btn-arrow{transform:rotate(180deg)}
+.mode-dropdown{position:absolute;top:calc(100% + 4px);left:0;right:0;background:var(--sur);border:1.5px solid var(--bd);border-radius:10px;box-shadow:0 4px 20px rgba(0,0,0,.1);z-index:200;overflow:hidden;display:none}
+.mode-dropdown.open{display:block}
+.mode-option{display:flex;align-items:center;gap:9px;padding:10px 13px;cursor:pointer;font-size:12px;font-weight:500;transition:background .1s}
+.mode-option:hover{background:var(--bg)}
+.mode-option.active{background:var(--bl2);color:var(--bl);font-weight:700}
+.mode-option-ic{font-size:16px;width:22px;text-align:center}
+.mode-option-info{flex:1}
+.mode-option-nm{font-weight:600;font-size:12px}
+.mode-option-ds{font-size:10px;color:var(--mu);margin-top:1px}
+.mode-badge{font-size:9px;background:var(--gn2);color:var(--gn);border-radius:10px;padding:1px 6px;font-weight:700}
+
+/* ── VOICELOOP ── */
+.vl-card{background:linear-gradient(135deg,#F5F0FF,#E8F5EE);border:1.5px solid #C4B5FD;border-radius:14px;padding:14px 16px;margin-bottom:10px}
+.vl-header{display:flex;align-items:center;gap:9px;margin-bottom:10px}
+.vl-ic{width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,var(--bl),var(--gn));display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0}
+.vl-from{font-size:12px;font-weight:700;color:var(--txt)}
+.vl-time{font-size:10px;color:var(--mu);margin-top:1px}
+.vl-msg{font-size:13px;line-height:1.7;margin-bottom:10px;color:var(--txt)}
+.vl-msg-translated{font-size:12px;line-height:1.7;color:#5B21B6;font-style:italic;background:rgba(91,33,182,.06);border-radius:7px;padding:6px 9px;margin-bottom:10px}
+.vl-actions{display:flex;gap:8px}
+.vl-play-btn{flex:1;padding:10px;border-radius:10px;border:none;cursor:pointer;font-size:13px;font-weight:700;display:flex;align-items:center;justify-content:center;gap:6px;background:linear-gradient(135deg,var(--bl),#5B21B6);color:#fff}
+.vl-play-btn:hover{opacity:.9}
+.vl-confirm-btn{flex:1;padding:10px;border-radius:10px;border:none;cursor:pointer;font-size:13px;font-weight:700;background:var(--gn2);color:var(--gn);border:1.5px solid var(--gn3)}
+.vl-confirm-btn.confirmed{background:var(--gn);color:#fff}
+.vl-deny-btn{padding:10px 14px;border-radius:10px;border:1.5px solid var(--rd3);cursor:pointer;font-size:13px;font-weight:700;background:var(--rd2);color:var(--rd)}
+.vl-compose{background:var(--sur);border:1.5px solid var(--bd);border-radius:12px;padding:13px;margin-top:10px}
+.vl-compose-title{font-size:10px;font-weight:700;color:var(--mu);text-transform:uppercase;letter-spacing:.7px;margin-bottom:8px}
+.vl-input{width:100%;border:1px solid var(--bd);border-radius:8px;padding:8px 11px;font-size:13px;resize:none;min-height:56px;background:var(--bg);outline:none;line-height:1.6}
+.vl-input:focus{border-color:var(--bl);background:var(--sur)}
+.vl-send-row{display:flex;align-items:center;justify-content:space-between;margin-top:8px}
+.vl-lang-note{font-size:10px;color:var(--mu)}
+.vl-notification{background:linear-gradient(135deg,#5B21B6,var(--bl));border-radius:12px;padding:12px 14px;margin-bottom:10px;display:flex;align-items:center;gap:10px}
+.vl-notif-txt{color:#fff;font-size:12px;line-height:1.5}
+.vl-notif-txt strong{font-size:13px;display:block;margin-bottom:2px}
+.playing-wave{display:flex;align-items:center;gap:2px;margin-left:6px}
+.playing-wave span{display:inline-block;width:3px;border-radius:2px;background:#fff;animation:wave 1s ease infinite}
+.playing-wave span:nth-child(2){animation-delay:.1s;height:12px}
+.playing-wave span:nth-child(3){animation-delay:.2s;height:18px}
+.playing-wave span:nth-child(4){animation-delay:.3s;height:10px}
+.playing-wave span:nth-child(5){animation-delay:.4s;height:14px}
+@keyframes wave{0%,100%{opacity:.4;transform:scaleY(.6)}50%{opacity:1;transform:scaleY(1)}}
+
 </style>
 </head>
 <body>
@@ -385,6 +447,26 @@ a{color:var(--bl)}
 <div id="screen-app" class="hidden">
   <aside class="sidebar">
     <div class="sb-hd"><div class="sb-logo"><div style="width:30px;height:30px"><svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"><path d="M22,145 C6,128 4,112 4,100 C4,46 46,4 100,4 C154,4 196,46 196,100 C196,114 192,126 185,136 C170,132 152,120 132,108 C112,96 90,88 70,90 C50,92 34,102 22,118 Z" fill="#1D55E8"/><path d="M48,87 C68,75 92,73 116,80" stroke="white" stroke-width="11" fill="none" stroke-linecap="round"/><path d="M185,136 C176,156 158,174 134,184 C123,189 112,192 100,192 C88,192 77,189 66,184 C42,174 24,156 15,136 C24,120 45,114 66,117 C87,120 102,133 120,144 C138,155 160,160 178,152 Z" fill="#137A3A"/><path d="M162,152 C143,156 123,148 108,138" stroke="white" stroke-width="10" fill="none" stroke-linecap="round"/><path d="M100,138 C82,126 66,112 68,97 C70,88 78,84 86,88 C92,91 97,98 100,105 C103,98 108,91 114,88 C122,84 130,88 132,97 C134,112 118,126 100,138 Z" fill="#137A3A"/></svg></div><span class="sb-logo-nm">AidantPro</span></div></div>
+    <div class="mode-switcher">
+      <button class="mode-btn" id="mode-btn" onclick="toggleModeSwitcher()">
+        <span class="mode-btn-txt"><span id="mode-ic">👩‍👧</span><span id="mode-nm">Mode Aidant</span></span>
+        <span class="mode-btn-arrow" id="mode-arrow">▾</span>
+      </button>
+      <div class="mode-dropdown" id="mode-dropdown">
+        <div class="mode-option active" id="mopt-aidant" onclick="switchMode('aidant')">
+          <span class="mode-option-ic">👩‍👧</span>
+          <div class="mode-option-info"><div class="mode-option-nm">Aidant(e)</div><div class="mode-option-ds">Coordination famille</div></div>
+        </div>
+        <div class="mode-option" id="mopt-patient" onclick="switchMode('patient')">
+          <span class="mode-option-ic">🤒</span>
+          <div class="mode-option-info"><div class="mode-option-nm">Soigné(e)</div><div class="mode-option-ds">Mon suivi personnel</div></div>
+        </div>
+        <div class="mode-option" id="mopt-soignant" onclick="switchMode('soignant')">
+          <span class="mode-option-ic">👨‍⚕️</span>
+          <div class="mode-option-info"><div class="mode-option-nm">Soignant(e)</div><div class="mode-option-ds">Mes patients pro</div></div>
+        </div>
+      </div>
+    </div>
     <div class="pat-chip" onclick="navTo('dossier')">
       <div class="pat-chip-nm">Pierre Dubois</div>
       <div class="pat-chip-info">78 ans · Alzheimer modéré</div>
@@ -398,7 +480,8 @@ a{color:var(--bl)}
       <button class="ni" data-page="journal" onclick="navTo('journal')"><span class="ni-ic">◐</span><span class="ni-lb">Journal de bord</span></button>
       <button class="ni" data-page="aides" onclick="navTo('aides')"><span class="ni-ic">◊</span><span class="ni-lb">Aides financières</span></button>
       <button class="ni" data-page="bienetre" onclick="navTo('bienetre')"><span class="ni-ic">♡</span><span class="ni-lb">Bien-être aidant</span></button>
-      <button class="ni" data-page="parametres" onclick="navTo('parametres')"><span class="ni-ic">⊙</span><span class="ni-lb">Paramètres</span></button>
+      <button class="ni" data-page="voiceloop" onclick="navTo('voiceloop')"><span class="ni-ic">🎙️</span><span class="ni-lb">VoiceLoop — Le Lien</span></button>
+            <button class="ni" data-page="parametres" onclick="navTo('parametres')"><span class="ni-ic">⊙</span><span class="ni-lb">Paramètres</span></button>
     </nav>
     <button class="sb-logout" onclick="doSignOut()">⇄ Déconnexion</button>
     <div class="sb-ft">Bonjour <strong id="sb-prenom">Marie</strong> · Plan Famille</div>
@@ -579,13 +662,66 @@ function toggleEye(id,btn){
   else{inp.type='password';btn.textContent='👁️';}
 }
 
-function selectRole(role){
-  S.selectedRole=role;
+// ── MULTI-ROLES ──
+S.selectedRoles=['aidant']; // tableau des rôles sélectionnés
+
+function toggleRole(role){
+  var idx=S.selectedRoles.indexOf(role);
+  if(idx>=0){
+    if(S.selectedRoles.length===1){return;} // minimum 1 rôle
+    S.selectedRoles.splice(idx,1);
+  } else {
+    S.selectedRoles.push(role);
+  }
   ['aidant','patient','soignant','pharmacien'].forEach(function(r){
     var el=document.getElementById('rc-'+r);
-    if(el)el.classList.toggle('on',r===role);
+    if(el)el.classList.toggle('selected',S.selectedRoles.indexOf(r)>=0);
   });
+  var err=document.getElementById('role-error');
+  if(err)err.classList.toggle('hidden',S.selectedRoles.length>0);
 }
+
+function selectRole(role){toggleRole(role);}
+
+// ── MODE SWITCHER ──
+S.activeMode='aidant';
+
+function toggleModeSwitcher(){
+  var btn=document.getElementById('mode-btn');
+  var dd=document.getElementById('mode-dropdown');
+  var arrow=document.getElementById('mode-arrow');
+  if(btn)btn.classList.toggle('open');
+  if(dd)dd.classList.toggle('open');
+}
+
+function switchMode(mode){
+  S.activeMode=mode;
+  var icons={aidant:'👩‍👧',patient:'🤒',soignant:'👨‍⚕️',pharmacien:'💊'};
+  var names={aidant:'Mode Aidant',patient:'Mode Soigné',soignant:'Mode Soignant',pharmacien:'Mode Pharmacien'};
+  var ic=document.getElementById('mode-ic');var nm=document.getElementById('mode-nm');
+  if(ic)ic.textContent=icons[mode]||'👤';
+  if(nm)nm.textContent=names[mode]||mode;
+  ['aidant','patient','soignant','pharmacien'].forEach(function(m){
+    var opt=document.getElementById('mopt-'+m);
+    if(opt)opt.classList.toggle('active',m===mode);
+  });
+  toggleModeSwitcher();
+  if(mode==='patient'){showScreen('patient');renderPatient();}
+  else if(mode==='soignant'){showScreen('soignant');}
+  else if(mode==='pharmacien'){showPharmacien();}
+  else{showScreen('app');navTo('dashboard');}
+}
+
+// Clic extérieur ferme le dropdown
+document.addEventListener('click',function(e){
+  var sw=document.querySelector('.mode-switcher');
+  if(sw&&!sw.contains(e.target)){
+    var dd=document.getElementById('mode-dropdown');
+    var btn=document.getElementById('mode-btn');
+    if(dd)dd.classList.remove('open');
+    if(btn)btn.classList.remove('open');
+  }
+});
 
 function toggleTerms(){
   S.termsChecked=!S.termsChecked;
@@ -702,7 +838,7 @@ function navTo(page){
     btn.classList.toggle('on',btn.dataset.page===page);
   });
   const mc=document.getElementById('main-content');
-  const pages={dashboard:renderDashboard,dossier:renderDossier,agenda:renderAgenda,medicaments:renderMedicaments,journal:renderJournal,aides:renderAides,bienetre:renderBienetre,parametres:renderParametres};
+  const pages={dashboard:renderDashboard,dossier:renderDossier,agenda:renderAgenda,medicaments:renderMedicaments,journal:renderJournal,aides:renderAides,bienetre:renderBienetre,parametres:renderParametres,voiceloop:renderVoiceLoop};
   if(pages[page]){mc.innerHTML=pages[page]();bindEvents(page);}
 }
 
@@ -1157,3 +1293,83 @@ function patSendMsg(){const ta=document.getElementById('pat-msg-ta');if(ta&&ta.v
 </script>
 </body>
 </html>
+// ════════════════════════════════════════════════════
+// VOICELOOP — Le Lien vocal aidant ↔ patient
+// ════════════════════════════════════════════════════
+var VL_STATE={
+  messages:[
+    {id:1,from:'Marie (Fille)',fromRole:'aidant',text:"Papa, tu viens de prendre ton Donepezil. Est-ce que tu te sens bien ?",translated:"Baba, az once Donepezil'ini aldin. Iyi hissediyor musun?",lang:'tr',timestamp:'2026-05-19T20:14:00',confirmed:null,playing:false},
+    {id:2,from:'Dr. Martin Sophie',fromRole:'soignant',text:"Pierre, n'oubliez pas votre Amlodipine ce matin avec un grand verre d'eau.",translated:"Pierre, bu sabah Amlodipine'inizi buyuk bir bardak suyla almayi unutmayin.",lang:'tr',timestamp:'2026-05-19T08:02:00',confirmed:true,playing:false}
+  ],
+  composing:''
+};
+
+function renderVoiceLoop(){
+  var msgs=VL_STATE.messages.map(function(m){
+    var t=new Date(m.timestamp).toLocaleString('fr-FR',{hour:'2-digit',minute:'2-digit',day:'numeric',month:'short'});
+    var roleColor={aidant:'var(--bl)',soignant:'var(--gn)',pharmacien:'#5B21B6'}[m.fromRole]||'var(--mu)';
+    var roleIc={soignant:'👨‍⚕️',pharmacien:'💊'}[m.fromRole]||'👩‍👧';
+    var confirmHtml='';
+    if(m.confirmed===null){
+      confirmHtml='<div class="vl-actions">'
+        +'<button class="vl-confirm-btn" onclick="vlConfirm('+m.id+',true)">Oui j ai pris</button>'
+        +'<button class="vl-deny-btn" onclick="vlConfirm('+m.id+',false)">Non</button>'
+        +'</div>';
+    } else {
+      confirmHtml='<div style="font-size:11px;font-weight:600;color:'+(m.confirmed?'var(--gn)':'var(--rd)')+';">'+(m.confirmed?'Confirme - pris':'Non pris - aidant alerte')+'</div>';
+    }
+    return '<div class="vl-card">'
+      +'<div class="vl-header"><div class="vl-ic">'+roleIc+'</div><div><div class="vl-from" style="color:'+roleColor+'">'+m.from+'</div><div class="vl-time">'+t+'</div></div></div>'
+      +'<div class="vl-msg">'+m.text+'</div>'
+      +'<div class="vl-msg-translated">🇹🇷 '+m.translated+'</div>'
+      +'<div class="vl-actions" style="margin-bottom:8px"><button class="vl-play-btn" onclick="vlPlay('+m.id+')">▶ Ecouter en turc</button></div>'
+      +confirmHtml+'</div>';
+  }).join('');
+  return '<div class="ph"><div><div class="pt">VoiceLoop - Le Lien</div><div class="ps">Messages vocaux aidant - patient traduits en temps reel</div></div></div>'
+    +msgs
+    +'<div class="vl-compose"><div class="vl-compose-title">Envoyer un message a Pierre</div>'
+    +'<textarea class="vl-input" id="vl-text" placeholder="Ex: Papa, as-tu pris ton medicament du soir ?"></textarea>'
+    +'<div class="vl-send-row"><div class="vl-lang-note">Sera traduit en turc et lu a voix haute</div>'
+    +'<button class="btn btn-p" onclick="vlSend()">Envoyer</button></div></div>';
+}
+
+function vlPlay(id){
+  var m=VL_STATE.messages.find(function(x){return x.id===id;});
+  if(!m)return;
+  if(window.speechSynthesis){
+    window.speechSynthesis.cancel();
+    var u=new SpeechSynthesisUtterance(m.translated);
+    u.lang='tr-TR';u.rate=0.88;
+    window.speechSynthesis.speak(u);
+  }
+}
+
+function vlConfirm(id,val){
+  var m=VL_STATE.messages.find(function(x){return x.id===id;});
+  if(m)m.confirmed=val;
+  if(val){alert('Pierre a confirme avoir pris son medicament. Vous etes notifie.');}
+  else{alert('Pierre n a pas pris son medicament. Alerte envoyee a l aidant.');}
+  navTo('voiceloop');
+}
+
+async function vlSend(){
+  var ta=document.getElementById('vl-text');
+  if(!ta||!ta.value.trim())return;
+  var txt=ta.value.trim();
+  var translated=txt;
+  try{
+    var r=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:300,
+        messages:[{role:'user',content:'Traduis en turc naturel et chaleureux (enfant qui parle a son parent). Reponds uniquement avec la traduction:
+
+'+txt}]})});
+    var d=await r.json();
+    translated=d.content&&d.content[0]&&d.content[0].text||txt;
+  }catch(e){}
+  VL_STATE.messages.unshift({id:Date.now(),from:'Vous',fromRole:'aidant',text:txt,translated:translated,lang:'tr',timestamp:new Date().toISOString(),confirmed:null,playing:false});
+  ta.value='';
+  navTo('voiceloop');
+  setTimeout(function(){vlPlay(VL_STATE.messages[0].id);},800);
+}
+
+
