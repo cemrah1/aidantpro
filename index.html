@@ -736,7 +736,7 @@ function renderModePatient(){
     return '<div style="background:var(--sur);border:1.5px solid '+(pris?'var(--gn3)':'var(--bd)')+';border-radius:12px;padding:14px 16px;margin-bottom:9px;display:flex;justify-content:space-between;align-items:center">'
       +'<div><div style="font-weight:700;font-size:14px;margin-bottom:3px">'+m.nom+' '+m.dose+'</div>'
       +'<div style="font-size:11px;color:var(--mu)">'+m.horaires.join(' · ')+'</div></div>'
-      +'<button onclick="togglePrise('+m.id+',''+m.horaires[0]+'')" style="padding:8px 16px;border-radius:9px;border:none;cursor:pointer;font-weight:700;font-size:12px;background:'+(pris?'var(--gn)':'var(--bl)')+';color:#fff">'+(pris?'✓ Pris':'Prendre')+'</button>'
+      +'<button onclick="togglePrise('+m.id+',\''+m.horaires[0]+'\')" style="padding:8px 16px;border-radius:9px;border:none;cursor:pointer;font-weight:700;font-size:12px;background:'+(pris?'var(--gn)':'var(--bl)')+';color:#fff">'+(pris?'✓ Pris':'Prendre')+'</button>'
       +'</div>';
   }).join('');
 
@@ -748,7 +748,7 @@ function renderModePatient(){
   }).join('');
 
   return '<div class="ph"><div><div class="pt">Bonjour, '+S.proche.prenom+' 👋</div><div class="ps">Mon suivi personnel</div></div></div>'
-    +'<div class="card" style="margin-bottom:13px"><div class="ct">Mes médicaments aujourd'hui</div>'+meds+'</div>'
+    +'<div class="card" style="margin-bottom:13px"><div class="ct">Mes médicaments aujourd\'hui</div>'+meds+'</div>'
     +'<div class="card"><div class="ct">Mes prochains rendez-vous</div>'+rdvs+'</div>';
 }
 
@@ -768,8 +768,8 @@ function renderModeSoignant(){
   return '<div class="ph"><div><div class="pt">Mode Soignant</div><div class="ps">Suivi professionnel · Pierre Dubois</div></div></div>'
     +'<div class="card" style="margin-bottom:13px"><div class="ct">Tâches de soins en cours</div>'+(tasks||'<div class="empty-state">Aucune tâche planifiée</div>')+'</div>'
     +'<div class="card"><div class="ct">Transmissions</div>'
-    +'<textarea class="fi fta" placeholder="Rédiger une transmission... (l'IA peut vous aider)" style="min-height:80px;margin-bottom:8px"></textarea>'
-    +'<button class="btn btn-p" style="width:100%">Générer avec l'IA ✦</button></div>';
+    +'<textarea class="fi fta" placeholder="Rédiger une transmission... (l\'IA peut vous aider)" style="min-height:80px;margin-bottom:8px"></textarea>'
+    +'<button class="btn btn-p" style="width:100%">Générer avec l\'IA ✦</button></div>';
 }
 
 function renderModePharmacien(){
