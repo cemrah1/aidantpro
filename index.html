@@ -1305,32 +1305,53 @@ var VL_STATE={
 };
 
 function renderVoiceLoop(){
-  var msgs=VL_STATE.messages.map(function(m){
+  // Bannière alerte non-prise
+  var alertBanner = '';
+  var pendingUnconfirmed = VL_STATE.messages.filter(function(m){return m.confirmed===null&&!m.auto;});
+  var pendingAuto = VL_STATE.messages.filter(function(m){return m.confirmed===null&&m.auto;});
+  if(pendingAuto.length > 0){
+    alertBanner = '<div style="background:linear-gradient(135deg,#FEF3E6,#FEE5C8);border:1.5px solid var(--am3);border-radius:12px;padding:13px 15px;margin-bottom:12px;display:flex;gap:11px;align-items:flex-start">'
+      +'<span style="font-size:22px;flex-shrink:0">⚠️</span>'
+      +'<div style="flex:1"><div style="font-weight:700;font-size:13px;color:var(--am);margin-bottom:3px">Prise non confirmée</div>'
+      +'<div style="font-size:12px;color:var(--am);line-height:1.5">Pierre n'a pas encore confirmé sa prise. Un message lui a été envoyé automatiquement.</div></div>'
+      +'<button onclick="ouvrirWelfare(2)" style="flex-shrink:0;padding:7px 11px;border-radius:8px;border:none;background:var(--am);color:#fff;font-size:11px;font-weight:700;cursor:pointer">Relancer</button>'
+      +'</div>';
+  }
+
+  var msgs = VL_STATE.messages.map(function(m){
     var t=new Date(m.timestamp).toLocaleString('fr-FR',{hour:'2-digit',minute:'2-digit',day:'numeric',month:'short'});
-    var roleColor={aidant:'var(--bl)',soignant:'var(--gn)',pharmacien:'#5B21B6'}[m.fromRole]||'var(--mu)';
+    var roleColor={soignant:'var(--gn)',pharmacien:'#5B21B6'}[m.fromRole]||'var(--bl)';
     var roleIc={soignant:'👨‍⚕️',pharmacien:'💊'}[m.fromRole]||'👩‍👧';
+    var autoTag = m.auto ? '<span style="font-size:9px;background:var(--am2);color:var(--am);border-radius:10px;padding:1px 6px;margin-left:5px;font-weight:700">AUTO</span>' : '';
     var confirmHtml='';
     if(m.confirmed===null){
       confirmHtml='<div class="vl-actions">'
-        +'<button class="vl-confirm-btn" onclick="vlConfirm('+m.id+',true)">Oui j ai pris</button>'
-        +'<button class="vl-deny-btn" onclick="vlConfirm('+m.id+',false)">Non</button>'
+        +'<button class="vl-confirm-btn" onclick="vlConfirm('+m.id+',true)">✅ Oui, j'ai pris</button>'
+        +'<button class="vl-deny-btn" onclick="vlConfirm('+m.id+',false)">❌ Non</button>'
         +'</div>';
     } else {
-      confirmHtml='<div style="font-size:11px;font-weight:600;color:'+(m.confirmed?'var(--gn)':'var(--rd)')+';">'+(m.confirmed?'Confirme - pris':'Non pris - aidant alerte')+'</div>';
+      confirmHtml='<div style="font-size:11px;font-weight:600;padding:6px 9px;border-radius:7px;background:'+(m.confirmed?'var(--gn2)':'var(--rd2)')+';color:'+(m.confirmed?'var(--gn)':'var(--rd)')+';">'
+        +(m.confirmed?'✅ Confirmé — pris':'❌ Non pris — aidant et soignant alertés')+'</div>';
     }
+    var langFlags={'tr':'🇹🇷','ar':'🇸🇦','en':'🇬🇧','pt':'🇵🇹','es':'🇪🇸','fr':'🇫🇷'};
+    var flag = langFlags[m.lang]||'🌐';
     return '<div class="vl-card">'
-      +'<div class="vl-header"><div class="vl-ic">'+roleIc+'</div><div><div class="vl-from" style="color:'+roleColor+'">'+m.from+'</div><div class="vl-time">'+t+'</div></div></div>'
+      +'<div class="vl-header"><div class="vl-ic">'+roleIc+'</div><div style="flex:1"><div class="vl-from" style="color:'+roleColor+'">'+m.from+autoTag+'</div><div class="vl-time">'+t+'</div></div></div>'
       +'<div class="vl-msg">'+m.text+'</div>'
-      +'<div class="vl-msg-translated">🇹🇷 '+m.translated+'</div>'
-      +'<div class="vl-actions" style="margin-bottom:8px"><button class="vl-play-btn" onclick="vlPlay('+m.id+')">▶ Ecouter en turc</button></div>'
+      +'<div class="vl-msg-translated">'+flag+' '+m.translated+'</div>'
+      +'<div class="vl-actions" style="margin-bottom:9px"><button class="vl-play-btn" onclick="vlPlay('+m.id+')">▶ Écouter</button></div>'
       +confirmHtml+'</div>';
   }).join('');
-  return '<div class="ph"><div><div class="pt">VoiceLoop - Le Lien</div><div class="ps">Messages vocaux aidant - patient traduits en temps reel</div></div></div>'
+
+  return '<div class="ph"><div><div class="pt">VoiceLoop — Le Lien</div><div class="ps">Messages vocaux traduits · Pierre parle turc</div></div>'
+    +'<button onclick="demoEscalade()" class="btn btn-s" style="font-size:10px">🔔 Tester alerte</button></div>'
+    +alertBanner
+    +renderWelfareButtons()
     +msgs
-    +'<div class="vl-compose"><div class="vl-compose-title">Envoyer un message a Pierre</div>'
-    +'<textarea class="vl-input" id="vl-text" placeholder="Ex: Papa, as-tu pris ton medicament du soir ?"></textarea>'
-    +'<div class="vl-send-row"><div class="vl-lang-note">Sera traduit en turc et lu a voix haute</div>'
-    +'<button class="btn btn-p" onclick="vlSend()">Envoyer</button></div></div>';
+    +'<div class="vl-compose"><div class="vl-compose-title">✉️ Message personnalisé à Pierre</div>'
+    +'<textarea class="vl-input" id="vl-text" placeholder="Ex: Papa, est-ce que tu vas bien ? As-tu pris ton médicament ?"></textarea>'
+    +'<div class="vl-send-row"><div class="vl-lang-note">🇹🇷 Traduit en turc et lu à voix haute</div>'
+    +'<button class="btn btn-p" onclick="vlSend()">Envoyer →</button></div></div>';
 }
 
 function vlPlay(id){
@@ -1347,8 +1368,12 @@ function vlPlay(id){
 function vlConfirm(id,val){
   var m=VL_STATE.messages.find(function(x){return x.id===id;});
   if(m)m.confirmed=val;
-  if(val){alert('Pierre a confirme avoir pris son medicament. Vous etes notifie.');}
-  else{alert('Pierre n a pas pris son medicament. Alerte envoyee a l aidant.');}
+  if(val){
+    cancelEscalade(); // Annuler toutes les alertes programmées
+    addAlerte('info','✅ Prise confirmée','Pierre a confirmé avoir pris son médicament.',null);
+  } else {
+    addAlerte('danger','❌ Médicament non pris','Pierre a indiqué ne pas avoir pris son médicament. Vérification recommandée.',function(){ouvrirWelfare(2);});
+  }
   navTo('voiceloop');
 }
 
@@ -1371,5 +1396,159 @@ async function vlSend(){
   navTo('voiceloop');
   setTimeout(function(){vlPlay(VL_STATE.messages[0].id);},800);
 }
+
+// ════════════════════════════════════════════════════
+// SYSTÈME D'ESCALADE — Alertes non-prise médicament
+// ════════════════════════════════════════════════════
+
+// Messages types de prise de nouvelles (multilingues)
+var WELFARE_MSGS = {
+  fr: [
+    "Papa, as-tu pris ton médicament ? Je pense à toi.",
+    "Tout va bien ? N'oublie pas ton traitement du soir.",
+    "Je n'ai pas eu de nouvelle de ta prise. Est-ce que tu vas bien ?"
+  ],
+  tr: [
+    "Baba, ilacını aldın mı? Seni düşünüyorum.",
+    "Her şey yolunda mı? Akşam ilacını unutma.",
+    "İlaç aldığına dair haber alamadım. İyi misin?"
+  ],
+  ar: [
+    "بابا، هل أخذت دواءك؟ أفكر فيك.",
+    "كل شيء بخير؟ لا تنسَ علاجك المسائي.",
+    "لم أتلقَّ تأكيداً على أخذ الدواء. هل أنت بخير؟"
+  ]
+};
+
+// Timers d'escalade actifs
+S.escaladeTimers = [];
+
+// Démarrer la surveillance d'une prise
+function startMedEscalade(medNom, heureStr, patientLang) {
+  var lang = patientLang || 'tr';
+
+  // T+30min : alerte aidant + message auto
+  var t1 = setTimeout(function() {
+    addAlerte('warning', '⚠️ Prise non confirmée',
+      'Pierre n'a pas confirmé avoir pris ' + medNom + ' prévu à ' + heureStr + '.',
+      function() { ouvrirWelfare(1); }
+    );
+    // Envoyer message de prise de nouvelles automatique
+    envoyerWelfare(WELFARE_MSGS[lang][0], lang, true);
+  }, 30 * 60 * 1000); // 30 minutes
+
+  // T+60min : alerte aidant + soignant
+  var t2 = setTimeout(function() {
+    addAlerte('danger', '🚨 Toujours pas de réponse',
+      'Pierre n'a toujours pas confirmé sa prise de ' + heureStr + '. L'infirmière a été notifiée.',
+      null
+    );
+  }, 60 * 60 * 1000);
+
+  // T+2h : alerte urgente
+  var t3 = setTimeout(function() {
+    addAlerte('urgent', '🆘 Vérification urgente',
+      'Aucune réponse depuis 2 heures. Pensez à appeler Pierre directement.',
+      function() { window.location.href = 'tel:+33600000000'; }
+    );
+  }, 120 * 60 * 1000);
+
+  S.escaladeTimers.push(t1, t2, t3);
+}
+
+// Annuler l'escalade quand prise confirmée
+function cancelEscalade() {
+  S.escaladeTimers.forEach(function(t) { clearTimeout(t); });
+  S.escaladeTimers = [];
+}
+
+// Ajouter une alerte dans le système
+function addAlerte(type, titre, message, action) {
+  var icons = { warning: '⚠️', danger: '🚨', urgent: '🆘', info: 'ℹ️' };
+  S.notifications.unshift({
+    id: Date.now(), type: 'alert', alertType: type,
+    title: titre, body: message,
+    time: new Date().toISOString(), read: false, action: action
+  });
+  updateNotifBadge();
+  // Notification navigateur si permission
+  if (S.notifPermission === 'granted') {
+    try { new Notification(titre, { body: message }); } catch(e) {}
+  }
+  // Afficher bannière dans VoiceLoop si ouvert
+  if (S.currentPage === 'voiceloop') navTo('voiceloop');
+}
+
+// Envoyer un message de prise de nouvelles
+async function envoyerWelfare(texte, lang, auto) {
+  var translated = texte;
+  // Si la langue cible est déjà dans les messages pré-traduits, utiliser directement
+  var msgs = WELFARE_MSGS[lang];
+  if (msgs && msgs.indexOf(texte) >= 0) {
+    // C'est déjà dans la bonne langue — traduire en français pour l'affichage aidant
+    var frMsgs = WELFARE_MSGS['fr'];
+    var idx = msgs.indexOf(texte);
+    var texteAidant = frMsgs[idx] || texte;
+    VL_STATE.messages.unshift({
+      id: Date.now(),
+      from: auto ? 'AidantPro (auto)' : 'Vous',
+      fromRole: 'aidant',
+      text: texteAidant,
+      translated: texte,
+      lang: lang,
+      timestamp: new Date().toISOString(),
+      confirmed: null,
+      playing: false,
+      auto: auto
+    });
+  } else {
+    VL_STATE.messages.unshift({
+      id: Date.now(),
+      from: auto ? 'AidantPro (auto)' : 'Vous',
+      fromRole: 'aidant',
+      text: texte,
+      translated: translated,
+      lang: lang,
+      timestamp: new Date().toISOString(),
+      confirmed: null,
+      playing: false,
+      auto: auto
+    });
+  }
+  if (S.currentPage === 'voiceloop') navTo('voiceloop');
+  // Lire automatiquement côté patient
+  setTimeout(function() {
+    vlPlay(VL_STATE.messages[0].id);
+  }, 600);
+}
+
+// Ouvrir le composer welfare avec message pré-rempli
+function ouvrirWelfare(idx) {
+  navTo('voiceloop');
+  var ta = document.getElementById('vl-text');
+  if (ta) ta.value = WELFARE_MSGS['fr'][idx || 0];
+}
+
+// ── DEMO : simuler une escalade dans 10 secondes (pour tester) ──
+function demoEscalade() {
+  addAlerte('warning', '⚠️ Prise non confirmée',
+    'Pierre n'a pas confirmé avoir pris Donepezil prévu à 20h00.',
+    function() { ouvrirWelfare(0); }
+  );
+  navTo('voiceloop');
+}
+
+// Boutons welfare rapides dans VoiceLoop
+function renderWelfareButtons() {
+  return '<div style="margin-bottom:12px">'
+    + '<div style="font-size:11px;font-weight:700;color:var(--mu);text-transform:uppercase;letter-spacing:.7px;margin-bottom:8px">Messages rapides</div>'
+    + '<div style="display:flex;flex-direction:column;gap:6px">'
+    + WELFARE_MSGS['fr'].map(function(msg, i) {
+      return '<button onclick="ouvrirWelfare(' + i + ')" style="text-align:left;padding:9px 12px;border-radius:9px;border:1.5px solid var(--bd);background:var(--sur);font-size:12px;cursor:pointer;color:var(--txt);line-height:1.5">'
+        + '💬 ' + msg + '</button>';
+    }).join('')
+    + '</div></div>';
+}
+
 
 
