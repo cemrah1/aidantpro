@@ -143,7 +143,9 @@ a{color:var(--bl)}
 .sb-logout:hover{border-color:var(--rd);color:var(--rd);background:var(--rd2)}
 .sb-ft{margin-top:auto;padding:10px 12px;border-top:1px solid var(--bd);font-size:10px;color:#A8A49C}
 .sb-ft strong{color:var(--gn);font-weight:600}
-.main{margin-left:var(--sw);flex:1;padding:24px 26px;min-height:100vh}
+#screen-app{display:none;min-height:100vh}
+#screen-app.visible{display:flex}
+.main{margin-left:var(--sw);flex:1;padding:24px 26px;min-height:100vh;background:var(--bg)}
 .ph{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:15px}
 .pt{font-family:'Syne',sans-serif;font-size:21px;font-weight:800;letter-spacing:-.5px}
 .ps{font-size:12px;color:var(--mu);margin-top:2px}
@@ -319,7 +321,7 @@ a{color:var(--bl)}
 </div>
 
 <!-- ═══ AUTH ═══ -->
-<div id="screen-auth" class="hidden">
+<div id="screen-auth" style="display:none">
   <div class="auth-left">
     <div class="al-logo"><div style="width:44px;height:44px;padding:3px"><svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"><path d="M22,145 C6,128 4,112 4,100 C4,46 46,4 100,4 C154,4 196,46 196,100 C196,114 192,126 185,136 C170,132 152,120 132,108 C112,96 90,88 70,90 C50,92 34,102 22,118 Z" fill="rgba(255,255,255,0.95)"/><path d="M48,87 C68,75 92,73 116,80" stroke="rgba(0,60,30,0.5)" stroke-width="11" fill="none" stroke-linecap="round"/><path d="M185,136 C176,156 158,174 134,184 C123,189 112,192 100,192 C88,192 77,189 66,184 C42,174 24,156 15,136 C24,120 45,114 66,117 C87,120 102,133 120,144 C138,155 160,160 178,152 Z" fill="rgba(255,255,255,0.85)"/><path d="M162,152 C143,156 123,148 108,138" stroke="rgba(0,60,30,0.5)" stroke-width="10" fill="none" stroke-linecap="round"/><path d="M100,138 C82,126 66,112 68,97 C70,88 78,84 86,88 C92,91 97,98 100,105 C103,98 108,91 114,88 C122,84 130,88 132,97 C134,112 118,126 100,138 Z" fill="white"/></svg></div><span class="al-nm">AidantPro</span></div>
     <div>
@@ -433,7 +435,7 @@ a{color:var(--bl)}
 </div>
 
 <!-- ═══ VERIFY ═══ -->
-<div id="screen-verify" class="hidden">
+<div id="screen-verify" style="display:none">
   <div class="verify-card">
     <div style="font-size:52px;margin-bottom:14px">📧</div>
     <h2 style="font-family:'Syne',sans-serif;font-size:22px;font-weight:800;margin-bottom:8px">Vérifiez votre email</h2>
@@ -444,7 +446,7 @@ a{color:var(--bl)}
 </div>
 
 <!-- ═══ AIDANT APP ═══ -->
-<div id="screen-app" class="hidden">
+<div id="screen-app" style="display:none">
   <aside class="sidebar">
     <div class="sb-hd"><div class="sb-logo"><div style="width:30px;height:30px"><svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"><path d="M22,145 C6,128 4,112 4,100 C4,46 46,4 100,4 C154,4 196,46 196,100 C196,114 192,126 185,136 C170,132 152,120 132,108 C112,96 90,88 70,90 C50,92 34,102 22,118 Z" fill="#1D55E8"/><path d="M48,87 C68,75 92,73 116,80" stroke="white" stroke-width="11" fill="none" stroke-linecap="round"/><path d="M185,136 C176,156 158,174 134,184 C123,189 112,192 100,192 C88,192 77,189 66,184 C42,174 24,156 15,136 C24,120 45,114 66,117 C87,120 102,133 120,144 C138,155 160,160 178,152 Z" fill="#137A3A"/><path d="M162,152 C143,156 123,148 108,138" stroke="white" stroke-width="10" fill="none" stroke-linecap="round"/><path d="M100,138 C82,126 66,112 68,97 C70,88 78,84 86,88 C92,91 97,98 100,105 C103,98 108,91 114,88 C122,84 130,88 132,97 C134,112 118,126 100,138 Z" fill="#137A3A"/></svg></div><span class="sb-logo-nm">AidantPro</span></div></div>
     <div class="mode-switcher">
@@ -486,13 +488,16 @@ a{color:var(--bl)}
     <button class="sb-logout" onclick="doSignOut()">⇄ Déconnexion</button>
     <div class="sb-ft">Bonjour <strong id="sb-prenom">Marie</strong> · Plan Famille</div>
   </aside>
-  <main class="main" id="main-content">
-    <!-- Contenu injecté dynamiquement -->
+  <main class="main" id="main-content" style="display:block;min-height:100vh">
+    <div style="padding:30px 20px;color:var(--mu);text-align:center;margin-top:60px">
+      <div style="font-size:32px;margin-bottom:12px">⊞</div>
+      <div style="font-size:14px">Chargement du tableau de bord...</div>
+    </div>
   </main>
 </div>
 
 <!-- ═══ PATIENT ═══ -->
-<div id="screen-patient" class="hidden">
+<div id="screen-patient" style="display:none">
   <div class="pat-hd">
     <div class="pat-hd-logo"><div style="width:31px;height:31px;padding:3px"><svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"><path d="M22,145 C6,128 4,112 4,100 C4,46 46,4 100,4 C154,4 196,46 196,100 C196,114 192,126 185,136 C170,132 152,120 132,108 C112,96 90,88 70,90 C50,92 34,102 22,118 Z" fill="rgba(255,255,255,0.95)"/><path d="M48,87 C68,75 92,73 116,80" stroke="rgba(0,60,30,0.5)" stroke-width="11" fill="none" stroke-linecap="round"/><path d="M185,136 C176,156 158,174 134,184 C123,189 112,192 100,192 C88,192 77,189 66,184 C42,174 24,156 15,136 C24,120 45,114 66,117 C87,120 102,133 120,144 C138,155 160,160 178,152 Z" fill="rgba(255,255,255,0.85)"/><path d="M162,152 C143,156 123,148 108,138" stroke="rgba(0,60,30,0.5)" stroke-width="10" fill="none" stroke-linecap="round"/><path d="M100,138 C82,126 66,112 68,97 C70,88 78,84 86,88 C92,91 97,98 100,105 C103,98 108,91 114,88 C122,84 130,88 132,97 C134,112 118,126 100,138 Z" fill="white"/></svg></div><div class="pat-hd-nm">AidantPro</div></div>
     <div style="display:flex;gap:8px">
@@ -504,7 +509,7 @@ a{color:var(--bl)}
 </div>
 
 <!-- ═══ SOIGNANT ═══ -->
-<div id="screen-soignant" class="hidden">
+<div id="screen-soignant" style="display:none">
   <div style="font-size:60px;margin-bottom:18px">👨‍⚕️</div>
   <h2 style="font-family:'Syne',sans-serif;font-size:28px;font-weight:800;margin-bottom:10px">Interface Soignant — Bêta</h2>
   <p style="font-size:14px;color:var(--mu);max-width:440px;margin:0 auto 24px;line-height:1.7">L'espace dédié aux professionnels de santé est en finalisation. Inscrivez-vous pour accéder en avant-première.</p>
@@ -604,9 +609,18 @@ const LANGS={
 // NAVIGATION PRINCIPALE
 // ═══════════════════════════════════════════════
 function showScreen(id){
-  ['loading','auth','verify','app','patient','soignant'].forEach(s=>{
-    const el=document.getElementById('screen-'+s);
-    if(el) el.className=el.className.replace(' hidden','').replace('hidden','').trim()+(s===id?'':' hidden');
+  // Handle screen-app specially with visible class
+  var appEl=document.getElementById('screen-app');
+  if(appEl){
+    if(id==='app'){appEl.style.display='flex';}
+    else{appEl.style.display='none';}
+  }
+  // Handle other screens
+  ['loading','auth','verify','patient','soignant'].forEach(function(s){
+    var el=document.getElementById('screen-'+s);
+    if(!el)return;
+    if(s===id){el.style.display='block';}
+    else{el.style.display='none';}
   });
 }
 
