@@ -310,6 +310,7 @@ a{color:var(--bl)}
 </style>
 </head>
 <body>
+<div id="demo-banner" style="position:fixed;bottom:12px;left:50%;transform:translateX(-50%);z-index:99999;background:#1F2937;color:#FDE68A;font-size:12px;font-weight:600;padding:7px 16px;border-radius:999px;box-shadow:0 4px 14px rgba(0,0,0,.25);white-space:nowrap;font-family:system-ui,-apple-system,sans-serif">🧪 Version démo — n'entrez aucune donnée patient réelle</div>
 
 <!-- ═══ LOADING ═══ -->
 <div id="screen-loading">
@@ -328,7 +329,7 @@ a{color:var(--bl)}
       <h1 class="al-h">Coordonnez les soins de votre proche en toute sécurité</h1>
       <p class="al-sub">La plateforme qui réunit famille, patient et soignants autour d'un dossier médical partagé et sécurisé.</p>
       <div class="al-stats">
-        <div class="al-stat"><span class="al-stat-ic">🔒</span><div class="al-stat-txt"><strong>Données chiffrées AES-256</strong> · Hébergées en Europe · RGPD</div></div>
+        <div class="al-stat"><span class="al-stat-ic">🧪</span><div class="al-stat-txt"><strong>Prototype en développement</strong> · Test avec données fictives uniquement</div></div>
         <div class="al-stat"><span class="al-stat-ic">👨‍👩‍👧</span><div class="al-stat-txt"><strong>11 millions d'aidants</strong> sans outil adapté en France</div></div>
         <div class="al-stat"><span class="al-stat-ic">💰</span><div class="al-stat-txt"><strong>12 000€/an</strong> d'aides non réclamées par famille</div></div>
       </div>
@@ -360,7 +361,7 @@ a{color:var(--bl)}
           </div>
         </div>
         <button class="btn btn-p btn-full mt8" id="l-btn" onclick="doLogin()">Se connecter →</button>
-        <div class="sec-note"><span>🔒</span><span><strong>Connexion sécurisée.</strong> Données chiffrées, hébergées en Europe, conformité RGPD.</span></div>
+        <div class="sec-note"><span>🧪</span><span><strong>Version bêta de démonstration.</strong> Utilisez uniquement des données fictives — aucune donnée patient réelle.</span></div>
       </div>
 
       <!-- REGISTER -->
@@ -414,7 +415,7 @@ a{color:var(--bl)}
           <span class="cb-lbl">J'accepte les <a href="#" onclick="showTerms(event)">conditions d'utilisation</a> et la politique RGPD</span>
         </div>
         <button class="btn btn-p btn-full" id="r-btn" onclick="doRegister()">Créer mon compte →</button>
-        <div class="sec-note" style="margin-top:14px"><span>🔒</span><span>Données chiffrées AES-256, hébergées en Europe, conformité RGPD totale.</span></div>
+        <div class="sec-note" style="margin-top:14px"><span>🧪</span><span>Prototype en test — créez un compte avec votre email, mais n'entrez aucune donnée patient réelle.</span></div>
       </div>
 
       <!-- RESET -->
@@ -526,9 +527,9 @@ a{color:var(--bl)}
   <div style="background:#fff;border-radius:14px;padding:24px;max-width:460px;width:100%;max-height:80vh;overflow-y:auto" onclick="event.stopPropagation()">
     <h2 style="font-family:'Syne',sans-serif;font-size:18px;font-weight:800;margin-bottom:12px">Conditions d'utilisation</h2>
     <p style="font-size:12px;color:var(--mu);line-height:1.8;margin-bottom:8px"><strong>1. Objet</strong><br>AidantPro est une plateforme de coordination de soins pour aidants familiaux, patients et professionnels de santé.</p>
-    <p style="font-size:12px;color:var(--mu);line-height:1.8;margin-bottom:8px"><strong>2. RGPD</strong><br>Vos données sont chiffrées AES-256 et hébergées dans l'UE. Droit d'accès, rectification et suppression garantis.</p>
+    <p style="font-size:12px;color:var(--mu);line-height:1.8;margin-bottom:8px"><strong>2. Version de démonstration</strong><br>AidantPro est un prototype en cours de développement. Il ne doit contenir aucune donnée de santé réelle : utilisez uniquement des informations fictives. Seul votre email d'inscription est conservé, et vous pouvez en demander la suppression à tout moment.</p>
     <p style="font-size:12px;color:var(--mu);line-height:1.8;margin-bottom:8px"><strong>3. Usage</strong><br>AidantPro ne remplace pas un avis médical professionnel.</p>
-    <p style="font-size:12px;color:var(--mu);line-height:1.8"><strong>4. Abonnement</strong><br>14 jours gratuits sans carte bancaire. Annulable à tout moment.</p>
+    <p style="font-size:12px;color:var(--mu);line-height:1.8"><strong>4. Gratuité</strong><br>L'accès à cette version de test est entièrement gratuit.</p>
     <button style="width:100%;margin-top:14px;padding:10px;background:var(--bl);color:#fff;border:none;border-radius:9px;font-size:12px;font-weight:600;cursor:pointer" onclick="closeTermsBtn()">Fermer</button>
   </div>
 </div>
@@ -592,9 +593,9 @@ const S={
 };
 
 const AIDES=[
-  {nom:"APA – Allocation Personnalisée d'Autonomie",montant:'jusqu\'à 1 807€/mois',cond:'GIR 1 à 4, 60 ans+',dossier:'Conseil Départemental',ok:true},
+  {nom:"APA – Allocation Personnalisée d\'Autonomie",montant:'jusqu\'à 1 807€/mois',cond:'GIR 1 à 4, 60 ans+',dossier:'Conseil Départemental',ok:true},
   {nom:'AJPA – Allocation Journalière Proche Aidant',montant:'64€/jour',cond:'Arrêt de travail',dossier:'CPAM',ok:true},
-  {nom:"Crédit d'impôt aidant",montant:'jusqu\'à 1 200€/an',cond:'Frais aide à domicile',dossier:'Déclaration fiscale',ok:true},
+  {nom:"Crédit d\'impôt aidant",montant:'jusqu\'à 1 200€/an',cond:'Frais aide à domicile',dossier:'Déclaration fiscale',ok:true},
   {nom:'PCH – Prestation Compensation Handicap',montant:'jusqu\'à 1 800€/mois',cond:'Moins de 60 ans, handicap reconnu',dossier:'MDPH',ok:false}
 ];
 const ZARIT_QS=['Vous sentez-vous débordé(e) par les soins ?','Manquez-vous de temps pour vous ?','Êtes-vous stressé(e) par votre rôle ?','Votre santé se dégrade-t-elle ?','Avez-vous renoncé à des activités sociales ?','Y a-t-il des conflits familiaux ?','Avez-vous perdu le contrôle de votre vie ?','Souhaiteriez-vous confier votre proche ?'];
@@ -602,7 +603,7 @@ const LANGS={
   fr:{flag:'🇫🇷',name:'Français',hello:'Bonjour',wel:'Comment vous sentez-vous ?',m:'💊 Mes médicaments',r:'📅 Mon rendez-vous',msg:'💬 Message famille',back:'← Retour',confirm:'Confirmer',confirmed:'✓ Confirmé !',nordv:'Aucun RDV',send:'Envoyer',mph:'Écrivez votre message…',msent:'✓ Envoyé !',choose:'Choisir la langue',good:'Je vais bien 😊',ok:'Ça va 😐',bad:'Je ne vais pas bien 😔',how:'Comment vous sentez-vous ?'},
   ar:{flag:'🇲🇦',name:'العربية',hello:'مرحباً',wel:'كيف حالك؟',m:'💊 دوائي',r:'📅 موعدي',msg:'💬 رسالة',back:'→ رجوع',confirm:'تأكيد',confirmed:'✓ تم!',nordv:'لا موعد',send:'إرسال',mph:'اكتب رسالتك…',msent:'✓ تم!',choose:'اختر لغتك',good:'أشعر بتحسن 😊',ok:'لا بأس 😐',bad:'لا أشعر بالتحسن 😔',how:'كيف تشعر؟'},
   pt:{flag:'🇵🇹',name:'Português',hello:'Olá',wel:'Como se sente?',m:'💊 Medicamentos',r:'📅 Consulta',msg:'💬 Mensagem',back:'← Voltar',confirm:'Confirmar',confirmed:'✓ Confirmado!',nordv:'Sem consulta',send:'Enviar',mph:'Escreva…',msent:'✓ Enviado!',choose:'Escolha idioma',good:'Sinto-me bem 😊',ok:'Estou bem 😐',bad:'Não me sinto bem 😔',how:'Como se sente?'},
-  en:{flag:'🇬🇧',name:'English',hello:'Hello',wel:'How do you feel?',m:'💊 Medications',r:'📅 Appointment',msg:'💬 Message',back:'← Back',confirm:'Confirm',confirmed:'✓ Confirmed!',nordv:'No appointment',send:'Send',mph:'Write your message…',msent:'✓ Sent!',choose:'Choose language',good:'I feel good 😊',ok:"I'm okay 😐",bad:"I don't feel well 😔",how:'How do you feel?'}
+  en:{flag:'🇬🇧',name:'English',hello:'Hello',wel:'How do you feel?',m:'💊 Medications',r:'📅 Appointment',msg:'💬 Message',back:'← Back',confirm:'Confirm',confirmed:'✓ Confirmed!',nordv:'No appointment',send:'Send',mph:'Write your message…',msent:'✓ Sent!',choose:'Choose language',good:'I feel good 😊',ok:"I\'m okay 😐",bad:"I don\'t feel well 😔",how:'How do you feel?'}
 };
 
 // ═══════════════════════════════════════════════
@@ -885,7 +886,7 @@ async function doRegister(){
   if(!email||!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){setAlert('Email invalide');return;}
   if(pwd.length<8){setAlert('Mot de passe trop court (8 caractères min)');return;}
   if(pwd!==pwd2){setAlert('Les mots de passe ne correspondent pas');return;}
-  if(!S.termsChecked){setAlert("Acceptez les conditions d'utilisation");return;}
+  if(!S.termsChecked){setAlert("Acceptez les conditions d\'utilisation");return;}
   const btn=document.getElementById('r-btn');
   btn.disabled=true;btn.innerHTML='<span class="spin"></span> Création…';
   try{
@@ -1055,7 +1056,7 @@ function renderDossier(){
         <div class="info-row mt8"><span class="ik">Urgences</span><span class="iv" style="color:var(--rd);font-weight:700">SAMU 15</span></div>
       </div>
       <div class="card">
-        <div class="ct">Contacts d'urgence</div>
+        <div class="ct">Contacts d\'urgence</div>
         <div class="info-row"><span class="ik">Marie Dubois (Fille)</span><span class="iv" style="font-size:11px">06 12 34 56 78</span></div>
         <div class="info-row"><span class="ik">Émile Dubois (Fils)</span><span class="iv" style="font-size:11px">06 98 76 54 32</span></div>
       </div>
@@ -1219,7 +1220,7 @@ function delNote(id){S.journal=S.journal.filter(j=>j.id!==id);navTo('journal');}
 function renderAides(){
   return `
   <div class="ph"><div><div class="pt">Aides financières</div><div class="ps">${AIDES.filter(a=>a.ok).length} aides éligibles identifiées</div></div></div>
-  <div class="alert alert-ok">💰 Estimation : <strong>≈ 14 000€/an</strong> d'aides potentielles non réclamées en moyenne par famille aidante.</div>
+  <div class="alert alert-ok">💰 Estimation : <strong>≈ 14 000€/an</strong> d\'aides potentielles non réclamées en moyenne par famille aidante.</div>
   <div class="grid2 mt12">
     ${AIDES.map(a=>`
       <div class="card" style="border-color:${a.ok?'var(--gn3)':'var(--rd3)'};opacity:${a.ok?1:.6}">
@@ -1329,9 +1330,8 @@ async function genAI(){
   if(btn){btn.disabled=true;btn.innerHTML='<span class="spin"></span> Génération…';}
   try{
     const ctx=S.journal.slice(0,3).map(j=>j.date+': '+j.contenu).join('\n');
-    const r=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1000,messages:[{role:'user',content:'Résumé clinique factuel 3-4 phrases pour médecin traitant, sur base des notes d\'aidant suivantes:\n'+ctx+'\nPatient: '+S.proche.prenom+' '+S.proche.nom+', '+S.proche.age+' ans. Pathologies: '+S.proche.pathologies.join(', ')+'.'}]})});
-    const d=await r.json();
-    S.aiTxt=d.content&&d.content[0]&&d.content[0].text||'Erreur de génération.';
+    const d=await callAI({task:'resume',text:ctx,patient:S.proche.prenom+' '+S.proche.nom+', '+S.proche.age+' ans. Pathologies: '+S.proche.pathologies.join(', ')});
+    S.aiTxt=d&&d.translated||'Service IA momentanément indisponible.';
   }catch(e){S.aiTxt='Erreur de connexion à l\'IA.';}
   S.aiLoad=false;
   navTo(S.page);
@@ -1395,16 +1395,47 @@ function patLang(lang){S.pat.lang=lang;S.pat.screen='home';renderPatient();}
 function patFeel(f){S.pat.feel=f;renderPatient();}
 function patConfirm(id,h){const k=S.today+'_'+h;const m=S.meds.find(x=>x.id===id);if(m)m.prises[k]=!m.prises[k];renderPatient();}
 function patSendMsg(){const ta=document.getElementById('pat-msg-ta');if(ta&&ta.value.trim()){S.pat.msg=ta.value;S.pat.msgSent=true;renderPatient();}}
-</script>
-</body>
-</html>
+
 // ════════════════════════════════════════════════════
 // VOICELOOP — Le Lien vocal aidant ↔ patient
 // ════════════════════════════════════════════════════
+// Langues disponibles pour VoiceLoop (langue du patient)
+var VL_LANGS={
+  tr:{flag:'🇹🇷',name:'Turc',tts:'tr-TR'},
+  ar:{flag:'🇲🇦',name:'Arabe',tts:'ar-SA'},
+  en:{flag:'🇬🇧',name:'Anglais',tts:'en-GB'},
+  es:{flag:'🇪🇸',name:'Espagnol',tts:'es-ES'},
+  pt:{flag:'🇵🇹',name:'Portugais',tts:'pt-PT'},
+  it:{flag:'🇮🇹',name:'Italien',tts:'it-IT'},
+  de:{flag:'🇩🇪',name:'Allemand',tts:'de-DE'},
+  ro:{flag:'🇷🇴',name:'Roumain',tts:'ro-RO'},
+  pl:{flag:'🇵🇱',name:'Polonais',tts:'pl-PL'},
+  fr:{flag:'🇫🇷',name:'Français',tts:'fr-FR'}
+};
+// Langue du patient — modifiable via le sélecteur, mémorisée dans le navigateur
+S.patientLang = localStorage.getItem('ap_patient_lang') || 'tr';
+function setPatientLang(code){
+  if(!VL_LANGS[code])return;
+  S.patientLang = code;
+  try{localStorage.setItem('ap_patient_lang', code);}catch(e){}
+  navTo('voiceloop');
+}
+
+// Appel sécurisé à l\'IA via Edge Function Supabase (la clé API reste côté serveur)
+async function callAI(payload){
+  var r = await fetch(SB_URL + '/functions/v1/ai', {
+    method: 'POST',
+    headers: SB_H,
+    body: JSON.stringify(payload)
+  });
+  if(!r.ok){throw new Error('Edge Function: HTTP ' + r.status);}
+  return await r.json();
+}
+
 var VL_STATE={
   messages:[
-    {id:1,from:'Marie (Fille)',fromRole:'aidant',text:"Papa, tu viens de prendre ton Donepezil. Est-ce que tu te sens bien ?",translated:"Baba, az once Donepezil'ini aldin. Iyi hissediyor musun?",lang:'tr',timestamp:'2026-05-19T20:14:00',confirmed:null,playing:false},
-    {id:2,from:'Dr. Martin Sophie',fromRole:'soignant',text:"Pierre, n'oubliez pas votre Amlodipine ce matin avec un grand verre d'eau.",translated:"Pierre, bu sabah Amlodipine'inizi buyuk bir bardak suyla almayi unutmayin.",lang:'tr',timestamp:'2026-05-19T08:02:00',confirmed:true,playing:false}
+    {id:1,from:'Marie (Fille)',fromRole:'aidant',text:"Papa, tu viens de prendre ton Donepezil. Est-ce que tu te sens bien ?",translated:"Baba, az once Donepezil\'ini aldin. Iyi hissediyor musun?",lang:'tr',timestamp:'2026-05-19T20:14:00',confirmed:null,playing:false},
+    {id:2,from:'Dr. Martin Sophie',fromRole:'soignant',text:"Pierre, n\'oubliez pas votre Amlodipine ce matin avec un grand verre d\'eau.",translated:"Pierre, bu sabah Amlodipine\'inizi buyuk bir bardak suyla almayi unutmayin.",lang:'tr',timestamp:'2026-05-19T08:02:00',confirmed:true,playing:false}
   ],
   composing:''
 };
@@ -1418,7 +1449,7 @@ function renderVoiceLoop(){
     alertBanner = '<div style="background:linear-gradient(135deg,#FEF3E6,#FEE5C8);border:1.5px solid var(--am3);border-radius:12px;padding:13px 15px;margin-bottom:12px;display:flex;gap:11px;align-items:flex-start">'
       +'<span style="font-size:22px;flex-shrink:0">⚠️</span>'
       +'<div style="flex:1"><div style="font-weight:700;font-size:13px;color:var(--am);margin-bottom:3px">Prise non confirmée</div>'
-      +'<div style="font-size:12px;color:var(--am);line-height:1.5">Pierre n'a pas encore confirmé sa prise. Un message lui a été envoyé automatiquement.</div></div>'
+      +'<div style="font-size:12px;color:var(--am);line-height:1.5">Pierre n\'a pas encore confirmé sa prise. Un message lui a été envoyé automatiquement.</div></div>'
       +'<button onclick="ouvrirWelfare(2)" style="flex-shrink:0;padding:7px 11px;border-radius:8px;border:none;background:var(--am);color:#fff;font-size:11px;font-weight:700;cursor:pointer">Relancer</button>'
       +'</div>';
   }
@@ -1431,7 +1462,7 @@ function renderVoiceLoop(){
     var confirmHtml='';
     if(m.confirmed===null){
       confirmHtml='<div class="vl-actions">'
-        +'<button class="vl-confirm-btn" onclick="vlConfirm('+m.id+',true)">✅ Oui, j'ai pris</button>'
+        +'<button class="vl-confirm-btn" onclick="vlConfirm('+m.id+',true)">✅ Oui, j\'ai pris</button>'
         +'<button class="vl-deny-btn" onclick="vlConfirm('+m.id+',false)">❌ Non</button>'
         +'</div>';
     } else {
@@ -1448,15 +1479,18 @@ function renderVoiceLoop(){
       +confirmHtml+'</div>';
   }).join('');
 
-  return '<div class="ph"><div><div class="pt">VoiceLoop — Le Lien</div><div class="ps">Messages vocaux traduits · Pierre parle turc</div></div>'
+  var _vlL=VL_LANGS[S.patientLang]||VL_LANGS.tr;
+  var _vlOpts=Object.keys(VL_LANGS).map(function(k){return '<option value="'+k+'"'+(k===S.patientLang?' selected':'')+'>'+VL_LANGS[k].flag+' '+VL_LANGS[k].name+'</option>';}).join('');
+  return '<div class="ph"><div><div class="pt">VoiceLoop — Le Lien</div><div class="ps">Messages vocaux traduits · Pierre parle '+_vlL.name.toLowerCase()+'</div></div>'
+    +'<select onchange="setPatientLang(this.value)" style="padding:8px 12px;border-radius:9px;border:1px solid #E5E7EB;font-size:13px;background:#fff;cursor:pointer">'+_vlOpts+'</select>'
     +'<button onclick="demoEscalade()" class="btn btn-s" style="font-size:10px">🔔 Tester alerte</button></div>'
     +alertBanner
     +renderWelfareButtons()
     +msgs
     +'<div class="vl-compose"><div class="vl-compose-title">✉️ Message personnalisé à Pierre</div>'
     +'<textarea class="vl-input" id="vl-text" placeholder="Ex: Papa, est-ce que tu vas bien ? As-tu pris ton médicament ?"></textarea>'
-    +'<div class="vl-send-row"><div class="vl-lang-note">🇹🇷 Traduit en turc et lu à voix haute</div>'
-    +'<button class="btn btn-p" onclick="vlSend()">Envoyer →</button></div></div>';
+    +'<div class="vl-send-row"><div class="vl-lang-note">'+_vlL.flag+' Traduit en '+_vlL.name.toLowerCase()+' et lu à voix haute</div>'
+    +'<button class="btn btn-p" id="vl-send-btn" onclick="vlSend()">Envoyer →</button></div></div>';
 }
 
 function vlPlay(id){
@@ -1465,7 +1499,7 @@ function vlPlay(id){
   if(window.speechSynthesis){
     window.speechSynthesis.cancel();
     var u=new SpeechSynthesisUtterance(m.translated);
-    u.lang='tr-TR';u.rate=0.88;
+    var _l=VL_LANGS[m.lang]||VL_LANGS[S.patientLang]||VL_LANGS.tr;u.lang=_l.tts;u.rate=0.88;
     window.speechSynthesis.speak(u);
   }
 }
@@ -1486,32 +1520,34 @@ async function vlSend(){
   var ta=document.getElementById('vl-text');
   if(!ta||!ta.value.trim())return;
   var txt=ta.value.trim();
+  var lang=S.patientLang||'tr';
   var translated=txt;
+  var ok=false;
+  var btn=document.getElementById('vl-send-btn');
+  if(btn){btn.disabled=true;btn.textContent='Traduction…';}
   try{
-    var r=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:300,
-        messages:[{role:'user',content:'Traduis en turc naturel et chaleureux (enfant qui parle a son parent). Reponds uniquement avec la traduction:
-
-'+txt}]})});
-    var d=await r.json();
-    translated=d.content&&d.content[0]&&d.content[0].text||txt;
+    var d=await callAI({task:'translate',text:txt,targetLang:lang});
+    if(d&&d.translated){translated=d.translated;ok=true;}
   }catch(e){}
-  VL_STATE.messages.unshift({id:Date.now(),from:'Vous',fromRole:'aidant',text:txt,translated:translated,lang:'tr',timestamp:new Date().toISOString(),confirmed:null,playing:false});
+  VL_STATE.messages.unshift({id:Date.now(),from:'Vous',fromRole:'aidant',text:txt,translated:translated,lang:lang,timestamp:new Date().toISOString(),confirmed:null,playing:false,failed:!ok});
+  if(!ok){
+    addAlerte('warning','⚠️ Traduction indisponible','Le message a été envoyé en français (service de traduction non joignable).',null);
+  }
   ta.value='';
   navTo('voiceloop');
   setTimeout(function(){vlPlay(VL_STATE.messages[0].id);},800);
 }
 
 // ════════════════════════════════════════════════════
-// SYSTÈME D'ESCALADE — Alertes non-prise médicament
+// SYSTÈME D\'ESCALADE — Alertes non-prise médicament
 // ════════════════════════════════════════════════════
 
 // Messages types de prise de nouvelles (multilingues)
 var WELFARE_MSGS = {
   fr: [
     "Papa, as-tu pris ton médicament ? Je pense à toi.",
-    "Tout va bien ? N'oublie pas ton traitement du soir.",
-    "Je n'ai pas eu de nouvelle de ta prise. Est-ce que tu vas bien ?"
+    "Tout va bien ? N\'oublie pas ton traitement du soir.",
+    "Je n\'ai pas eu de nouvelle de ta prise. Est-ce que tu vas bien ?"
   ],
   tr: [
     "Baba, ilacını aldın mı? Seni düşünüyorum.",
@@ -1525,27 +1561,27 @@ var WELFARE_MSGS = {
   ]
 };
 
-// Timers d'escalade actifs
+// Timers d\'escalade actifs
 S.escaladeTimers = [];
 
-// Démarrer la surveillance d'une prise
+// Démarrer la surveillance d\'une prise
 function startMedEscalade(medNom, heureStr, patientLang) {
-  var lang = patientLang || 'tr';
+  var lang = patientLang || S.patientLang || 'tr';
 
   // T+30min : alerte aidant + message auto
   var t1 = setTimeout(function() {
     addAlerte('warning', '⚠️ Prise non confirmée',
-      'Pierre n'a pas confirmé avoir pris ' + medNom + ' prévu à ' + heureStr + '.',
+      'Pierre n\'a pas confirmé avoir pris ' + medNom + ' prévu à ' + heureStr + '.',
       function() { ouvrirWelfare(1); }
     );
     // Envoyer message de prise de nouvelles automatique
-    envoyerWelfare(WELFARE_MSGS[lang][0], lang, true);
+    envoyerWelfare((WELFARE_MSGS[lang]||WELFARE_MSGS.fr)[0], lang, true);
   }, 30 * 60 * 1000); // 30 minutes
 
   // T+60min : alerte aidant + soignant
   var t2 = setTimeout(function() {
     addAlerte('danger', '🚨 Toujours pas de réponse',
-      'Pierre n'a toujours pas confirmé sa prise de ' + heureStr + '. L'infirmière a été notifiée.',
+      'Pierre n\'a toujours pas confirmé sa prise de ' + heureStr + '. L\'infirmière a été notifiée.',
       null
     );
   }, 60 * 60 * 1000);
@@ -1561,7 +1597,7 @@ function startMedEscalade(medNom, heureStr, patientLang) {
   S.escaladeTimers.push(t1, t2, t3);
 }
 
-// Annuler l'escalade quand prise confirmée
+// Annuler l\'escalade quand prise confirmée
 function cancelEscalade() {
   S.escaladeTimers.forEach(function(t) { clearTimeout(t); });
   S.escaladeTimers = [];
@@ -1588,9 +1624,9 @@ function addAlerte(type, titre, message, action) {
 async function envoyerWelfare(texte, lang, auto) {
   var translated = texte;
   // Si la langue cible est déjà dans les messages pré-traduits, utiliser directement
-  var msgs = WELFARE_MSGS[lang];
+  var msgs = WELFARE_MSGS[lang] || WELFARE_MSGS.fr;
   if (msgs && msgs.indexOf(texte) >= 0) {
-    // C'est déjà dans la bonne langue — traduire en français pour l'affichage aidant
+    // C\'est déjà dans la bonne langue — traduire en français pour l\'affichage aidant
     var frMsgs = WELFARE_MSGS['fr'];
     var idx = msgs.indexOf(texte);
     var texteAidant = frMsgs[idx] || texte;
@@ -1637,7 +1673,7 @@ function ouvrirWelfare(idx) {
 // ── DEMO : simuler une escalade dans 10 secondes (pour tester) ──
 function demoEscalade() {
   addAlerte('warning', '⚠️ Prise non confirmée',
-    'Pierre n'a pas confirmé avoir pris Donepezil prévu à 20h00.',
+    'Pierre n\'a pas confirmé avoir pris Donepezil prévu à 20h00.',
     function() { ouvrirWelfare(0); }
   );
   navTo('voiceloop');
@@ -1654,6 +1690,6 @@ function renderWelfareButtons() {
     }).join('')
     + '</div></div>';
 }
-
-
-
+</script>
+</body>
+</html>
