@@ -753,24 +753,256 @@ function renderModePatient(){
     +'<div class="card"><div class="ct">Mes prochains rendez-vous</div>'+rdvs+'</div>';
 }
 
-function renderModeSoignant(){
-  var tasks=(S.careTasks||[]).map(function(t){
-    var last=t.lastDone?new Date(t.lastDone):null;
-    var next=last?new Date(last.getTime()+t.frequencyHours*3600000):null;
-    var now=new Date();
-    var retard=next&&now>next;
-    return '<div style="background:var(--sur);border:1.5px solid '+(retard?'var(--rd3)':'var(--bd)')+';border-radius:11px;padding:12px 15px;margin-bottom:8px;display:flex;justify-content:space-between;align-items:center">'
-      +'<div><div style="font-weight:600;font-size:13px;margin-bottom:2px">'+t.name+'</div>'
-      +'<div style="font-size:11px;color:var(--mu)">'+t.patient+' · toutes les '+t.frequency+'</div></div>'
-      +'<button onclick="markCareTaskDone('+t.id+')" style="padding:7px 12px;border-radius:8px;border:none;cursor:pointer;font-size:11px;font-weight:700;background:var(--gn2);color:var(--gn)">Effectué ✓</button>'
-      +'</div>';
+// ════════════════════════════════════════════════════
+// MODE SOIGNANT PRO — inbox, dictée, planning, observance, IA
+// ════════════════════════════════════════════════════
+
+// Kits de matériel par type de soin
+var MATERIEL_KITS = {
+  pansement: ['Set à pansement stérile', 'Gants (non stériles + stériles)', 'Sérum physiologique', 'Compresses stériles', 'Bandes + adhésif', 'Sac DASRI'],
+  bilan_sanguin: ['Tubes (ordre : citraté, sec, hépariné, EDTA)', 'Garrot + corps de pompe', 'Aiguilles', 'Compresses + antiseptique', 'Étiquettes patient', 'Collecteur OPCT'],
+  insuline: ['Stylo insuline + aiguille neuve', 'Lecteur glycémie + bandelettes', 'Autopiqueur + lancette', 'Compresses', 'Collation (si hypoglycémie)'],
+  kine: ['Saturomètre', 'Tensiomètre', 'Coussin de positionnement', 'Oxygène si prescrit'],
+  consultation: ['Dossier / carnet de liaison', 'Carte Vitale + mutuelle', 'Ordonnances en cours', 'Derniers bilans'],
+  radio: ['Ordonnance de prescription', 'Anciens clichés (comparaison)', 'Carte Vitale', 'Liste des traitements en cours']
+};
+
+// Planning professionnel du jour (démo)
+S.rdvPro = [
+  { id: 1, heure: '08h00', titre: 'Insuline + glycémie', patient: 'Pierre Dubois', intervenant: 'IDE', kit: 'insuline', fait: true },
+  { id: 2, heure: '09h30', titre: 'Réfection pansement escarre talon', patient: 'Jeanne Martin', intervenant: 'IDE', kit: 'pansement', fait: false },
+  { id: 3, heure: '11h00', titre: 'Kiné respiratoire', patient: 'Pierre Dubois', intervenant: 'Kiné', kit: 'kine', fait: false },
+  { id: 4, heure: '14h30', titre: 'Consultation neurologue Dr Benali', patient: 'Pierre Dubois', intervenant: 'Spécialiste', kit: 'consultation', fait: false },
+  { id: 5, heure: '16h00', titre: 'Bilan sanguin (NFS, iono, HbA1c)', patient: 'Ahmed Kaci', intervenant: 'Labo', kit: 'bilan_sanguin', fait: false }
+];
+
+// Patients suivis (vue soignant multi-patients, démo)
+S.soigPatients = [
+  { id: 1, nom: 'Pierre Dubois', age: 78, patho: ['Alzheimer modéré', 'HTA', 'Diabète T2'], lang: 'tr', obs: [{ m: 'Donépézil 20h', s: 'pending' }, { m: 'Amlodipine 8h', s: 'ok' }, { m: 'Metformine 8h', s: 'ok' }, { m: 'Metformine 20h', s: 'pending' }] },
+  { id: 2, nom: 'Jeanne Martin', age: 84, patho: ['Escarre stade 2', 'Insuff. cardiaque'], lang: 'fr', obs: [{ m: 'Furosémide 8h', s: 'ok' }, { m: 'Bisoprolol 8h', s: 'ok' }, { m: 'Paracétamol 12h', s: 'missed' }] },
+  { id: 3, nom: 'Ahmed Kaci', age: 71, patho: ['BPCO', 'Diabète T2'], lang: 'ar', obs: [{ m: 'Symbicort 8h', s: 'ok' }, { m: 'Metformine 8h', s: 'missed' }, { m: 'Symbicort 20h', s: 'pending' }] }
+];
+
+// Stocks & DLC (anti-gaspillage, démo)
+S.stocks = [
+  { nom: 'Donépézil 10mg', reste: 5, dlc: '2026-08', alerte: 'renouveler' },
+  { nom: 'Metformine 500mg', reste: 22, dlc: '2027-02', alerte: null },
+  { nom: 'Sérum physiologique', reste: 3, dlc: '2026-07', alerte: 'dlc_proche' }
+];
+
+// Inbox de validation (le cœur du mode service)
+S.inbox = [
+  { id: 1, type: 'transmission', patient: 'Jeanne Martin', title: 'Transmission — pansement talon', body: 'Cible : escarre talon droit stade 2.\nDonnées : pansement refait ce jour, plaie propre, diamètre stable (2 cm), pas d\'écoulement. Douleur 2/10 pendant le soin.\nActions : protocole hydrocolloïde poursuivi, repositionnement toutes les 3 h rappelé à l\'équipe.\nRésultat attendu : réévaluation à 48 h, surveillance des bords.', status: 'pending', time: '10h05' },
+  { id: 2, type: 'message', patient: 'Pierre Dubois', title: 'Message famille (traduit du turc)', body: '« Merci pour les nouvelles d\'hier. Est-ce que papa a bien dormi ? Nous viendrons dimanche à 15 h. » — Ayşe (fille)', status: 'pending', time: '09h42' }
+];
+
+S.explainResult = null;
+S.explainLoading = null;
+S.kitOpen = null;
+
+function refreshSoignant() {
+  var mc = document.getElementById('main-content');
+  if (mc && S.activeMode === 'soignant') mc.innerHTML = renderModeSoignant();
+}
+
+// ── Dictée vocale (Web Speech API) ──
+var soigRec = null;
+function soigVoiceToggle() {
+  var SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+  var btn = document.getElementById('soig-mic');
+  if (!SR) { alert('La dictée vocale n\'est pas disponible sur ce navigateur. Vous pouvez taper votre note.'); return; }
+  if (soigRec) { soigRec.stop(); return; }
+  soigRec = new SR();
+  soigRec.lang = 'fr-FR';
+  soigRec.continuous = true;
+  soigRec.interimResults = true;
+  var ta = document.getElementById('soig-note');
+  var base = ta ? ta.value : '';
+  soigRec.onresult = function (e) {
+    var t = '';
+    for (var i = 0; i < e.results.length; i++) { t += e.results[i][0].transcript; }
+    if (ta) ta.value = (base ? base + ' ' : '') + t;
+  };
+  soigRec.onerror = function () { if (soigRec) soigRec.stop(); };
+  soigRec.onend = function () {
+    soigRec = null;
+    var b = document.getElementById('soig-mic');
+    if (b) { b.textContent = '🎙️ Dicter'; b.style.background = ''; b.style.color = ''; }
+  };
+  soigRec.start();
+  if (btn) { btn.textContent = '⏹ Arrêter la dictée'; btn.style.background = '#FEE2E2'; btn.style.color = '#B91C1C'; }
+}
+
+// ── Note → transmission structurée par l'IA ──
+async function soigGenTransmission() {
+  var ta = document.getElementById('soig-note');
+  if (!ta || !ta.value.trim()) { alert('Dictez ou écrivez d\'abord votre note.'); return; }
+  var btn = document.getElementById('soig-gen');
+  if (btn) { btn.disabled = true; btn.textContent = '✦ Structuration IA…'; }
+  var note = ta.value.trim();
+  var out = null;
+  try {
+    var d = await callAI({ task: 'transmission', text: note, patient: 'Pierre Dubois, 78 ans. Pathologies : Alzheimer modéré, HTA, diabète type 2.' });
+    out = d && d.translated;
+  } catch (e) {}
+  if (out) {
+    S.inbox.unshift({ id: Date.now(), type: 'transmission', patient: 'Pierre Dubois', title: 'Transmission structurée (IA) — à valider', body: out, status: 'pending', time: new Date().toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' }) });
+    if (ta) ta.value = '';
+  } else {
+    addAlerte('warning', '⚠️ IA indisponible', 'La structuration a échoué — votre note est conservée dans le champ.', null);
+  }
+  refreshSoignant();
+}
+
+function inboxAction(id, ok) {
+  var it = S.inbox.find(function (x) { return x.id === id; });
+  if (it) it.status = ok ? 'validated' : 'rejected';
+  refreshSoignant();
+}
+
+function toggleKit(id) {
+  S.kitOpen = (S.kitOpen === id) ? null : id;
+  refreshSoignant();
+}
+
+function markRdvProDone(id) {
+  var r = S.rdvPro.find(function (x) { return x.id === id; });
+  if (r) r.fait = !r.fait;
+  refreshSoignant();
+}
+
+// ── IA explicative : pathologies, traitements, bilans ──
+async function aiExplain(subject) {
+  if (!subject) {
+    var inp = document.getElementById('exp-input');
+    subject = inp && inp.value.trim();
+    if (!subject) return;
+  }
+  var sel = document.getElementById('exp-lang');
+  var lang = sel ? sel.value : 'fr';
+  S.explainLoading = subject;
+  S.explainResult = null;
+  refreshSoignant();
+  try {
+    var d = await callAI({ task: 'explain', text: subject, targetLang: lang });
+    S.explainResult = { subject: subject, text: (d && d.translated) || 'Service IA momentanément indisponible.', lang: lang };
+  } catch (e) {
+    S.explainResult = { subject: subject, text: 'Service IA indisponible — vérifiez la connexion et réessayez.', lang: lang };
+  }
+  S.explainLoading = null;
+  refreshSoignant();
+}
+
+// ── Rendu du mode soignant ──
+function renderModeSoignant() {
+  var pending = S.inbox.filter(function (i) { return i.status === 'pending'; });
+  var retards = (S.careTasks || []).filter(function (t) {
+    if (!t.lastDone) return false;
+    return new Date() > new Date(new Date(t.lastDone).getTime() + t.frequencyHours * 3600000);
+  });
+  var rdvRestants = S.rdvPro.filter(function (r) { return !r.fait; });
+
+  // Bandeau stats
+  var stats = '<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:14px">'
+    + '<div style="background:var(--sur);border:1.5px solid var(--bd);border-radius:12px;padding:12px;text-align:center"><div style="font-size:24px;font-weight:800;color:var(--bl)">' + pending.length + '</div><div style="font-size:11px;color:var(--mu)">à valider</div></div>'
+    + '<div style="background:var(--sur);border:1.5px solid var(--bd);border-radius:12px;padding:12px;text-align:center"><div style="font-size:24px;font-weight:800;color:' + (retards.length ? '#DC2626' : 'var(--gn)') + '">' + retards.length + '</div><div style="font-size:11px;color:var(--mu)">soin(s) en retard</div></div>'
+    + '<div style="background:var(--sur);border:1.5px solid var(--bd);border-radius:12px;padding:12px;text-align:center"><div style="font-size:24px;font-weight:800;color:var(--bl)">' + rdvRestants.length + '</div><div style="font-size:11px;color:var(--mu)">interventions restantes</div></div>'
+    + '</div>';
+
+  // Inbox
+  var inboxHtml = pending.map(function (i) {
+    return '<div style="background:var(--sur);border:1.5px solid var(--bd);border-left:4px solid var(--bl);border-radius:11px;padding:13px 15px;margin-bottom:9px">'
+      + '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px"><div style="font-weight:700;font-size:13px">' + (i.type === 'transmission' ? '📋 ' : '💬 ') + i.title + '</div><div style="font-size:10px;color:var(--mu)">' + i.time + '</div></div>'
+      + '<div style="font-size:11px;color:var(--mu);margin-bottom:6px">' + i.patient + '</div>'
+      + '<div style="font-size:12px;line-height:1.6;white-space:pre-wrap;background:#F8FAFD;border-radius:8px;padding:10px;margin-bottom:9px">' + i.body + '</div>'
+      + '<div style="display:flex;gap:8px">'
+      + '<button onclick="inboxAction(' + i.id + ',true)" style="flex:1;padding:9px;border-radius:9px;border:none;cursor:pointer;font-weight:700;font-size:12px;background:var(--gn2);color:var(--gn)">✓ Valider</button>'
+      + '<button onclick="inboxAction(' + i.id + ',false)" style="padding:9px 14px;border-radius:9px;border:1.5px solid var(--bd);cursor:pointer;font-weight:600;font-size:12px;background:transparent;color:var(--mu)">Écarter</button>'
+      + '</div></div>';
+  }).join('') || '<div class="empty-state">Rien à valider — tout est à jour ✓</div>';
+
+  // Planning + matériel
+  var planHtml = S.rdvPro.map(function (r) {
+    var kit = MATERIEL_KITS[r.kit] || [];
+    var badgeColors = { IDE: 'var(--bl)', 'Kiné': '#7C3AED', 'Spécialiste': '#0891B2', Labo: '#B45309', AS: 'var(--gn)' };
+    var bc = badgeColors[r.intervenant] || 'var(--mu)';
+    var kitHtml = '';
+    if (S.kitOpen === r.id && kit.length) {
+      kitHtml = '<div style="background:#FFFBEB;border:1px solid #FDE68A;border-radius:9px;padding:10px 12px;margin-top:9px"><div style="font-size:11px;font-weight:700;color:#92400E;margin-bottom:6px">🧰 Matériel à préparer</div>'
+        + kit.map(function (k) { return '<div style="font-size:11.5px;color:#78350F;padding:2px 0">☐ ' + k + '</div>'; }).join('')
+        + '</div>';
+    }
+    return '<div style="background:var(--sur);border:1.5px solid var(--bd);border-radius:11px;padding:12px 15px;margin-bottom:8px;' + (r.fait ? 'opacity:.55' : '') + '">'
+      + '<div style="display:flex;align-items:center;gap:10px">'
+      + '<div style="font-weight:800;font-size:13px;color:var(--bl);min-width:46px">' + r.heure + '</div>'
+      + '<div style="flex:1"><div style="font-weight:600;font-size:13px;' + (r.fait ? 'text-decoration:line-through' : '') + '">' + r.titre + '</div>'
+      + '<div style="font-size:11px;color:var(--mu)">' + r.patient + ' · <span style="color:' + bc + ';font-weight:700">' + r.intervenant + '</span></div></div>'
+      + '<button onclick="toggleKit(' + r.id + ')" style="padding:6px 10px;border-radius:8px;border:1.5px solid var(--bd);cursor:pointer;font-size:11px;background:transparent">🧰</button>'
+      + '<button onclick="markRdvProDone(' + r.id + ')" style="padding:6px 10px;border-radius:8px;border:none;cursor:pointer;font-size:11px;font-weight:700;background:' + (r.fait ? '#E5E7EB' : 'var(--gn2)') + ';color:' + (r.fait ? 'var(--mu)' : 'var(--gn)') + '">' + (r.fait ? 'Annuler' : '✓ Fait') + '</button>'
+      + '</div>' + kitHtml + '</div>';
   }).join('');
 
-  return '<div class="ph"><div><div class="pt">Mode Soignant</div><div class="ps">Suivi professionnel · Pierre Dubois</div></div></div>'
-    +'<div class="card" style="margin-bottom:13px"><div class="ct">Tâches de soins en cours</div>'+(tasks||'<div class="empty-state">Aucune tâche planifiée</div>')+'</div>'
-    +'<div class="card"><div class="ct">Transmissions</div>'
-    +'<textarea class="fi fta" placeholder="Rédiger une transmission... (l\'IA peut vous aider)" style="min-height:80px;margin-bottom:8px"></textarea>'
-    +'<button class="btn btn-p" style="width:100%">Générer avec l\'IA ✦</button></div>';
+  // Observance en un coup d'œil
+  var obsHtml = S.soigPatients.map(function (p) {
+    var dots = p.obs.map(function (o) {
+      var c = o.s === 'ok' ? 'var(--gn)' : (o.s === 'missed' ? '#DC2626' : '#D1D5DB');
+      var sym = o.s === 'ok' ? '✓' : (o.s === 'missed' ? '✗' : '·');
+      return '<span title="' + o.m + '" style="display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;border-radius:50%;background:' + c + ';color:#fff;font-size:12px;font-weight:800;margin-right:5px">' + sym + '</span>';
+    }).join('');
+    var missed = p.obs.filter(function (o) { return o.s === 'missed'; }).length;
+    return '<div style="background:var(--sur);border:1.5px solid ' + (missed ? '#FCA5A5' : 'var(--bd)') + ';border-radius:11px;padding:12px 15px;margin-bottom:8px">'
+      + '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:7px">'
+      + '<div><span style="font-weight:700;font-size:13px">' + p.nom + '</span> <span style="font-size:11px;color:var(--mu)">' + p.age + ' ans · ' + p.patho.join(', ') + '</span></div>'
+      + (missed ? '<span style="font-size:10px;font-weight:800;color:#DC2626">' + missed + ' oubli</span>' : '')
+      + '</div><div>' + dots + '</div></div>';
+  }).join('');
+
+  // Stocks / DLC
+  var stockAlerts = S.stocks.filter(function (s) { return s.alerte; });
+  var stockHtml = stockAlerts.length ? stockAlerts.map(function (s) {
+    var msg = s.alerte === 'dlc_proche' ? 'DLC proche : ' + s.dlc : 'Stock bas : ' + s.reste + ' restant(s)';
+    return '<div style="display:flex;justify-content:space-between;font-size:12px;padding:7px 0;border-bottom:1px solid var(--bd)"><span style="font-weight:600">' + s.nom + '</span><span style="color:#B45309;font-weight:700">' + msg + '</span></div>';
+  }).join('') : '<div style="font-size:12px;color:var(--gn);font-weight:600">✓ Aucune alerte stock ou péremption</div>';
+
+  // IA explicative
+  var chips = ['Alzheimer', 'Donépézil', 'HbA1c', 'Escarre stade 2', 'BPCO', 'Metformine'];
+  var chipsHtml = chips.map(function (c) {
+    return '<button onclick="aiExplain(\'' + c + '\')" style="padding:6px 11px;border-radius:999px;border:1.5px solid var(--bd);background:var(--sur);cursor:pointer;font-size:11.5px;font-weight:600;margin:0 6px 6px 0">' + c + '</button>';
+  }).join('');
+  var expBody = '';
+  if (S.explainLoading) {
+    expBody = '<div style="font-size:12px;color:var(--mu);padding:10px"><span class="spin"></span> L\'IA prépare une explication de « ' + S.explainLoading + ' »…</div>';
+  } else if (S.explainResult) {
+    expBody = '<div style="background:#F0F7FF;border:1px solid #BFDBFE;border-radius:10px;padding:12px;margin-top:8px">'
+      + '<div style="font-weight:700;font-size:12.5px;color:var(--bl);margin-bottom:6px">💡 ' + S.explainResult.subject + '</div>'
+      + '<div style="font-size:12.5px;line-height:1.65;white-space:pre-wrap">' + S.explainResult.text + '</div>'
+      + '<div style="font-size:10px;color:var(--mu);margin-top:8px;font-style:italic">Explication générée par IA — ne remplace pas un avis médical. Toujours vérifier auprès du prescripteur.</div>'
+      + '</div>';
+  }
+  var langOpts = Object.keys(VL_LANGS).map(function (k) {
+    return '<option value="' + k + '"' + (k === 'fr' ? ' selected' : '') + '>' + VL_LANGS[k].flag + ' ' + VL_LANGS[k].name + '</option>';
+  }).join('');
+
+  return '<div class="ph"><div><div class="pt">Mode Soignant Pro</div><div class="ps">' + new Date().toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long' }) + ' · 3 patients suivis</div></div></div>'
+    + stats
+    + '<div class="card" style="margin-bottom:13px"><div class="ct">📥 À valider <span style="font-size:11px;font-weight:600;color:var(--mu)">— l\'IA a préparé, vous décidez</span></div>' + inboxHtml + '</div>'
+    + '<div class="card" style="margin-bottom:13px"><div class="ct">🎙️ Nouvelle note → transmission</div>'
+    + '<textarea id="soig-note" class="fi fta" placeholder="Dictez ou tapez votre note brute… Ex : Mme Martin a refusé le repas de midi, agitée vers 15h, pansement talon refait, plaie propre." style="min-height:75px;margin-bottom:8px"></textarea>'
+    + '<div style="display:flex;gap:8px">'
+    + '<button id="soig-mic" onclick="soigVoiceToggle()" style="flex:1;padding:11px;border-radius:10px;border:1.5px solid var(--bd);cursor:pointer;font-weight:700;font-size:13px;background:var(--sur)">🎙️ Dicter</button>'
+    + '<button id="soig-gen" onclick="soigGenTransmission()" class="btn btn-p" style="flex:2">✦ Structurer avec l\'IA</button>'
+    + '</div>'
+    + '<div style="font-size:10.5px;color:var(--mu);margin-top:7px">La transmission structurée (Cible / Données / Actions / Résultats) arrive dans « À valider ». Rien ne part sans votre validation.</div></div>'
+    + '<div class="card" style="margin-bottom:13px"><div class="ct">📅 Planning du jour <span style="font-size:11px;font-weight:600;color:var(--mu)">— 🧰 = matériel à préparer</span></div>' + planHtml + '</div>'
+    + '<div class="card" style="margin-bottom:13px"><div class="ct">💊 Observance en un coup d\'œil</div>' + obsHtml
+    + '<div style="margin-top:10px"><div style="font-size:12px;font-weight:700;margin-bottom:5px">📦 Stocks & péremptions</div>' + stockHtml + '</div></div>'
+    + '<div class="card"><div class="ct">🧠 Comprendre <span style="font-size:11px;font-weight:600;color:var(--mu)">— pathologies, traitements, bilans expliqués</span></div>'
+    + '<div style="margin-bottom:8px">' + chipsHtml + '</div>'
+    + '<div style="display:flex;gap:8px;margin-bottom:4px">'
+    + '<input id="exp-input" class="fi" placeholder="Ex : à quoi sert la HbA1c ? Interactions Metformine ?" style="flex:1">'
+    + '<select id="exp-lang" style="padding:8px;border-radius:9px;border:1.5px solid var(--bd);font-size:12px;background:var(--sur)">' + langOpts + '</select>'
+    + '<button onclick="aiExplain()" class="btn btn-p" style="padding:8px 16px">Expliquer</button>'
+    + '</div>' + expBody + '</div>';
 }
 
 function renderModePharmacien(){
