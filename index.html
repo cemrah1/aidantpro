@@ -1,0 +1,1073 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<meta name="description" content="AidantPro — Coordination de soins par IA. Transmissions, traduction multilingue, pilulier intelligent.">
+<meta name="theme-color" content="#1D55E8">
+<title>AidantPro — Rendre le temps au soin</title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cpath d='M4 14C8 4 24 4 28 14' stroke='%231D55E8' stroke-width='3' fill='none'/%3E%3Cpath d='M4 18C8 28 24 28 28 18' stroke='%23137A3A' stroke-width='3' fill='none'/%3E%3Cpath d='M16 22c-3-3-6-5-6-8a3 3 0 015-2l1 1 1-1a3 3 0 015 2c0 3-3 5-6 8z' fill='%23137A3A'/%3E%3C/svg%3E">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bl:#1D55E8;--bl2:#EBF0FD;--bl3:#BFCFFA;
+  --gn:#137A3A;--gn2:#EAF5EE;--gn3:#C8E8D3;
+  --am:#B85C00;--am2:#FEF3E6;--am3:#FDDDB8;
+  --rd:#C0272B;--rd2:#FDEAEA;--rd3:#F8C5C5;
+  --nv:#0E1B3F;--nv2:#16275C;
+  --txt:#1F2937;--mu:#6B7280;--bg:#F4F7FE;--sur:#FFF;--bd:#E5E7EB;
+  --sw:260px;--font:system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;
+}
+html,body{height:100%;font-family:var(--font);color:var(--txt);background:var(--bg);-webkit-font-smoothing:antialiased}
+a{color:var(--bl);text-decoration:none}
+
+/* ═══ LOADING ═══ */
+#loading{position:fixed;inset:0;background:var(--nv);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:99999}
+#loading svg{width:80px;height:80px;animation:pulse 1.5s infinite}
+#loading h1{color:#fff;font-size:28px;margin-top:18px}
+#loading h1 span{color:#4ADE80}
+#loading p{color:#9DB4F5;font-size:14px;margin-top:6px}
+@keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.08)}}
+
+/* ═══ AUTH SCREENS ═══ */
+.auth-wrap{min-height:100vh;background:var(--nv);display:flex;align-items:center;justify-content:center;padding:20px}
+.auth-card{background:var(--sur);border-radius:16px;padding:36px 32px;width:100%;max-width:420px;box-shadow:0 20px 60px rgba(0,0,0,.3)}
+.auth-card .logo-row{text-align:center;margin-bottom:24px}
+.auth-card .logo-row svg{width:56px;height:56px}
+.auth-card .logo-row h2{font-size:24px;margin-top:10px}
+.auth-card .logo-row h2 span{color:var(--gn)}
+.auth-card .logo-row p{color:var(--mu);font-size:13px;margin-top:4px}
+
+.fi{display:block;width:100%;padding:12px 14px;border:1.5px solid var(--bd);border-radius:10px;font-size:14px;outline:none;transition:border .2s;font-family:var(--font);background:var(--sur)}
+.fi:focus{border-color:var(--bl)}
+.fi+.fi,.fi+label,.fi+.fi-group{margin-top:12px}
+.fta{min-height:80px;resize:vertical}
+label.fi-label{display:block;font-size:13px;font-weight:600;margin-bottom:5px;margin-top:14px}
+
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:12px 20px;border-radius:10px;font-size:14px;font-weight:600;border:none;cursor:pointer;transition:all .15s;font-family:var(--font)}
+.btn-p{background:var(--bl);color:#fff}.btn-p:hover{background:#1848C8}
+.btn-g{background:var(--gn);color:#fff}.btn-g:hover{background:#0F6630}
+.btn-o{background:transparent;border:1.5px solid var(--bd);color:var(--txt)}.btn-o:hover{background:var(--bg)}
+.btn-d{background:var(--rd);color:#fff}
+.btn-full{width:100%}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+
+/* ═══ ROLE CHECKBOXES ═══ */
+.roles-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:14px 0}
+.role-cb{display:flex;align-items:center;gap:8px;padding:12px;border:1.5px solid var(--bd);border-radius:10px;cursor:pointer;transition:all .15s;font-size:13px;font-weight:500}
+.role-cb:hover{border-color:var(--bl3)}
+.role-cb.active{border-color:var(--bl);background:var(--bl2)}
+.role-cb .ico{font-size:20px}
+
+/* ═══ COOKIE BANNER (RGPD) ═══ */
+#cookie-banner{position:fixed;bottom:0;left:0;right:0;background:var(--nv);color:#fff;padding:16px 24px;z-index:99998;display:none;align-items:center;gap:12px;flex-wrap:wrap;font-size:13px}
+#cookie-banner a{color:#93C5FD}
+#cookie-banner .cb-btns{display:flex;gap:8px;margin-left:auto}
+#cookie-banner .cb-btns button{padding:8px 16px;border-radius:8px;font-size:12px;font-weight:600;border:none;cursor:pointer}
+.cb-accept{background:#4ADE80;color:var(--nv)}
+.cb-refuse{background:transparent;border:1px solid #6B7280 !important;color:#D1D5DB}
+
+/* ═══ DEMO BANNER ═══ */
+#demo-banner{position:fixed;bottom:56px;left:50%;transform:translateX(-50%);z-index:99997;background:var(--nv);color:#FDE68A;font-size:11px;font-weight:600;padding:6px 14px;border-radius:999px;box-shadow:0 4px 14px rgba(0,0,0,.25);white-space:nowrap}
+
+/* ═══ SIDEBAR ═══ */
+.sidebar{position:fixed;top:0;left:0;width:var(--sw);height:100vh;background:var(--sur);border-right:1px solid var(--bd);display:flex;flex-direction:column;z-index:100;overflow-y:auto}
+.sb-logo{padding:20px 18px 14px;display:flex;align-items:center;gap:10px;border-bottom:1px solid var(--bd)}
+.sb-logo svg{width:36px;height:36px;flex-shrink:0}
+.sb-logo h1{font-size:18px;line-height:1.1}.sb-logo h1 span{color:var(--gn)}
+.sb-logo small{display:block;font-size:10px;color:var(--mu);font-weight:400}
+
+/* Mode switcher */
+.mode-sw{margin:14px 14px 6px;position:relative}
+.mode-btn{width:100%;padding:10px 14px;border:1.5px solid var(--bd);border-radius:10px;background:var(--bg);text-align:left;cursor:pointer;font-size:13px;font-weight:600;font-family:var(--font);display:flex;align-items:center;gap:8px}
+.mode-btn .chevron{margin-left:auto;font-size:10px;transition:transform .2s}
+.mode-dd{position:absolute;top:100%;left:0;right:0;background:var(--sur);border:1.5px solid var(--bd);border-radius:10px;margin-top:4px;box-shadow:0 8px 24px rgba(0,0,0,.1);display:none;z-index:10;overflow:hidden}
+.mode-dd.open{display:block}
+.mode-dd button{width:100%;padding:10px 14px;border:none;background:transparent;text-align:left;cursor:pointer;font-size:13px;font-family:var(--font);display:flex;align-items:center;gap:8px;transition:background .1s}
+.mode-dd button:hover{background:var(--bg)}
+.mode-dd button.active{background:var(--bl2);color:var(--bl);font-weight:600}
+
+/* Nav items */
+.sb-nav{flex:1;padding:8px 10px}
+.sb-nav a{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:9px;font-size:13px;color:var(--txt);transition:all .12s;cursor:pointer;text-decoration:none;position:relative}
+.sb-nav a:hover{background:var(--bg)}
+.sb-nav a.active{background:var(--bl2);color:var(--bl);font-weight:600}
+.sb-nav a .badge{position:absolute;right:10px;background:var(--rd);color:#fff;font-size:10px;font-weight:700;padding:2px 7px;border-radius:99px}
+
+.sb-footer{padding:10px 14px;border-top:1px solid var(--bd)}
+.sb-footer button{width:100%;padding:9px;border:1.5px solid var(--bd);border-radius:9px;background:transparent;cursor:pointer;font-size:12px;color:var(--mu);font-family:var(--font)}
+
+/* ═══ MAIN CONTENT ═══ */
+.main{margin-left:var(--sw);min-height:100vh;padding:24px 28px 80px}
+.main .page-header{margin-bottom:20px}
+.main .page-header h2{font-size:22px;font-weight:700}
+.main .page-header p{color:var(--mu);font-size:13px;margin-top:2px}
+
+.card{background:var(--sur);border:1px solid var(--bd);border-radius:14px;padding:18px 20px;margin-bottom:14px}
+.card .ct{font-size:15px;font-weight:700;margin-bottom:12px;display:flex;align-items:center;gap:8px}
+.card .ct .sub{font-size:11px;font-weight:500;color:var(--mu)}
+
+/* Stats row */
+.stats-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px;margin-bottom:16px}
+.stat-card{background:var(--sur);border:1.5px solid var(--bd);border-radius:12px;padding:14px;text-align:center}
+.stat-card .val{font-size:26px;font-weight:800;color:var(--bl)}
+.stat-card .val.green{color:var(--gn)}
+.stat-card .val.red{color:var(--rd)}
+.stat-card .lbl{font-size:11px;color:var(--mu);margin-top:2px}
+
+/* AI badge */
+.ai-badge{display:inline-flex;align-items:center;gap:4px;background:var(--bl2);color:var(--bl);font-size:10px;font-weight:700;padding:3px 8px;border-radius:99px;letter-spacing:.5px}
+.ai-badge::before{content:'\\2726';font-size:12px}
+
+/* Inbox item */
+.inbox-item{background:var(--sur);border:1.5px solid var(--bd);border-left:4px solid var(--bl);border-radius:11px;padding:14px 16px;margin-bottom:10px}
+.inbox-item .inbox-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
+.inbox-item .inbox-head .title{font-weight:700;font-size:13px}
+.inbox-item .inbox-head .time{font-size:10px;color:var(--mu)}
+.inbox-item .inbox-patient{font-size:11px;color:var(--mu);margin-bottom:8px}
+.inbox-item .inbox-body{font-size:12px;line-height:1.65;white-space:pre-wrap;background:var(--bg);border-radius:9px;padding:12px;margin-bottom:10px}
+.inbox-item .inbox-actions{display:flex;gap:8px}
+
+/* Planning item */
+.plan-item{background:var(--sur);border:1.5px solid var(--bd);border-radius:11px;padding:12px 16px;margin-bottom:8px;transition:opacity .2s}
+.plan-item.done{opacity:.5}
+.plan-item .plan-row{display:flex;align-items:center;gap:10px}
+.plan-item .plan-time{font-weight:800;font-size:13px;color:var(--bl);min-width:50px}
+.plan-item .plan-info{flex:1}
+.plan-item .plan-title{font-weight:600;font-size:13px}
+.plan-item .plan-meta{font-size:11px;color:var(--mu)}
+.plan-item .badge-role{font-size:10px;font-weight:700;padding:2px 8px;border-radius:99px}
+
+/* Observance dots */
+.obs-dot{display:inline-flex;align-items:center;justify-content:center;width:24px;height:24px;border-radius:50%;color:#fff;font-size:12px;font-weight:800;margin-right:4px;cursor:default}
+
+/* Kit panel */
+.kit-panel{background:#FFFBEB;border:1px solid #FDE68A;border-radius:9px;padding:12px;margin-top:8px}
+.kit-panel .kit-title{font-size:11px;font-weight:700;color:#92400E;margin-bottom:6px}
+.kit-panel .kit-item{font-size:12px;color:#78350F;padding:3px 0}
+
+/* AI explain result */
+.ai-result{background:#F0F7FF;border:1px solid #BFDBFE;border-radius:10px;padding:14px;margin-top:10px}
+.ai-result .ai-subject{font-weight:700;font-size:13px;color:var(--bl);margin-bottom:8px}
+.ai-result .ai-body{font-size:13px;line-height:1.7;white-space:pre-wrap}
+.ai-result .ai-disclaimer{font-size:10px;color:var(--mu);margin-top:10px;font-style:italic}
+
+/* Chip buttons */
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px}
+.chip{padding:6px 12px;border-radius:999px;border:1.5px solid var(--bd);background:var(--sur);cursor:pointer;font-size:12px;font-weight:600;transition:all .12s;font-family:var(--font)}
+.chip:hover{border-color:var(--bl);background:var(--bl2)}
+
+/* VoiceLoop messages */
+.vl-msg{background:var(--sur);border:1.5px solid var(--bd);border-radius:12px;padding:14px;margin-bottom:10px}
+.vl-msg .vl-from{font-weight:700;font-size:12px;margin-bottom:4px}
+.vl-msg .vl-original{font-size:13px;margin-bottom:6px}
+.vl-msg .vl-translated{font-size:13px;color:var(--bl);font-style:italic;margin-bottom:8px}
+.vl-msg .vl-actions{display:flex;gap:8px;flex-wrap:wrap}
+.vl-msg .vl-confirm{display:flex;gap:6px;margin-top:8px}
+
+/* Pilulier */
+.med-card{background:var(--sur);border:1.5px solid var(--bd);border-radius:12px;padding:14px 16px;margin-bottom:10px}
+.med-card .med-head{display:flex;justify-content:space-between;align-items:flex-start}
+.med-card .med-name{font-weight:700;font-size:14px}
+.med-card .med-dose{font-size:12px;color:var(--mu)}
+.med-card .med-indication{font-size:12px;color:var(--bl);margin-top:4px}
+.med-card .med-times{display:flex;gap:8px;margin-top:10px}
+.med-card .med-times button{padding:8px 16px;border-radius:9px;font-size:12px;font-weight:600;border:1.5px solid var(--bd);cursor:pointer;font-family:var(--font)}
+.med-renew{font-size:11px;padding:3px 10px;border-radius:99px;font-weight:600}
+
+/* Legal pages */
+.legal-page{max-width:720px;margin:0 auto}
+.legal-page h3{font-size:18px;margin:20px 0 8px;color:var(--bl)}
+.legal-page h4{font-size:15px;margin:16px 0 6px}
+.legal-page p,.legal-page li{font-size:13px;line-height:1.8;color:var(--txt)}
+.legal-page ul{margin:8px 0 8px 20px}
+
+/* Empty state */
+.empty{text-align:center;padding:32px;color:var(--mu);font-size:13px}
+
+/* Spinner */
+.spin{display:inline-block;width:16px;height:16px;border:2px solid var(--bd);border-top-color:var(--bl);border-radius:50%;animation:spin .6s linear infinite;vertical-align:middle;margin-right:6px}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* Session timeout overlay */
+#timeout-overlay{display:none;position:fixed;inset:0;background:rgba(14,27,63,.92);z-index:99999;align-items:center;justify-content:center;flex-direction:column}
+#timeout-overlay h2{color:#fff;font-size:20px;margin-bottom:8px}
+#timeout-overlay p{color:#9DB4F5;font-size:14px;margin-bottom:20px}
+
+/* ═══ RESPONSIVE ═══ */
+@media(max-width:768px){
+  :root{--sw:0px}
+  .sidebar{display:none}
+  .main{margin-left:0;padding:16px 16px 120px}
+  .mobile-nav{display:flex !important}
+  .stats-row{grid-template-columns:repeat(3,1fr)}
+  .roles-grid{grid-template-columns:1fr}
+}
+
+/* Mobile bottom nav */
+.mobile-nav{display:none;position:fixed;bottom:0;left:0;right:0;background:var(--sur);border-top:1px solid var(--bd);z-index:100;padding:6px 0 env(safe-area-inset-bottom);justify-content:space-around}
+.mobile-nav button{background:transparent;border:none;cursor:pointer;padding:8px 12px;font-size:10px;color:var(--mu);display:flex;flex-direction:column;align-items:center;gap:3px;font-family:var(--font)}
+.mobile-nav button.active{color:var(--bl)}
+.mobile-nav button .mn-ico{font-size:20px}
+</style>
+</head>
+<body>
+
+<!-- ═══ LOADING SCREEN ═══ -->
+<div id="loading">
+<svg viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M25 88 C45 38, 155 38, 175 88" stroke="#7FA3FF" stroke-width="16" stroke-linecap="round"/>
+<path d="M25 112 C45 162, 155 162, 175 112" stroke="#4ADE80" stroke-width="16" stroke-linecap="round"/>
+<path d="M100 128 C84 112,68 102,68 86 C68 72,81 64,92 72 C97 75,100 81,100 81 C100 81,103 75,108 72 C119 64,132 72,132 86 C132 102,116 112,100 128 Z" fill="#4ADE80"/>
+</svg>
+<h1>Aidant<span>Pro</span></h1>
+<p>Rendre le temps au soin</p>
+</div>
+
+<!-- ═══ COOKIE BANNER (RGPD obligatoire) ═══ -->
+<div id="cookie-banner">
+<span>Ce site utilise des cookies strictement n\u00e9cessaires au fonctionnement de l\u2019application (authentification, pr\u00e9f\u00e9rences de langue). Aucun cookie publicitaire n\u2019est utilis\u00e9. <a href="#" onclick="showLegal('cookies');return false">En savoir plus</a></span>
+<div class="cb-btns">
+<button class="cb-accept" onclick="acceptCookies()">Accepter</button>
+<button class="cb-refuse" onclick="refuseCookies()">Refuser les non-essentiels</button>
+</div>
+</div>
+
+<!-- ═══ DEMO BANNER ═══ -->
+<div id="demo-banner">&#x1F9EA; Version d\u00e9mo \u2014 n\u2019entrez aucune donn\u00e9e patient r\u00e9elle</div>
+
+<!-- ═══ SESSION TIMEOUT OVERLAY ═══ -->
+<div id="timeout-overlay">
+<h2>Session expir\u00e9e</h2>
+<p>Par s\u00e9curit\u00e9, vous avez \u00e9t\u00e9 d\u00e9connect\u00e9 apr\u00e8s 30 minutes d\u2019inactivit\u00e9.</p>
+<button class="btn btn-p" onclick="location.reload()">Se reconnecter</button>
+</div>
+
+<!-- ═══ APP SHELL ═══ -->
+<div id="app" style="display:none">
+
+<!-- SIDEBAR -->
+<nav class="sidebar" id="sidebar">
+<div class="sb-logo">
+<svg viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M25 88 C45 38,155 38,175 88" stroke="#1D55E8" stroke-width="16" stroke-linecap="round"/><path d="M25 112 C45 162,155 162,175 112" stroke="#137A3A" stroke-width="16" stroke-linecap="round"/><path d="M100 128 C84 112,68 102,68 86 C68 72,81 64,92 72 C97 75,100 81,100 81 C100 81,103 75,108 72 C119 64,132 72,132 86 C132 102,116 112,100 128Z" fill="#137A3A"/></svg>
+<h1>Aidant<span>Pro</span><small>Rendre le temps au soin</small></h1>
+</div>
+
+<div class="mode-sw">
+<button class="mode-btn" id="mode-btn" onclick="toggleModeDD()">
+<span id="mode-icon">&#x1F468;&#x200D;&#x2695;&#xFE0F;</span>
+<span id="mode-label">Soignant</span>
+<span class="chevron">&#x25BC;</span>
+</button>
+<div class="mode-dd" id="mode-dd"></div>
+</div>
+
+<div class="sb-nav" id="sb-nav"></div>
+
+<div class="sb-footer">
+<button onclick="showLegal('privacy')">Politique de confidentialit\u00e9</button>
+<button onclick="showLegal('cgu')" style="margin-top:6px">Conditions d\u2019utilisation</button>
+<button onclick="showLegal('account')" style="margin-top:6px;color:var(--rd)">Supprimer mon compte</button>
+<button onclick="doLogout()" style="margin-top:8px">&#x1F6AA; D\u00e9connexion</button>
+</div>
+</nav>
+
+<!-- MOBILE NAV -->
+<div class="mobile-nav" id="mobile-nav"></div>
+
+<!-- MAIN -->
+<main class="main" id="main-content"></main>
+</div>
+
+<script>
+// ════════════════════════════════════════════
+// AIDANTPRO v3 — Application compl\u00e8te
+// ════════════════════════════════════════════
+
+// ── Config Supabase ──
+var SB_URL='https://yyfumysysdowpcnqeehs.supabase.co';
+var SB_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inl5ZnVteXN5c2Rvd3BjbnFlZWhzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg1NjI0NTUsImV4cCI6MjA5NDEzODQ1NX0.jYlYaildOLYgeSZWi_khNO9UusUl6hW-CUBkYvsSyjM';
+var SB_H={'Content-Type':'application/json','apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY};
+
+// ── Session timeout (30 min inactivit\u00e9 — obligatoire pour app sant\u00e9) ──
+var SESSION_TIMEOUT=30*60*1000;
+var sessionTimer=null;
+function resetSessionTimer(){
+  if(sessionTimer)clearTimeout(sessionTimer);
+  sessionTimer=setTimeout(function(){
+    document.getElementById('timeout-overlay').style.display='flex';
+    S.user=null;
+  },SESSION_TIMEOUT);
+}
+['click','keydown','touchstart','scroll'].forEach(function(ev){
+  document.addEventListener(ev,resetSessionTimer,{passive:true});
+});
+
+// ── \u00c9tat global ──
+var S={
+  user:null,
+  activeMode:'soignant',
+  activePage:'dashboard',
+  selectedRoles:[],
+  patientLang:null,
+  explainResult:null,
+  explainLoading:null,
+  kitOpen:null,
+  // Patient de d\u00e9mo
+  proche:{prenom:'Pierre',nom:'Dubois',age:78,pathologies:['Alzheimer mod\u00e9r\u00e9','HTA','Diab\u00e8te T2'],lang:'tr'},
+  meds:[
+    {id:1,nom:'Don\u00e9p\u00e9zil',dose:'10mg',horaires:['20h00'],renouv:5,indication:'Alzheimer (inhibiteur de la cholinest\u00e9rase)',prises:{}},
+    {id:2,nom:'Amlodipine',dose:'5mg',horaires:['08h00'],renouv:18,indication:'Hypertension art\u00e9rielle',prises:{}},
+    {id:3,nom:'Metformine',dose:'500mg',horaires:['08h00','20h00'],renouv:22,indication:'Diab\u00e8te de type 2',prises:{}}
+  ],
+  rdvs:[
+    {id:1,titre:'Neurologue Dr. Benali',date:'2026-11-08',heure:'14h30',lieu:'CHU Grenoble',fait:false},
+    {id:2,titre:'Prise de sang (NFS, iono, HbA1c)',date:'2026-11-15',heure:'08h00',lieu:'Laboratoire',fait:false}
+  ],
+  journal:[
+    {id:1,date:'2026-10-30',auteur:'Marie',humeur:'bien',contenu:'Pierre a bien dormi. Humeur calme ce matin, a mang\u00e9 tout son petit d\u00e9jeuner.',tension:'13/8'},
+    {id:2,date:'2026-10-29',auteur:'Marie',humeur:'moyen',contenu:'L\u00e9g\u00e8re confusion en fin d\'apr\u00e8s-midi. Refus m\u00e9dicament du soir.',tension:'14/9'}
+  ],
+  // Multi-patients soignant
+  soigPatients:[
+    {id:1,nom:'Pierre Dubois',age:78,patho:['Alzheimer mod\u00e9r\u00e9','HTA','Diab\u00e8te T2'],lang:'tr',obs:[{m:'Don\u00e9p\u00e9zil 20h',s:'pending'},{m:'Amlodipine 8h',s:'ok'},{m:'Metformine 8h',s:'ok'},{m:'Metformine 20h',s:'pending'}]},
+    {id:2,nom:'Jeanne Martin',age:84,patho:['Escarre stade 2','Insuff. cardiaque'],lang:'fr',obs:[{m:'Furos\u00e9mide 8h',s:'ok'},{m:'Bisoprolol 8h',s:'ok'},{m:'Parac\u00e9tamol 12h',s:'missed'}]},
+    {id:3,nom:'Ahmed Kaci',age:71,patho:['BPCO','Diab\u00e8te T2'],lang:'ar',obs:[{m:'Symbicort 8h',s:'ok'},{m:'Metformine 8h',s:'missed'},{m:'Symbicort 20h',s:'pending'}]}
+  ],
+  rdvPro:[
+    {id:1,heure:'08h00',titre:'Insuline + glyc\u00e9mie',patient:'Pierre Dubois',intervenant:'IDE',kit:'insuline',fait:true},
+    {id:2,heure:'09h30',titre:'R\u00e9fection pansement escarre talon',patient:'Jeanne Martin',intervenant:'IDE',kit:'pansement',fait:false},
+    {id:3,heure:'11h00',titre:'Kin\u00e9 respiratoire',patient:'Pierre Dubois',intervenant:'Kin\u00e9',kit:'kine',fait:false},
+    {id:4,heure:'14h30',titre:'Consultation neurologue Dr Benali',patient:'Pierre Dubois',intervenant:'Sp\u00e9cialiste',kit:'consultation',fait:false},
+    {id:5,heure:'16h00',titre:'Bilan sanguin (NFS, iono, HbA1c)',patient:'Ahmed Kaci',intervenant:'Labo',kit:'bilan_sanguin',fait:false}
+  ],
+  inbox:[
+    {id:1,type:'transmission',patient:'Jeanne Martin',title:'Transmission \u2014 pansement talon',body:'Cible : escarre talon droit stade 2.\nDonn\u00e9es : pansement refait ce jour, plaie propre, diam\u00e8tre stable (2 cm), pas d\'\u00e9coulement. Douleur 2/10 pendant le soin.\nActions : protocole hydrocolloi\u0308de poursuivi, repositionnement toutes les 3 h rappel\u00e9 \u00e0 l\'\u00e9quipe.\nR\u00e9sultat attendu : r\u00e9\u00e9valuation \u00e0 48 h, surveillance des bords.',status:'pending',time:'10h05'},
+    {id:2,type:'message',patient:'Pierre Dubois',title:'Message famille (traduit du turc)',body:'\u00ab Merci pour les nouvelles d\'hier. Est-ce que papa a bien dormi ? Nous viendrons dimanche \u00e0 15 h. \u00bb \u2014 Ay\u015fe (fille)',status:'pending',time:'09h42'}
+  ],
+  stocks:[
+    {nom:'Don\u00e9p\u00e9zil 10mg',reste:5,dlc:'2026-12',alerte:'renouveler'},
+    {nom:'Metformine 500mg',reste:22,dlc:'2027-02',alerte:null},
+    {nom:'S\u00e9rum physiologique',reste:3,dlc:'2026-12',alerte:'dlc_proche'}
+  ],
+  // VoiceLoop
+  vlMessages:[
+    {id:1,from:'Marie (aidante)',text:'Papa, n\'oublie pas de prendre ton m\u00e9dicament ce soir. On pense fort \u00e0 toi.',translated:'Baba, bu ak\u015fam ilac\u0131n\u0131 almay\u0131 unutma. Seni \u00e7ok d\u00fc\u015f\u00fcn\u00fcyoruz.',lang:'tr',confirmed:true,time:'08h30'},
+    {id:2,from:'Dr. Benali',text:'Le prochain rendez-vous est confirm\u00e9 pour le 8 novembre \u00e0 14h30.',translated:'Bir sonraki randevu 8 Kas\u0131m saat 14:30 i\u00e7in onayland\u0131.',lang:'tr',confirmed:null,time:'09h15'}
+  ],
+  aiTxt:'',aiLoad:false
+};
+
+// ── Langues VoiceLoop ──
+var VL_LANGS={
+  tr:{flag:'\ud83c\uddf9\ud83c\uddf7',name:'Turc',tts:'tr-TR'},
+  ar:{flag:'\ud83c\uddf2\ud83c\udde6',name:'Arabe',tts:'ar-SA'},
+  en:{flag:'\ud83c\uddec\ud83c\udde7',name:'Anglais',tts:'en-GB'},
+  es:{flag:'\ud83c\uddea\ud83c\uddf8',name:'Espagnol',tts:'es-ES'},
+  pt:{flag:'\ud83c\uddf5\ud83c\uddf9',name:'Portugais',tts:'pt-PT'},
+  it:{flag:'\ud83c\uddee\ud83c\uddf9',name:'Italien',tts:'it-IT'},
+  de:{flag:'\ud83c\udde9\ud83c\uddea',name:'Allemand',tts:'de-DE'},
+  ro:{flag:'\ud83c\uddf7\ud83c\uddf4',name:'Roumain',tts:'ro-RO'},
+  pl:{flag:'\ud83c\uddf5\ud83c\uddf1',name:'Polonais',tts:'pl-PL'},
+  fr:{flag:'\ud83c\uddeb\ud83c\uddf7',name:'Fran\u00e7ais',tts:'fr-FR'}
+};
+S.patientLang=localStorage.getItem('ap_lang')||'tr';
+function setPatientLang(c){if(!VL_LANGS[c])return;S.patientLang=c;try{localStorage.setItem('ap_lang',c)}catch(e){}render()}
+
+// Kits mat\u00e9riel par soin
+var KITS={
+  pansement:['Set \u00e0 pansement st\u00e9rile','Gants (non st\u00e9riles + st\u00e9riles)','S\u00e9rum physiologique','Compresses st\u00e9riles','Bandes + adh\u00e9sif','Sac DASRI'],
+  bilan_sanguin:['Tubes (ordre : citrat\u00e9, sec, h\u00e9parin\u00e9, EDTA)','Garrot + corps de pompe','Aiguilles','Compresses + antiseptique','\u00c9tiquettes patient','Collecteur OPCT'],
+  insuline:['Stylo insuline + aiguille neuve','Lecteur glyc\u00e9mie + bandelettes','Autopiqueur + lancette','Compresses','Collation (si hypoglyc\u00e9mie)'],
+  kine:['Saturom\u00e8tre','Tensiom\u00e8tre','Coussin de positionnement','Oxyg\u00e8ne si prescrit'],
+  consultation:['Dossier / carnet de liaison','Carte Vitale + mutuelle','Ordonnances en cours','Derniers bilans'],
+  radio:['Ordonnance de prescription','Anciens clich\u00e9s (comparaison)','Carte Vitale','Liste des traitements en cours']
+};
+
+// ── Auth Supabase ──
+async function sbSignIn(email,pwd){
+  var r=await fetch(SB_URL+'/auth/v1/token?grant_type=password',{method:'POST',headers:SB_H,body:JSON.stringify({email,password:pwd})});
+  return await r.json();
+}
+async function sbSignUp(email,pwd,meta){
+  var r=await fetch(SB_URL+'/auth/v1/signup',{method:'POST',headers:SB_H,body:JSON.stringify({email,password:pwd,data:meta})});
+  return await r.json();
+}
+
+// ── Appel IA s\u00e9curis\u00e9 via Edge Function ──
+async function callAI(payload){
+  if(!S.user||!S.user.access_token){throw new Error('Non authentifi\u00e9');}
+  var r=await fetch(SB_URL+'/functions/v1/ai',{
+    method:'POST',
+    headers:{'Content-Type':'application/json','Authorization':'Bearer '+S.user.access_token,'apikey':SB_KEY},
+    body:JSON.stringify(payload)
+  });
+  if(!r.ok)throw new Error('Edge Function: HTTP '+r.status);
+  return await r.json();
+}
+
+// ── Cookie banner (RGPD) ──
+function initCookies(){
+  if(!localStorage.getItem('ap_cookies')){
+    document.getElementById('cookie-banner').style.display='flex';
+  }
+}
+function acceptCookies(){localStorage.setItem('ap_cookies','accepted');document.getElementById('cookie-banner').style.display='none'}
+function refuseCookies(){localStorage.setItem('ap_cookies','refused');document.getElementById('cookie-banner').style.display='none'}
+
+// ── Role toggle (inscription) ──
+function toggleRole(r){
+  var i=S.selectedRoles.indexOf(r);
+  if(i>=0)S.selectedRoles.splice(i,1);else S.selectedRoles.push(r);
+  renderAuth();
+}
+
+// ── Mode switcher ──
+function toggleModeDD(){document.getElementById('mode-dd').classList.toggle('open')}
+function switchMode(m){
+  S.activeMode=m;S.activePage='dashboard';
+  document.getElementById('mode-dd').classList.remove('open');
+  renderSidebar();render();
+}
+
+// ── Navigation ──
+function navTo(page){S.activePage=page;render();renderSidebar();window.scrollTo(0,0)}
+
+// ══════════ RENDERERS ══════════
+
+function render(){
+  var mc=document.getElementById('main-content');if(!mc)return;
+  var page=S.activePage;
+  var mode=S.activeMode;
+  // Legal pages
+  if(page==='privacy'){mc.innerHTML=renderPrivacy();return}
+  if(page==='cgu'){mc.innerHTML=renderCGU();return}
+  if(page==='cookies'){mc.innerHTML=renderCookiePolicy();return}
+  if(page==='account'){mc.innerHTML=renderAccountDeletion();return}
+  // Mode-specific
+  if(mode==='soignant')mc.innerHTML=renderSoignant(page);
+  else if(mode==='aidant')mc.innerHTML=renderAidant(page);
+  else if(mode==='patient')mc.innerHTML=renderPatient(page);
+  else if(mode==='pharmacien')mc.innerHTML=renderPharmacien(page);
+}
+
+// ── SIDEBAR ──
+function renderSidebar(){
+  var m=S.activeMode;
+  var icons={soignant:'\ud83d\udc68\u200d\u2695\ufe0f',aidant:'\ud83d\udc69\u200d\ud83d\udc67',patient:'\ud83e\udd12',pharmacien:'\ud83d\udc8a'};
+  var labels={soignant:'Soignant',aidant:'Aidant',patient:'Patient',pharmacien:'Pharmacien'};
+  document.getElementById('mode-icon').textContent=icons[m]||'';
+  document.getElementById('mode-label').textContent=labels[m]||m;
+
+  // Dropdown
+  var dd=document.getElementById('mode-dd');
+  var roles=S.user&&S.user.user&&S.user.user.user_metadata&&S.user.user.user_metadata.roles||['soignant','aidant'];
+  dd.innerHTML=roles.map(function(r){
+    return '<button class="'+(r===m?'active':'')+'" onclick="switchMode(\''+r+'\')">'+(icons[r]||'')+' '+labels[r]+'</button>';
+  }).join('');
+
+  // Nav items
+  var navs={
+    soignant:[
+      {id:'dashboard',ico:'\ud83d\udcca',label:'Tableau de bord'},
+      {id:'planning',ico:'\ud83d\udcc5',label:'Planning du jour'},
+      {id:'observance',ico:'\ud83d\udc8a',label:'Observance'},
+      {id:'transmissions',ico:'\ud83c\udf99\ufe0f',label:'Transmissions'},
+      {id:'comprendre',ico:'\ud83e\udde0',label:'Comprendre (IA)'},
+      {id:'voiceloop',ico:'\ud83d\udd0a',label:'VoiceLoop'}
+    ],
+    aidant:[
+      {id:'dashboard',ico:'\ud83c\udfe0',label:'Tableau de bord'},
+      {id:'pilulier',ico:'\ud83d\udc8a',label:'Pilulier'},
+      {id:'rdv',ico:'\ud83d\udcc5',label:'Rendez-vous'},
+      {id:'journal',ico:'\ud83d\udcd3',label:'Journal de bord'},
+      {id:'voiceloop',ico:'\ud83d\udd0a',label:'VoiceLoop'},
+      {id:'documents',ico:'\ud83d\udcc1',label:'Documents'},
+      {id:'aides',ico:'\ud83d\udcb6',label:'Aides financi\u00e8res'}
+    ],
+    patient:[
+      {id:'dashboard',ico:'\ud83c\udfe5',label:'Mon suivi'},
+      {id:'pilulier',ico:'\ud83d\udc8a',label:'Mes m\u00e9dicaments'},
+      {id:'rdv',ico:'\ud83d\udcc5',label:'Mes rendez-vous'},
+      {id:'messages',ico:'\ud83d\udcac',label:'Messages famille'}
+    ],
+    pharmacien:[
+      {id:'dashboard',ico:'\ud83d\udd0d',label:'Recherche patient'},
+      {id:'dispensation',ico:'\ud83d\udccb',label:'Dispensation'},
+      {id:'alertes',ico:'\u26a0\ufe0f',label:'Alertes interactions'}
+    ]
+  };
+  var items=navs[m]||[];
+  var pending=S.inbox.filter(function(i){return i.status==='pending'}).length;
+  var nav=document.getElementById('sb-nav');
+  nav.innerHTML=items.map(function(n){
+    var badge='';
+    if(n.id==='transmissions'&&pending>0)badge='<span class="badge">'+pending+'</span>';
+    return '<a class="'+(S.activePage===n.id?'active':'')+'" onclick="navTo(\''+n.id+'\')">'+n.ico+' '+n.label+badge+'</a>';
+  }).join('');
+
+  // Mobile nav
+  var mn=document.getElementById('mobile-nav');
+  var mobileItems=items.slice(0,5);
+  mn.innerHTML=mobileItems.map(function(n){
+    return '<button class="'+(S.activePage===n.id?'active':'')+'" onclick="navTo(\''+n.id+'\')"><span class="mn-ico">'+n.ico+'</span>'+n.label.split(' ')[0]+'</button>';
+  }).join('');
+}
+
+// ══════════ MODE SOIGNANT ══════════
+
+function renderSoignant(page){
+  if(page==='dashboard')return renderSoigDashboard();
+  if(page==='planning')return renderSoigPlanning();
+  if(page==='observance')return renderSoigObservance();
+  if(page==='transmissions')return renderSoigTransmissions();
+  if(page==='comprendre')return renderSoigComprendre();
+  if(page==='voiceloop')return renderVoiceLoop();
+  return renderSoigDashboard();
+}
+
+function renderSoigDashboard(){
+  var pending=S.inbox.filter(function(i){return i.status==='pending'}).length;
+  var missed=0;S.soigPatients.forEach(function(p){p.obs.forEach(function(o){if(o.s==='missed')missed++})});
+  var rdvLeft=S.rdvPro.filter(function(r){return !r.fait}).length;
+  var h='<div class="page-header"><h2>Tableau de bord soignant</h2><p>'+new Date().toLocaleDateString('fr-FR',{weekday:'long',day:'numeric',month:'long',year:'numeric'})+' \u2014 '+S.soigPatients.length+' patients suivis</p></div>';
+  h+='<div class="stats-row">';
+  h+='<div class="stat-card"><div class="val">'+pending+'</div><div class="lbl">\u00e0 valider</div></div>';
+  h+='<div class="stat-card"><div class="val '+(missed>0?'red':'green')+'">'+missed+'</div><div class="lbl">oubli(s) traitement</div></div>';
+  h+='<div class="stat-card"><div class="val">'+rdvLeft+'</div><div class="lbl">interventions</div></div>';
+  h+='</div>';
+  // Inbox rapide
+  h+='<div class="card"><div class="ct">\ud83d\udce5 \u00c0 valider <span class="sub">\u2014 l\'IA a pr\u00e9par\u00e9, vous d\u00e9cidez</span></div>';
+  if(pending===0)h+='<div class="empty">\u2714 Rien \u00e0 valider \u2014 tout est \u00e0 jour</div>';
+  else h+=S.inbox.filter(function(i){return i.status==='pending'}).map(renderInboxItem).join('');
+  h+='</div>';
+  // Lien rapide planning
+  h+='<div class="card" style="cursor:pointer" onclick="navTo(\'planning\')"><div class="ct">\ud83d\udcc5 Planning du jour <span class="sub">\u2014 '+rdvLeft+' intervention(s) restante(s)</span></div></div>';
+  return h;
+}
+
+function renderInboxItem(i){
+  var typeIco=i.type==='transmission'?'\ud83d\udccb':'\ud83d\udcac';
+  return '<div class="inbox-item"><div class="inbox-head"><div class="title">'+typeIco+' '+i.title+' <span class="ai-badge">IA</span></div><div class="time">'+i.time+'</div></div>'
+    +'<div class="inbox-patient">'+i.patient+'</div>'
+    +'<div class="inbox-body">'+i.body+'</div>'
+    +'<div class="inbox-actions">'
+    +'<button class="btn btn-g" onclick="inboxAction('+i.id+',true)" style="flex:1">\u2713 Valider</button>'
+    +'<button class="btn btn-o" onclick="inboxEdit('+i.id+')">Modifier</button>'
+    +'<button class="btn btn-o" onclick="inboxAction('+i.id+',false)">\u00c9carter</button>'
+    +'</div></div>';
+}
+function inboxAction(id,ok){
+  var it=S.inbox.find(function(x){return x.id===id});
+  if(it)it.status=ok?'validated':'rejected';
+  render();renderSidebar();
+}
+function inboxEdit(id){
+  var it=S.inbox.find(function(x){return x.id===id});
+  if(!it)return;
+  var newBody=prompt('Modifiez la transmission avant validation :',it.body);
+  if(newBody!==null)it.body=newBody;
+}
+
+function renderSoigPlanning(){
+  var h='<div class="page-header"><h2>Planning du jour</h2><p>\ud83e\uddf0 = mat\u00e9riel \u00e0 pr\u00e9parer</p></div>';
+  var badgeColors={IDE:'var(--bl)','Kin\u00e9':'#7C3AED','Sp\u00e9cialiste':'#0891B2',Labo:'#B45309',AS:'var(--gn)'};
+  h+=S.rdvPro.map(function(r){
+    var bc=badgeColors[r.intervenant]||'var(--mu)';
+    var kit=KITS[r.kit]||[];
+    var kitHtml='';
+    if(S.kitOpen===r.id&&kit.length){
+      kitHtml='<div class="kit-panel"><div class="kit-title">\ud83e\uddf0 Mat\u00e9riel \u00e0 pr\u00e9parer</div>'+kit.map(function(k){return '<div class="kit-item">\u2610 '+k+'</div>'}).join('')+'</div>';
+    }
+    return '<div class="plan-item'+(r.fait?' done':'')+'"><div class="plan-row">'
+      +'<div class="plan-time">'+r.heure+'</div>'
+      +'<div class="plan-info"><div class="plan-title"'+(r.fait?' style="text-decoration:line-through"':'')+'>'+r.titre+'</div><div class="plan-meta">'+r.patient+' \u2014 <span class="badge-role" style="color:'+bc+'">'+r.intervenant+'</span></div></div>'
+      +'<button class="btn btn-o" onclick="toggleKit('+r.id+')" style="padding:6px 10px;font-size:12px">\ud83e\uddf0</button>'
+      +'<button class="btn '+(r.fait?'btn-o':'btn-g')+'" onclick="markRdvDone('+r.id+')" style="padding:6px 12px;font-size:12px">'+(r.fait?'Annuler':'\u2713 Fait')+'</button>'
+      +'</div>'+kitHtml+'</div>';
+  }).join('');
+  return h;
+}
+function toggleKit(id){S.kitOpen=(S.kitOpen===id)?null:id;render()}
+function markRdvDone(id){var r=S.rdvPro.find(function(x){return x.id===id});if(r)r.fait=!r.fait;render()}
+
+function renderSoigObservance(){
+  var h='<div class="page-header"><h2>Observance en un coup d\'oeil</h2><p>Statut des traitements de tous vos patients</p></div>';
+  h+=S.soigPatients.map(function(p){
+    var missed=p.obs.filter(function(o){return o.s==='missed'}).length;
+    var dots=p.obs.map(function(o){
+      var c=o.s==='ok'?'var(--gn)':(o.s==='missed'?'var(--rd)':'#D1D5DB');
+      var sym=o.s==='ok'?'\u2713':(o.s==='missed'?'\u2717':'\u00b7');
+      return '<span class="obs-dot" style="background:'+c+'" title="'+o.m+'">'+sym+'</span>';
+    }).join('');
+    return '<div class="card" style="border-color:'+(missed?'#FCA5A5':'var(--bd)')+'"><div style="display:flex;justify-content:space-between;margin-bottom:8px"><div><strong>'+p.nom+'</strong> <span style="font-size:11px;color:var(--mu)">'+p.age+' ans \u2014 '+p.patho.join(', ')+'</span></div>'+(missed?'<span style="font-size:11px;font-weight:700;color:var(--rd)">'+missed+' oubli(s)</span>':'')+'</div><div>'+dots+'</div></div>';
+  }).join('');
+  // Stocks
+  h+='<div class="card"><div class="ct">\ud83d\udce6 Stocks & p\u00e9remptions</div>';
+  var alerts=S.stocks.filter(function(s){return s.alerte});
+  if(alerts.length){
+    h+=alerts.map(function(s){
+      var msg=s.alerte==='dlc_proche'?'DLC proche : '+s.dlc:'Stock bas : '+s.reste+' restant(s)';
+      return '<div style="display:flex;justify-content:space-between;font-size:12px;padding:8px 0;border-bottom:1px solid var(--bd)"><span style="font-weight:600">'+s.nom+'</span><span style="color:#B45309;font-weight:700">'+msg+'</span></div>';
+    }).join('');
+  } else h+='<div style="font-size:12px;color:var(--gn);font-weight:600">\u2713 Aucune alerte stock ou p\u00e9remption</div>';
+  h+='</div>';
+  return h;
+}
+
+function renderSoigTransmissions(){
+  var h='<div class="page-header"><h2>Transmissions</h2><p>Dict\u00e9e vocale + structuration IA</p></div>';
+  // Composition
+  h+='<div class="card"><div class="ct">\ud83c\udf99\ufe0f Nouvelle note \u2192 transmission</div>';
+  h+='<textarea id="soig-note" class="fi fta" placeholder="Dictez ou tapez votre note brute\u2026 Ex : Mme Martin a refus\u00e9 le repas de midi, agit\u00e9e vers 15h, pansement talon refait, plaie propre."></textarea>';
+  h+='<div style="display:flex;gap:8px;margin-top:10px">';
+  h+='<button id="soig-mic" class="btn btn-o" onclick="soigVoiceToggle()" style="flex:1">\ud83c\udf99\ufe0f Dicter</button>';
+  h+='<button id="soig-gen" class="btn btn-p" onclick="soigGenTransmission()" style="flex:2">\u2726 Structurer avec l\'IA</button>';
+  h+='</div>';
+  h+='<div style="font-size:10px;color:var(--mu);margin-top:8px">La transmission structur\u00e9e (Cible / Donn\u00e9es / Actions / R\u00e9sultat) arrive dans \u00ab \u00c0 valider \u00bb. Rien ne part sans votre validation.</div>';
+  h+='</div>';
+  // Inbox
+  var pending=S.inbox.filter(function(i){return i.status==='pending'});
+  h+='<div class="card"><div class="ct">\ud83d\udce5 \u00c0 valider ('+pending.length+')</div>';
+  h+=pending.length?pending.map(renderInboxItem).join(''):'<div class="empty">\u2714 Rien \u00e0 valider</div>';
+  h+='</div>';
+  return h;
+}
+
+// Dict\u00e9e vocale
+var soigRec=null;
+function soigVoiceToggle(){
+  var SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+  var btn=document.getElementById('soig-mic');
+  if(!SR){alert('La dict\u00e9e vocale n\'est pas disponible sur ce navigateur.');return}
+  if(soigRec){soigRec.stop();return}
+  soigRec=new SR();soigRec.lang='fr-FR';soigRec.continuous=true;soigRec.interimResults=true;
+  var ta=document.getElementById('soig-note');var base=ta?ta.value:'';
+  soigRec.onresult=function(e){var t='';for(var i=0;i<e.results.length;i++)t+=e.results[i][0].transcript;if(ta)ta.value=(base?base+' ':'')+t};
+  soigRec.onerror=function(){if(soigRec)soigRec.stop()};
+  soigRec.onend=function(){soigRec=null;if(btn){btn.textContent='\ud83c\udf99\ufe0f Dicter';btn.style.background='';btn.style.color=''}};
+  soigRec.start();
+  if(btn){btn.textContent='\u23f9 Arr\u00eater';btn.style.background='#FEE2E2';btn.style.color='#B91C1C'}
+}
+
+async function soigGenTransmission(){
+  var ta=document.getElementById('soig-note');if(!ta||!ta.value.trim()){alert('Dictez ou \u00e9crivez d\'abord votre note.');return}
+  var btn=document.getElementById('soig-gen');if(btn){btn.disabled=true;btn.textContent='\u2726 Structuration IA\u2026'}
+  try{
+    var d=await callAI({task:'transmission',text:ta.value.trim(),patient:'Pierre Dubois, 78 ans. Pathologies : Alzheimer, HTA, diab\u00e8te T2.'});
+    if(d&&d.translated){
+      S.inbox.unshift({id:Date.now(),type:'transmission',patient:'Pierre Dubois',title:'Transmission IA \u2014 \u00e0 valider',body:d.translated,status:'pending',time:new Date().toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'})});
+      ta.value='';
+    }
+  }catch(e){alert('Service IA indisponible. Votre note est conserv\u00e9e.')}
+  if(btn){btn.disabled=false;btn.textContent='\u2726 Structurer avec l\'IA'}
+  render();renderSidebar();
+}
+
+function renderSoigComprendre(){
+  var h='<div class="page-header"><h2>Comprendre</h2><p>Pathologies, traitements, bilans expliqu\u00e9s par l\'IA</p></div>';
+  h+='<div class="card">';
+  var chips=['Alzheimer','Don\u00e9p\u00e9zil','HbA1c','Escarre stade 2','BPCO','Metformine','Amlodipine','Furos\u00e9mide'];
+  h+='<div class="chips">'+chips.map(function(c){return '<button class="chip" onclick="aiExplain(\''+c+'\')">'+c+'</button>'}).join('')+'</div>';
+  var langOpts=Object.keys(VL_LANGS).map(function(k){return '<option value="'+k+'"'+(k==='fr'?' selected':'')+'>'+VL_LANGS[k].flag+' '+VL_LANGS[k].name+'</option>'}).join('');
+  h+='<div style="display:flex;gap:8px;margin-bottom:8px">';
+  h+='<input id="exp-input" class="fi" placeholder="Ex : \u00e0 quoi sert la HbA1c ? Interactions Metformine ?" style="flex:1">';
+  h+='<select id="exp-lang" class="fi" style="width:auto">'+langOpts+'</select>';
+  h+='<button class="btn btn-p" onclick="aiExplain()">Expliquer</button>';
+  h+='</div>';
+  if(S.explainLoading)h+='<div style="padding:12px;color:var(--mu)"><span class="spin"></span> L\'IA pr\u00e9pare une explication de \u00ab '+S.explainLoading+' \u00bb\u2026</div>';
+  if(S.explainResult){
+    h+='<div class="ai-result"><div class="ai-subject">\ud83d\udca1 '+S.explainResult.subject+' <span class="ai-badge">IA</span></div><div class="ai-body">'+S.explainResult.text+'</div><div class="ai-disclaimer">Explication g\u00e9n\u00e9r\u00e9e par IA \u2014 ne remplace pas un avis m\u00e9dical. Toujours v\u00e9rifier aupr\u00e8s du prescripteur.</div></div>';
+  }
+  h+='</div>';
+  return h;
+}
+async function aiExplain(subject){
+  if(!subject){var inp=document.getElementById('exp-input');subject=inp&&inp.value.trim();if(!subject)return}
+  var sel=document.getElementById('exp-lang');var lang=sel?sel.value:'fr';
+  S.explainLoading=subject;S.explainResult=null;render();
+  try{var d=await callAI({task:'explain',text:subject,targetLang:lang});S.explainResult={subject:subject,text:(d&&d.translated)||'Service indisponible.',lang:lang}}
+  catch(e){S.explainResult={subject:subject,text:'Service IA indisponible \u2014 r\u00e9essayez.',lang:lang}}
+  S.explainLoading=null;render();
+}
+
+// ══════════ VOICELOOP ══════════
+
+function renderVoiceLoop(){
+  var L=VL_LANGS[S.patientLang]||VL_LANGS.tr;
+  var langOpts=Object.keys(VL_LANGS).map(function(k){return '<option value="'+k+'"'+(k===S.patientLang?' selected':'')+'>'+VL_LANGS[k].flag+' '+VL_LANGS[k].name+'</option>'}).join('');
+  var h='<div class="page-header"><h2>VoiceLoop \u2014 Le Lien</h2><p>Messages vocaux traduits \u2014 Pierre parle '+L.name.toLowerCase()+'</p></div>';
+  h+='<div class="card">';
+  h+='<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px"><div class="ct" style="margin:0">Langue du patient</div><select onchange="setPatientLang(this.value)" class="fi" style="width:auto">'+langOpts+'</select></div>';
+  h+='<textarea id="vl-text" class="fi fta" placeholder="Tapez un message pour Pierre\u2026 Il sera traduit en '+L.name.toLowerCase()+' et lu \u00e0 voix haute."></textarea>';
+  h+='<div style="display:flex;gap:8px;margin-top:8px"><button class="btn btn-p btn-full" id="vl-send-btn" onclick="vlSend()">Envoyer + Traduire '+L.flag+'</button></div>';
+  h+='<div style="font-size:11px;color:var(--mu);margin-top:6px">'+L.flag+' Traduit en '+L.name.toLowerCase()+' et lu \u00e0 voix haute</div>';
+  h+='</div>';
+  // Messages
+  h+=S.vlMessages.map(function(m){
+    var mL=VL_LANGS[m.lang]||L;
+    return '<div class="vl-msg"><div class="vl-from">'+m.from+' \u2014 '+m.time+'</div>'
+      +'<div class="vl-original">'+m.text+'</div>'
+      +'<div class="vl-translated">'+mL.flag+' '+m.translated+' <span class="ai-badge">IA</span></div>'
+      +'<div class="vl-actions"><button class="btn btn-o" onclick="vlPlay(\''+m.translated.replace(/'/g,"\\'")+'\'，\''+m.lang+'\')" style="font-size:12px">\u25b6 \u00c9couter</button></div>'
+      +(m.confirmed===null?'<div class="vl-confirm"><button class="btn btn-g" onclick="vlConfirm('+m.id+',true)" style="font-size:12px">Oui \u2714</button><button class="btn btn-o" onclick="vlConfirm('+m.id+',false)" style="font-size:12px">Non \u2718</button></div>':'<div style="font-size:11px;color:'+(m.confirmed?'var(--gn)':'var(--rd)')+';margin-top:6px">'+(m.confirmed?'\u2714 Confirm\u00e9':'\u2718 Non confirm\u00e9')+'</div>')
+      +'</div>';
+  }).join('');
+  return h;
+}
+function vlPlay(text,lang){
+  var u=new SpeechSynthesisUtterance(text);
+  var L=VL_LANGS[lang]||VL_LANGS[S.patientLang]||VL_LANGS.tr;
+  u.lang=L.tts;u.rate=0.88;
+  speechSynthesis.cancel();speechSynthesis.speak(u);
+}
+function vlConfirm(id,ok){var m=S.vlMessages.find(function(x){return x.id===id});if(m)m.confirmed=ok;render()}
+async function vlSend(){
+  var ta=document.getElementById('vl-text');if(!ta||!ta.value.trim())return;
+  var txt=ta.value.trim();var lang=S.patientLang||'tr';
+  var btn=document.getElementById('vl-send-btn');if(btn){btn.disabled=true;btn.textContent='Traduction\u2026'}
+  var translated=txt;var ok=false;
+  try{var d=await callAI({task:'translate',text:txt,targetLang:lang});if(d&&d.translated){translated=d.translated;ok=true}}catch(e){}
+  S.vlMessages.unshift({id:Date.now(),from:'Vous',text:txt,translated:translated,lang:lang,confirmed:null,time:new Date().toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'})});
+  if(!ok)alert('\u26a0\ufe0f Traduction indisponible \u2014 message envoy\u00e9 en fran\u00e7ais.');
+  ta.value='';render();
+  if(ok)setTimeout(function(){vlPlay(translated,lang)},800);
+}
+
+// ══════════ MODE AIDANT ══════════
+
+function renderAidant(page){
+  if(page==='dashboard')return renderAidantDashboard();
+  if(page==='pilulier')return renderPilulier();
+  if(page==='rdv')return renderRDV();
+  if(page==='journal')return renderJournal();
+  if(page==='voiceloop')return renderVoiceLoop();
+  if(page==='documents')return renderDocuments();
+  if(page==='aides')return renderAides();
+  return renderAidantDashboard();
+}
+
+function renderAidantDashboard(){
+  var p=S.proche;
+  var h='<div class="page-header"><h2>Bonjour \ud83d\udc4b</h2><p>Coordination des soins de '+p.prenom+'</p></div>';
+  // Patient card
+  h+='<div class="card" style="border-left:4px solid var(--bl)"><div style="display:flex;align-items:center;gap:14px">';
+  h+='<div style="width:52px;height:52px;border-radius:50%;background:var(--bl2);display:flex;align-items:center;justify-content:center;font-size:22px">'+p.prenom[0]+'</div>';
+  h+='<div><div style="font-weight:700;font-size:16px">'+p.prenom+' '+p.nom+'</div><div style="font-size:12px;color:var(--mu)">'+p.age+' ans \u2014 '+p.pathologies.join(', ')+'</div><div style="font-size:12px;margin-top:2px">'+(VL_LANGS[p.lang]||VL_LANGS.tr).flag+' Langue : '+(VL_LANGS[p.lang]||VL_LANGS.tr).name+'</div></div>';
+  h+='</div></div>';
+  // Stats
+  h+='<div class="stats-row">';
+  h+='<div class="stat-card"><div class="val">'+S.meds.length+'</div><div class="lbl">m\u00e9dicaments</div></div>';
+  h+='<div class="stat-card"><div class="val green">'+S.rdvs.filter(function(r){return !r.fait}).length+'</div><div class="lbl">RDV \u00e0 venir</div></div>';
+  h+='<div class="stat-card"><div class="val">'+S.journal.length+'</div><div class="lbl">entr\u00e9es journal</div></div>';
+  h+='</div>';
+  return h;
+}
+
+function renderPilulier(){
+  var h='<div class="page-header"><h2>Pilulier de '+S.proche.prenom+'</h2><p>Traitements en cours</p></div>';
+  h+=S.meds.map(function(m){
+    var renewBadge=m.renouv<=7?'<span class="med-renew" style="background:var(--am2);color:var(--am)">Renouveler dans '+m.renouv+'j</span>':'<span class="med-renew" style="background:var(--gn2);color:var(--gn)">'+m.renouv+'j restants</span>';
+    var times=m.horaires.map(function(t){
+      var key=t+'_'+new Date().toDateString();
+      var prise=m.prises[key];
+      if(prise==='ok')return '<button class="btn btn-g" disabled style="padding:8px 16px;font-size:12px">\u2713 '+t+'</button>';
+      if(prise==='missed')return '<button class="btn btn-d" disabled style="padding:8px 16px;font-size:12px">\u2717 '+t+'</button>';
+      return '<button class="btn btn-o" onclick="markMed('+m.id+',\''+t+'\')" style="padding:8px 16px;font-size:12px">'+t+' \u2014 Pris ?</button>';
+    }).join('');
+    return '<div class="med-card"><div class="med-head"><div><div class="med-name">'+m.nom+' '+m.dose+'</div><div class="med-dose">Horaire(s) : '+m.horaires.join(', ')+'</div><div class="med-indication">\ud83d\udca1 '+m.indication+'</div></div>'+renewBadge+'</div><div class="med-times">'+times+'</div>'
+      +'<button class="chip" onclick="aiExplain(\''+m.nom+'\')" style="margin-top:8px;font-size:11px">\ud83e\udde0 Comprendre ce m\u00e9dicament</button>'
+      +'</div>';
+  }).join('');
+  return h;
+}
+function markMed(id,t){
+  var m=S.meds.find(function(x){return x.id===id});
+  if(m)m.prises[t+'_'+new Date().toDateString()]='ok';
+  render();
+}
+
+function renderRDV(){
+  var h='<div class="page-header"><h2>Rendez-vous</h2><p>Agenda m\u00e9dical de '+S.proche.prenom+'</p></div>';
+  h+=S.rdvs.map(function(r){
+    return '<div class="card"><div style="display:flex;justify-content:space-between;align-items:center"><div><div style="font-weight:700">'+r.titre+'</div><div style="font-size:12px;color:var(--mu)">'+r.date+' \u00e0 '+r.heure+' \u2014 '+r.lieu+'</div></div>'
+      +'<button class="btn '+(r.fait?'btn-o':'btn-g')+'" onclick="toggleRdv('+r.id+')" style="font-size:12px">'+(r.fait?'Annuler':'\u2713 Fait')+'</button></div></div>';
+  }).join('');
+  return h;
+}
+function toggleRdv(id){var r=S.rdvs.find(function(x){return x.id===id});if(r)r.fait=!r.fait;render()}
+
+function renderJournal(){
+  var h='<div class="page-header"><h2>Journal de bord</h2><p>Notes quotidiennes sur '+S.proche.prenom+'</p></div>';
+  // Nouveau
+  h+='<div class="card"><div class="ct">\u270f\ufe0f Nouvelle entr\u00e9e</div>';
+  h+='<textarea id="j-text" class="fi fta" placeholder="Comment va '+S.proche.prenom+' aujourd\'hui ?"></textarea>';
+  h+='<div style="display:flex;gap:8px;margin-top:8px"><button class="btn btn-p" onclick="addJournal()">Enregistrer</button><button class="btn btn-o" onclick="genResume()">\u2726 R\u00e9sum\u00e9 IA pour le m\u00e9decin</button></div>';
+  h+='</div>';
+  if(S.aiTxt){h+='<div class="ai-result"><div class="ai-subject">R\u00e9sum\u00e9 clinique <span class="ai-badge">IA</span></div><div class="ai-body">'+S.aiTxt+'</div><div class="ai-disclaimer">R\u00e9sum\u00e9 g\u00e9n\u00e9r\u00e9 par IA \u2014 \u00e0 v\u00e9rifier par le m\u00e9decin traitant.</div></div>'}
+  // Entries
+  var humeurs={'bien':'\ud83d\ude0a','moyen':'\ud83d\ude10','difficile':'\ud83d\ude1f'};
+  h+=S.journal.map(function(j){
+    return '<div class="card"><div style="display:flex;justify-content:space-between;margin-bottom:6px"><span style="font-weight:700">'+j.date+' \u2014 '+(humeurs[j.humeur]||'')+' '+j.humeur+'</span><span style="font-size:11px;color:var(--mu)">par '+j.auteur+(j.tension?' \u2014 TA: '+j.tension:'')+'</span></div><div style="font-size:13px;line-height:1.6">'+j.contenu+'</div></div>';
+  }).join('');
+  return h;
+}
+function addJournal(){
+  var ta=document.getElementById('j-text');if(!ta||!ta.value.trim())return;
+  S.journal.unshift({id:Date.now(),date:new Date().toISOString().slice(0,10),auteur:S.user&&S.user.user&&S.user.user.user_metadata&&S.user.user.user_metadata.prenom||'Moi',humeur:'bien',contenu:ta.value.trim(),tension:''});
+  ta.value='';render();
+}
+async function genResume(){
+  S.aiLoad=true;render();
+  var ctx=S.journal.map(function(j){return j.date+' ('+j.humeur+'): '+j.contenu+(j.tension?' TA:'+j.tension:'')}).join('\n');
+  try{var d=await callAI({task:'resume',text:ctx,patient:S.proche.prenom+' '+S.proche.nom+', '+S.proche.age+' ans. Pathologies: '+S.proche.pathologies.join(', ')});S.aiTxt=(d&&d.translated)||'Service indisponible.'}
+  catch(e){S.aiTxt='Service IA indisponible.'}
+  S.aiLoad=false;render();
+}
+
+function renderDocuments(){
+  return '<div class="page-header"><h2>Documents</h2><p>Ordonnances, r\u00e9sultats, carte Vitale</p></div>'
+    +'<div class="card"><div class="ct">\ud83d\udcc1 Espace documentaire</div><div class="empty">Fonctionnalit\u00e9 en cours de d\u00e9veloppement.<br>Bient\u00f4t : stockage s\u00e9curis\u00e9 d\'ordonnances, r\u00e9sultats de labo et documents administratifs.</div></div>';
+}
+
+function renderAides(){
+  return '<div class="page-header"><h2>Aides financi\u00e8res</h2><p>Dispositifs pour les aidants familiaux</p></div>'
+    +'<div class="card"><div class="ct">\ud83d\udcb6 APA (Allocation Personnalis\u00e9e d\'Autonomie)</div><p style="font-size:13px;line-height:1.7">Aide d\u00e9partementale pour financer les d\u00e9penses li\u00e9es \u00e0 la perte d\'autonomie. Accessible d\u00e8s GIR 4.</p><a href="https://www.service-public.fr/particuliers/vosdroits/F10009" target="_blank" class="btn btn-o" style="margin-top:8px;font-size:12px">Simulateur APA \u2192</a></div>'
+    +'<div class="card"><div class="ct">\ud83d\udcb6 AJPA (Allocation Journali\u00e8re du Proche Aidant)</div><p style="font-size:13px;line-height:1.7">Jusqu\'\u00e0 66 jours indemnis\u00e9s pour les aidants qui r\u00e9duisent leur activit\u00e9. ~60\u20ac/jour.</p><a href="https://www.service-public.fr/particuliers/vosdroits/F35137" target="_blank" class="btn btn-o" style="margin-top:8px;font-size:12px">Demander l\'AJPA \u2192</a></div>'
+    +'<div class="card"><div class="ct">\ud83d\udcb6 Cr\u00e9dit d\'imp\u00f4t</div><p style="font-size:13px;line-height:1.7">50 % des d\u00e9penses d\'aide \u00e0 domicile, dans la limite de 12 000\u20ac/an.</p></div>';
+}
+
+// ══════════ MODE PATIENT ══════════
+
+function renderPatient(page){
+  if(page==='pilulier')return renderPatientPilulier();
+  if(page==='rdv')return renderRDV();
+  if(page==='messages')return renderVoiceLoop();
+  // Dashboard
+  return '<div class="page-header"><h2 style="font-size:26px">Bonjour '+S.proche.prenom+' \ud83d\udc4b</h2><p style="font-size:15px">Votre suivi de sant\u00e9</p></div>'
+    +'<div class="stats-row"><div class="stat-card" onclick="navTo(\'pilulier\')" style="cursor:pointer"><div class="val">'+S.meds.length+'</div><div class="lbl">m\u00e9dicaments</div></div><div class="stat-card" onclick="navTo(\'rdv\')" style="cursor:pointer"><div class="val green">'+S.rdvs.filter(function(r){return !r.fait}).length+'</div><div class="lbl">rendez-vous</div></div><div class="stat-card" onclick="navTo(\'messages\')" style="cursor:pointer"><div class="val">'+S.vlMessages.length+'</div><div class="lbl">messages</div></div></div>';
+}
+
+function renderPatientPilulier(){
+  var h='<div class="page-header"><h2 style="font-size:24px">Mes m\u00e9dicaments</h2></div>';
+  h+=S.meds.map(function(m){
+    return '<div class="card" style="padding:20px"><div style="font-size:18px;font-weight:700">'+m.nom+' '+m.dose+'</div><div style="font-size:14px;color:var(--bl);margin:6px 0">\ud83d\udca1 '+m.indication+'</div><div style="font-size:14px;color:var(--mu)">Horaire(s) : '+m.horaires.join(', ')+'</div>'
+      +'<div style="margin-top:12px">'+m.horaires.map(function(t){return '<button class="btn btn-g btn-full" onclick="markMed('+m.id+',\''+t+'\')" style="margin-bottom:6px;padding:14px;font-size:15px">\u2705 J\'ai pris \u2014 '+t+'</button>'}).join('')+'</div></div>';
+  }).join('');
+  return h;
+}
+
+// ══════════ MODE PHARMACIEN ══════════
+
+function renderPharmacien(page){
+  return '<div class="page-header"><h2>Espace Pharmacien</h2><p>Dispensation et suivi</p></div>'
+    +'<div class="card"><div class="ct">\ud83d\udd0d Recherche patient</div><input class="fi" placeholder="Nom ou identifiant du patient\u2026"><button class="btn btn-p" style="margin-top:8px">Rechercher</button></div>'
+    +'<div class="card"><div class="ct">\u26a0\ufe0f Alertes interactions</div><div class="empty">Aucune alerte en cours</div></div>';
+}
+
+// ══════════ PAGES L\u00c9GALES (RGPD obligatoire) ══════════
+
+function showLegal(page){S.activePage=page;render();renderSidebar();window.scrollTo(0,0)}
+
+function renderPrivacy(){
+  return '<div class="legal-page"><a href="#" onclick="navTo(\'dashboard\');return false">\u2190 Retour</a>'
+    +'<h2>Politique de confidentialit\u00e9</h2>'
+    +'<p><strong>Derni\u00e8re mise \u00e0 jour : 1er novembre 2026</strong></p>'
+    +'<h3>1. Responsable du traitement</h3>'
+    +'<p>AidantPro est un prototype d\u00e9velopp\u00e9 par Emrah Cengiz, \u00e9tudiant en soins infirmiers et ing\u00e9nieur. Contact : cemrah1@gmail.com</p>'
+    +'<h3>2. Donn\u00e9es collect\u00e9es</h3>'
+    +'<p>Dans sa version de d\u00e9monstration actuelle, AidantPro collecte uniquement :</p>'
+    +'<ul><li><strong>Donn\u00e9es d\'inscription</strong> : adresse email, pr\u00e9nom, r\u00f4le(s) choisi(s)</li>'
+    +'<li><strong>Donn\u00e9es d\'utilisation</strong> : interactions avec l\'application (connexion, navigation)</li></ul>'
+    +'<p><strong>Aucune donn\u00e9e de sant\u00e9 r\u00e9elle n\'est collect\u00e9e dans cette version de d\u00e9monstration.</strong> Toutes les donn\u00e9es patients affich\u00e9es sont fictives.</p>'
+    +'<h3>3. Finalit\u00e9s du traitement</h3>'
+    +'<ul><li>Authentification et gestion de votre compte</li><li>Am\u00e9lioration du prototype</li><li>Communication relative au projet (si vous y consentez)</li></ul>'
+    +'<h3>4. Base l\u00e9gale</h3>'
+    +'<p>Consentement explicite (article 6.1.a du RGPD) pour le traitement de vos donn\u00e9es. Pour les futures versions traitant des donn\u00e9es de sant\u00e9, une base l\u00e9gale renforc\u00e9e sera appliqu\u00e9e conform\u00e9ment \u00e0 l\'article 9 du RGPD.</p>'
+    +'<h3>5. Dur\u00e9e de conservation</h3>'
+    +'<p>Vos donn\u00e9es d\'inscription sont conserv\u00e9es tant que votre compte est actif. En cas de suppression de compte, toutes vos donn\u00e9es sont effac\u00e9es sous 30 jours.</p>'
+    +'<h3>6. H\u00e9bergement</h3>'
+    +'<p>Les donn\u00e9es sont h\u00e9berg\u00e9es par Supabase (Union europ\u00e9enne). <strong>Cette version de d\u00e9monstration ne traite aucune donn\u00e9e de sant\u00e9 r\u00e9elle.</strong> Avant tout d\u00e9ploiement en conditions r\u00e9elles, l\'h\u00e9bergement sera migr\u00e9 vers un prestataire certifi\u00e9 H\u00e9bergeur de Donn\u00e9es de Sant\u00e9 (HDS) conform\u00e9ment \u00e0 l\'article L.1111-8 du Code de la sant\u00e9 publique.</p>'
+    +'<h3>7. Vos droits</h3>'
+    +'<p>Conform\u00e9ment au RGPD, vous disposez des droits suivants :</p>'
+    +'<ul><li><strong>Acc\u00e8s</strong> : obtenir une copie de vos donn\u00e9es</li><li><strong>Rectification</strong> : corriger vos donn\u00e9es</li><li><strong>Effacement</strong> : demander la suppression de votre compte et de vos donn\u00e9es</li><li><strong>Portabilit\u00e9</strong> : recevoir vos donn\u00e9es dans un format structur\u00e9</li><li><strong>Opposition</strong> : vous opposer au traitement de vos donn\u00e9es</li></ul>'
+    +'<p>Pour exercer ces droits : cemrah1@gmail.com</p>'
+    +'<h3>8. Intelligence artificielle</h3>'
+    +'<p>AidantPro utilise des mod\u00e8les d\'IA (Anthropic Claude) pour la traduction, la structuration de transmissions et l\'explication de pathologies. <strong>Tout contenu g\u00e9n\u00e9r\u00e9 par l\'IA est clairement identifi\u00e9 par un badge \u2726 IA</strong> et soumis \u00e0 validation humaine obligatoire avant toute diffusion. L\'IA ne prend aucune d\u00e9cision clinique.</p>'
+    +'<h3>9. R\u00e9clamation</h3>'
+    +'<p>Vous pouvez introduire une r\u00e9clamation aupr\u00e8s de la CNIL : <a href="https://www.cnil.fr" target="_blank">www.cnil.fr</a></p>'
+    +'</div>';
+}
+
+function renderCGU(){
+  return '<div class="legal-page"><a href="#" onclick="navTo(\'dashboard\');return false">\u2190 Retour</a>'
+    +'<h2>Conditions g\u00e9n\u00e9rales d\'utilisation</h2>'
+    +'<p><strong>Derni\u00e8re mise \u00e0 jour : 1er novembre 2026</strong></p>'
+    +'<h3>1. Objet</h3>'
+    +'<p>AidantPro est un prototype de plateforme de coordination de soins. L\'application est en phase de d\u00e9veloppement et de test.</p>'
+    +'<h3>2. Version de d\u00e9monstration</h3>'
+    +'<p>Cette version est un <strong>prototype de d\u00e9monstration</strong>. Elle ne doit contenir aucune donn\u00e9e de sant\u00e9 r\u00e9elle. Utilisez uniquement des informations fictives. Seul votre email d\'inscription est conserv\u00e9, et vous pouvez en demander la suppression \u00e0 tout moment.</p>'
+    +'<h3>3. Limitation de responsabilit\u00e9</h3>'
+    +'<p>AidantPro <strong>ne remplace en aucun cas un avis m\u00e9dical professionnel</strong>. Les informations g\u00e9n\u00e9r\u00e9es par l\'intelligence artificielle sont fournies \u00e0 titre indicatif et doivent \u00eatre valid\u00e9es par un professionnel de sant\u00e9 qualifi\u00e9.</p>'
+    +'<h3>4. Gratuit\u00e9</h3>'
+    +'<p>L\'acc\u00e8s \u00e0 cette version de test est enti\u00e8rement gratuit.</p>'
+    +'<h3>5. Propri\u00e9t\u00e9 intellectuelle</h3>'
+    +'<p>L\'ensemble du contenu, du code et des \u00e9l\u00e9ments graphiques d\'AidantPro sont la propri\u00e9t\u00e9 de son cr\u00e9ateur. Toute reproduction non autoris\u00e9e est interdite.</p>'
+    +'<h3>6. Modification des CGU</h3>'
+    +'<p>Ces conditions peuvent \u00eatre modifi\u00e9es \u00e0 tout moment. La date de derni\u00e8re mise \u00e0 jour fait foi.</p>'
+    +'</div>';
+}
+
+function renderCookiePolicy(){
+  return '<div class="legal-page"><a href="#" onclick="navTo(\'dashboard\');return false">\u2190 Retour</a>'
+    +'<h2>Politique de cookies</h2>'
+    +'<p>AidantPro utilise uniquement des <strong>cookies strictement n\u00e9cessaires</strong> au fonctionnement de l\'application :</p>'
+    +'<ul><li><strong>Cookie d\'authentification</strong> : maintient votre session de connexion</li><li><strong>Pr\u00e9f\u00e9rence de langue</strong> : m\u00e9morise la langue choisie pour le patient (localStorage)</li><li><strong>Consentement cookies</strong> : m\u00e9morise votre choix (localStorage)</li></ul>'
+    +'<p><strong>Aucun cookie publicitaire, analytique ou de tra\u00e7age n\'est utilis\u00e9.</strong></p>'
+    +'<p>Aucune donn\u00e9e n\'est partag\u00e9e avec des tiers \u00e0 des fins commerciales.</p>'
+    +'</div>';
+}
+
+function renderAccountDeletion(){
+  return '<div class="legal-page"><a href="#" onclick="navTo(\'dashboard\');return false">\u2190 Retour</a>'
+    +'<h2>Suppression de compte</h2>'
+    +'<p>Conform\u00e9ment au RGPD (droit \u00e0 l\'effacement, article 17), vous pouvez demander la suppression compl\u00e8te de votre compte et de toutes les donn\u00e9es associ\u00e9es.</p>'
+    +'<h3>Ce qui sera supprim\u00e9 :</h3>'
+    +'<ul><li>Votre compte (email, nom, r\u00f4le)</li><li>Toutes les donn\u00e9es saisies dans l\'application</li><li>Vos pr\u00e9f\u00e9rences</li></ul>'
+    +'<h3>Proc\u00e9dure :</h3>'
+    +'<p>Envoyez un email \u00e0 <strong>cemrah1@gmail.com</strong> avec l\'objet \u00ab Suppression de compte AidantPro \u00bb. Votre compte sera supprim\u00e9 sous 30 jours maximum.</p>'
+    +'<div style="margin-top:20px"><button class="btn btn-d btn-full" onclick="requestDeletion()">Demander la suppression de mon compte</button></div>'
+    +'</div>';
+}
+function requestDeletion(){
+  if(confirm('\\u00cates-vous s\\u00fbr de vouloir demander la suppression de votre compte ? Cette action est irr\\u00e9versible.')){
+    window.location.href='mailto:cemrah1@gmail.com?subject=Suppression%20de%20compte%20AidantPro&body=Je%20demande%20la%20suppression%20de%20mon%20compte%20AidantPro.';
+  }
+}
+
+// ══════════ AUTH ══════════
+
+function showAuth(mode){
+  document.getElementById('loading').style.display='none';
+  document.getElementById('app').style.display='none';
+  var b=document.body;
+  // Remove any existing auth
+  var old=document.getElementById('auth-wrap');if(old)old.remove();
+  var div=document.createElement('div');div.id='auth-wrap';div.className='auth-wrap';
+  if(mode==='register'){
+    div.innerHTML=renderRegisterForm();
+  } else {
+    div.innerHTML=renderLoginForm();
+  }
+  b.appendChild(div);
+}
+
+function renderLoginForm(){
+  return '<div class="auth-card"><div class="logo-row">'
+    +'<svg viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M25 88 C45 38,155 38,175 88" stroke="#1D55E8" stroke-width="16" stroke-linecap="round"/><path d="M25 112 C45 162,155 162,175 112" stroke="#137A3A" stroke-width="16" stroke-linecap="round"/><path d="M100 128 C84 112,68 102,68 86 C68 72,81 64,92 72 C97 75,100 81,100 81 C100 81,103 75,108 72 C119 64,132 72,132 86 C132 102,116 112,100 128Z" fill="#137A3A"/></svg>'
+    +'<h2>Aidant<span>Pro</span></h2><p>Connexion s\u00e9curis\u00e9e</p></div>'
+    +'<div id="auth-error" style="display:none;background:var(--rd2);color:var(--rd);padding:10px;border-radius:8px;font-size:13px;margin-bottom:12px"></div>'
+    +'<input class="fi" id="login-email" type="email" placeholder="Adresse email" autocomplete="email">'
+    +'<input class="fi" id="login-pwd" type="password" placeholder="Mot de passe" autocomplete="current-password">'
+    +'<button class="btn btn-p btn-full" style="margin-top:16px" onclick="doLogin()">Se connecter</button>'
+    +'<p style="text-align:center;margin-top:14px;font-size:13px;color:var(--mu)">Pas encore de compte ? <a href="#" onclick="showAuth(\'register\');return false">S\'inscrire</a></p>'
+    +'<div style="margin-top:16px;text-align:center;font-size:11px;color:var(--mu)">\ud83e\uddf0 Version de d\u00e9monstration \u2014 donn\u00e9es fictives uniquement</div>'
+    +'</div>';
+}
+
+function renderRegisterForm(){
+  var roles=[{id:'aidant',ico:'\ud83d\udc69\u200d\ud83d\udc67',label:'Aidant familial'},{id:'patient',ico:'\ud83e\udd12',label:'Patient'},{id:'soignant',ico:'\ud83d\udc68\u200d\u2695\ufe0f',label:'Soignant'},{id:'pharmacien',ico:'\ud83d\udc8a',label:'Pharmacien'}];
+  var rolesHtml=roles.map(function(r){
+    return '<div class="role-cb'+(S.selectedRoles.indexOf(r.id)>=0?' active':'')+'" onclick="toggleRole(\''+r.id+'\');renderAuth()"><span class="ico">'+r.ico+'</span>'+r.label+'</div>';
+  }).join('');
+  return '<div class="auth-card"><div class="logo-row">'
+    +'<svg viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M25 88 C45 38,155 38,175 88" stroke="#1D55E8" stroke-width="16" stroke-linecap="round"/><path d="M25 112 C45 162,155 162,175 112" stroke="#137A3A" stroke-width="16" stroke-linecap="round"/><path d="M100 128 C84 112,68 102,68 86 C68 72,81 64,92 72 C97 75,100 81,100 81 C100 81,103 75,108 72 C119 64,132 72,132 86 C132 102,116 112,100 128Z" fill="#137A3A"/></svg>'
+    +'<h2>Aidant<span>Pro</span></h2><p>Cr\u00e9er un compte</p></div>'
+    +'<div id="auth-error" style="display:none;background:var(--rd2);color:var(--rd);padding:10px;border-radius:8px;font-size:13px;margin-bottom:12px"></div>'
+    +'<input class="fi" id="reg-prenom" placeholder="Pr\u00e9nom">'
+    +'<input class="fi" id="reg-nom" placeholder="Nom">'
+    +'<input class="fi" id="reg-email" type="email" placeholder="Adresse email" autocomplete="email">'
+    +'<input class="fi" id="reg-pwd" type="password" placeholder="Mot de passe (12 caract\u00e8res min.)" autocomplete="new-password">'
+    +'<label class="fi-label">Votre r\u00f4le (minimum 1) :</label>'
+    +'<div class="roles-grid">'+rolesHtml+'</div>'
+    +'<div style="margin:12px 0"><label style="display:flex;align-items:flex-start;gap:8px;font-size:12px;color:var(--mu);cursor:pointer"><input type="checkbox" id="reg-consent" style="margin-top:2px"> J\'accepte les <a href="#" onclick="event.stopPropagation();showLegal(\'cgu\')">CGU</a> et la <a href="#" onclick="event.stopPropagation();showLegal(\'privacy\')">politique de confidentialit\u00e9</a></label></div>'
+    +'<div style="margin-bottom:12px"><label style="display:flex;align-items:flex-start;gap:8px;font-size:12px;color:var(--mu);cursor:pointer"><input type="checkbox" id="reg-health-consent" style="margin-top:2px"> Je consens au traitement de donn\u00e9es relatives \u00e0 la sant\u00e9 dans le cadre de la coordination de soins (article 9 RGPD)</label></div>'
+    +'<button class="btn btn-p btn-full" onclick="doRegister()">Cr\u00e9er mon compte</button>'
+    +'<p style="text-align:center;margin-top:14px;font-size:13px;color:var(--mu)">D\u00e9j\u00e0 un compte ? <a href="#" onclick="showAuth(\'login\');return false">Se connecter</a></p>'
+    +'<div style="margin-top:16px;text-align:center;font-size:11px;color:var(--mu)">\ud83e\uddf0 Version de d\u00e9monstration \u2014 donn\u00e9es fictives uniquement</div>'
+    +'</div>';
+}
+
+function renderAuth(){
+  var wrap=document.getElementById('auth-wrap');
+  if(!wrap)return;
+  // Re-render le formulaire actuel
+  var isReg=wrap.querySelector('#reg-email');
+  if(isReg)wrap.innerHTML=renderRegisterForm();
+}
+
+function showError(msg){
+  var el=document.getElementById('auth-error');
+  if(el){el.style.display='block';el.textContent=msg}
+}
+
+async function doLogin(){
+  var email=document.getElementById('login-email').value.trim();
+  var pwd=document.getElementById('login-pwd').value;
+  if(!email||!pwd){showError('Remplissez tous les champs.');return}
+  try{
+    var d=await sbSignIn(email,pwd);
+    if(d.error){showError(d.error.message||d.error_description||'Erreur de connexion');return}
+    S.user=d;goToApp();
+  }catch(e){showError('Erreur r\u00e9seau. R\u00e9essayez.')}
+}
+
+async function doRegister(){
+  var prenom=document.getElementById('reg-prenom').value.trim();
+  var nom=document.getElementById('reg-nom').value.trim();
+  var email=document.getElementById('reg-email').value.trim();
+  var pwd=document.getElementById('reg-pwd').value;
+  var consent=document.getElementById('reg-consent').checked;
+  var healthConsent=document.getElementById('reg-health-consent').checked;
+  if(!prenom||!email||!pwd){showError('Remplissez tous les champs obligatoires.');return}
+  if(pwd.length<12){showError('Le mot de passe doit contenir au moins 12 caract\u00e8res.');return}
+  if(S.selectedRoles.length<1){showError('S\u00e9lectionnez au moins un r\u00f4le.');return}
+  if(!consent){showError('Vous devez accepter les CGU et la politique de confidentialit\u00e9.');return}
+  if(!healthConsent){showError('Le consentement au traitement des donn\u00e9es de sant\u00e9 est requis.');return}
+  try{
+    var d=await sbSignUp(email,pwd,{prenom:prenom,nom:nom,role:S.selectedRoles[0],roles:S.selectedRoles,consent_date:new Date().toISOString(),health_consent:true});
+    if(d.error){showError(d.error.message||'Erreur');return}
+    alert('Compte cr\u00e9\u00e9 ! V\u00e9rifiez votre email pour activer votre compte.');
+    showAuth('login');
+  }catch(e){showError('Erreur r\u00e9seau. R\u00e9essayez.')}
+}
+
+function goToApp(){
+  var wrap=document.getElementById('auth-wrap');if(wrap)wrap.remove();
+  document.getElementById('loading').style.display='none';
+  document.getElementById('app').style.display='block';
+  // D\u00e9terminer le mode initial
+  var meta=S.user&&S.user.user&&S.user.user.user_metadata;
+  var roles=(meta&&meta.roles)||[meta&&meta.role||'aidant'];
+  S.activeMode=roles[0]||'aidant';
+  S.activePage='dashboard';
+  resetSessionTimer();
+  renderSidebar();
+  render();
+}
+
+function doLogout(){
+  S.user=null;
+  if(sessionTimer)clearTimeout(sessionTimer);
+  showAuth('login');
+}
+
+// ══════════ INIT ══════════
+
+window.addEventListener('DOMContentLoaded',function(){
+  initCookies();
+  setTimeout(function(){showAuth('login')},1500);
+});
+</script>
+</body>
+</html>
